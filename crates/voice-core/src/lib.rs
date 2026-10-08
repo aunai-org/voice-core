@@ -4,6 +4,7 @@
 
 pub mod dsp;
 pub mod loudness;
+pub mod pitch;
 
 /// Errors returned by analysis functions.
 #[derive(Debug, Clone, PartialEq, Eq)]

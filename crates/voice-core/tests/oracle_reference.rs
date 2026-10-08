@@ -91,3 +91,66 @@ fn resampled_level_matches_praat_resample() {
     assert!((ours - praat).abs() < 0.05, "ours {ours} vs praat {praat}");
     assert!((ours - orig).abs() < 0.05, "ours {ours} vs original {orig}");
 }
+
+fn harmonic(f0: f32, amp: f32, secs: f32) -> Vec<f32> {
+    // Same stack as tools/gen_fixtures.py: 8 harmonics at 1/k amplitude, peak-normalised.
+    let mut out: Vec<f32> = (0..(SR * secs) as usize)
+        .map(|i| {
+            (1..=8)
+                .map(|k| {
+                    (1.0 / k as f32) * (2.0 * std::f32::consts::PI * f0 * k as f32 * i as f32 / SR).sin()
+                })
+                .sum()
+        })
+        .collect();
+    let peak = out.iter().fold(0.0_f32, |m, x| m.max(x.abs()));
+    out.iter_mut().for_each(|x| *x *= amp / peak);
+    out
+}
+
+/// Median f0 of our pYIN track against Praat's median f0 (autocorrelation
+/// method, 75 to 600 Hz) for the same synthetic clips. Tolerance 0.5 %.
+#[test]
+fn median_f0_matches_praat() {
+    use voice_core::pitch::{median_f0, AutocorrEstimator, PitchEstimator};
+    let r = reference();
+    let clips: [(&str, Vec<f32>); 5] = [
+        ("sine_100hz", sine(100.0, 0.5, 2.0)),
+        ("sine_220hz", sine(220.0, 0.5, 2.0)),
+        ("sine_440hz", sine(440.0, 0.5, 2.0)),
+        ("harmonic_110hz", harmonic(110.0, 0.5, 2.0)),
+        ("harmonic_200hz", harmonic(200.0, 0.5, 2.0)),
+    ];
+    for (name, samples) in clips {
+        let praat = r["clips"][name]["f0_median_hz"].as_f64().unwrap();
+        let track = AutocorrEstimator::default().estimate(&samples, 16_000).unwrap();
+        let ours = f64::from(median_f0(&track).expect(name));
+        let err = (ours - praat) / praat * 100.0;
+        println!("{name}: praat {praat:.3} Hz, ours {ours:.3} Hz, err {err:+.3} %");
+        assert!(err.abs() < 0.5, "{name}: ours {ours} vs praat {praat}");
+    }
+}
+
+/// Voiced share of the 0.5 s tone, 1.5 s pause, 0.5 s tone clip against Praat's
+/// voiced fraction, and the no-pitch cases. Tolerance 0.05 (absolute).
+#[test]
+fn voiced_fraction_matches_praat() {
+    use voice_core::pitch::{voiced_fraction, AutocorrEstimator, PitchEstimator};
+    let r = reference();
+    let mut x = sine(150.0, 0.4, 0.5);
+    x.extend(vec![0.0; (SR * 1.5) as usize]);
+    x.extend(sine(150.0, 0.4, 0.5));
+    let est = AutocorrEstimator::default();
+    let praat = r["clips"]["tone_pause_tone"]["voiced_fraction"].as_f64().unwrap();
+    let ours = f64::from(voiced_fraction(&est.estimate(&x, 16_000).unwrap()));
+    println!(
+        "tone_pause_tone voiced fraction: praat {praat:.3}, ours {ours:.3}, err {:+.3}",
+        ours - praat
+    );
+    assert!((ours - praat).abs() < 0.05, "ours {ours} vs praat {praat}");
+    let silent = voiced_fraction(&est.estimate(&vec![0.0; 32_000], 16_000).unwrap());
+    assert_eq!(
+        f64::from(silent),
+        r["clips"]["silence"]["voiced_fraction"].as_f64().unwrap()
+    );
+}
