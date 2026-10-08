@@ -34,6 +34,7 @@ Mark items `[x]` with the PR link when the draft PR is open. Last updated: 2026-
 - [ ] Streaming `Analyzer` push/finish with streaming-vs-batch tests, latency numbers
 - [ ] Criterion benchmarks
 - [ ] 0.1.0 prep: README + accuracy table (real data only), PROVENANCE complete
+- [ ] Before the first major release: move `tools/oracle.py`, the fixture generator and the Praat reference numbers into a separate public repo; settle that repo's licence with the GPL legal check (decision in docs/decisions.md, "Oracle split")
 
 ## voice-flutter
 - [ ] F0 spike: FRB plugin with stub `analyze`, Windows + Android (versions recorded)

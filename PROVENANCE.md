@@ -2,6 +2,8 @@
 
 Every algorithm in voice-core is implemented from a published paper or public formula. No source code from Praat, Parselmouth, rustmouth, aubio, Essentia or openSMILE is read-copied, vendored or linked (see `docs/spec.md`, section 9). Praat/Parselmouth appear only in `tools/` as an offline test oracle and are never shipped.
 
+**Praat's role.** Praat (via Parselmouth) is the validation reference only: its numbers are compared against ours in tests, offline. It is never a dependency and never a source for algorithms; every algorithm is implemented from the papers and standards named below. Before the first major release the oracle and its reference numbers move to a separate public repository (see `docs/decisions.md`, "Oracle split"); until then they live under `tools/` and `tests/data/` and are excluded from the published crate.
+
 Add a row when an algorithm lands in the code. A row with status `planned` means nothing is implemented yet.
 
 | Metric / component | Module | Basis (paper or public formula) | Third-party crate used | Status |

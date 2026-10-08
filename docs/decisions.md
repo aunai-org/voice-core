@@ -37,3 +37,6 @@ mimic is a "voice gym" for working professionals: a 10-15 minute daily session (
 
 ## Shelved ideas (2026-10-06)
 - **Video self-review** (record video while speaking, watch back with audio metrics overlaid; later optional face/gesture analysis). Shelved by omr; may become a standalone app or a paid add-on. Not in mimic v1. If revisited, let a session hold optional attached tracks. Reasoning: mimic/validation.md and the thread.
+
+## Oracle split (decided 2026-10-08, omr)
+Before the first major release the Praat/Parselmouth oracle (`tools/oracle.py`, the synthetic fixture generator, and the committed reference numbers) moves into a separate public repository, so voice-core itself stays free of any Praat-derived material. Until then it stays under `tools/` in this repo and is kept out of the published crate (`tools/` is outside the package directory, and the reference JSON and its test are listed in the crate's `exclude`). The new repository's licence is to be settled together with the legal check on the GPL position listed under open questions; the oracle is validation only and never a source for algorithms, which are implemented from published papers and standards.
