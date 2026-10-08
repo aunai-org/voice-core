@@ -20,7 +20,7 @@ Mark items `[x]` with the PR link when the draft PR is open. Last updated: 2026-
 ### M1 Basic measures
 - [x] `dsp`: framing + resample to 16 kHz (`rubato`), unit tests — PR claude/run-20261008-14-resample (stacked on the LUFS PR; Unicode-3.0 allowed in deny.toml per omr; level matches Praat's own resample within 0.0003 dB)
 - [x] First measurement with tests: frame RMS dB (voice-core PR #1) + integrated LUFS via `ebur128` — PR claude/run-20261008-13-lufs (stacked on the oracle-reference PR; checked against the BS.1770 known answer, -3.01 LUFS for a full-scale 997 Hz sine; Praat has no LUFS; real speech clips and EBU 3341 files still to add)
-- [ ] Pitch behind a trait (`pyin` backend), tests on synthetic sines
+- [x] Pitch behind a trait, own autocorrelation backend (Boersma 1993), tests on synthetic sines — PR claude/run-20261008-17-pitch (`pyin` 1.2.0 dropped: panics on ~20% of sine inputs at a 75 Hz floor and does not compile for wasm32). Still to do: cross-frame path search, real speech clips
 - [ ] VAD/pauses (`earshot`), pause stats
 - [ ] `analyze()` batch API + `VoiceReport` (serde)
 - [ ] First benchmark vs Praat; re-evaluate `pyin` vs `pitch-core` (gate)

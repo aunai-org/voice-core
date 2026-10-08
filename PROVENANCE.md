@@ -12,7 +12,7 @@ Add a row when an algorithm lands in the code. A row with status `planned` means
 | Framing | `dsp` | Standard fixed-length, fixed-hop windowing | none | implemented |
 | Resampling to 16 kHz | `dsp` | Band-limited FFT resampling | `rubato` (MIT) | implemented |
 | Integrated loudness (LUFS) | `loudness` | ITU-R BS.1770 / EBU R128 | `ebur128` (MIT) | implemented (mono, gated) |
-| Pitch (f0) | `pitch` | pYIN: Mauch and Dixon (2014) | `pyin` (to be confirmed) | planned |
+| Pitch (f0) | `pitch` | Boersma (1993), "Accurate short-term analysis of the fundamental frequency and the harmonics-to-noise ratio of a sampled sound": windowed normalised autocorrelation, peak picking, parabolic interpolation (no cross-frame path search yet) | none | implemented (synthetic signals only) |
 | Speech/silence detection | `vad` | Voice activity detection | `earshot` (to be confirmed) | planned |
 | Syllable-rate pace | `syllables` | de Jong and Wempe (2009) | none | planned |
 | Jitter (local, RAP, PPQ5) | `perturbation` | Boersma (1993) style definitions | none | planned |
