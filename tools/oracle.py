@@ -40,8 +40,20 @@ def measure(path):
 def main():
     src = Path(sys.argv[1])
     out = Path(sys.argv[2]) if len(sys.argv) > 2 else src / "oracle.json"
-    ref = {p.stem: measure(p) for p in sorted(src.glob("*.wav"))}
-    out.write_text(json.dumps(ref, indent=2))
+    import parselmouth
+
+    ref = {
+        "_meta": {
+            "parselmouth": parselmouth.VERSION,
+            "praat": parselmouth.PRAAT_VERSION,
+            "pitch_floor_hz": 75,
+            "pitch_ceiling_hz": 600,
+            "intensity_ref_db_offset": 20 * __import__("math").log10(1 / 2e-5),
+            "note": "intensity_mean_db is dB SPL (ref 2e-5); subtract intensity_ref_db_offset to get dBFS",
+        },
+        "clips": {p.stem: measure(p) for p in sorted(src.glob("*.wav"))},
+    }
+    out.write_text(json.dumps(ref, indent=2) + "\n")
     print(f"wrote {out}")
 
 

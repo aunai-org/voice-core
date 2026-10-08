@@ -1,0 +1,70 @@
+{
+  "_meta": {
+    "parselmouth": "0.4.7",
+    "praat": "6.1.38",
+    "pitch_floor_hz": 75,
+    "pitch_ceiling_hz": 600,
+    "intensity_ref_db_offset": 93.97940008672037,
+    "note": "intensity_mean_db is dB SPL (ref 2e-5); subtract intensity_ref_db_offset to get dBFS"
+  },
+  "clips": {
+    "harmonic_110hz": {
+      "f0_median_hz": 110.00084201493654,
+      "voiced_fraction": 1.0,
+      "intensity_mean_db": 82.31476129400342,
+      "jitter_local": 5.310940255331019e-07,
+      "shimmer_local": 4.0200253693705935e-06,
+      "hnr_db": 78.6318328516791
+    },
+    "harmonic_200hz": {
+      "f0_median_hz": 199.9992303901149,
+      "voiced_fraction": 1.0,
+      "intensity_mean_db": 82.39657451835782,
+      "jitter_local": 9.15778683168645e-09,
+      "shimmer_local": 1.6707032720140783e-07,
+      "hnr_db": 109.49393453083108
+    },
+    "silence": {
+      "f0_median_hz": null,
+      "voiced_fraction": 0.0,
+      "intensity_mean_db": -300.0
+    },
+    "sine_100hz": {
+      "f0_median_hz": 100.01201670472354,
+      "voiced_fraction": 1.0,
+      "intensity_mean_db": 84.94827125008273,
+      "jitter_local": 1.1447413800862169e-17,
+      "shimmer_local": 3.4529430844390363e-16,
+      "hnr_db": 75.4387668834883
+    },
+    "sine_220hz": {
+      "f0_median_hz": 219.99959179689245,
+      "voiced_fraction": 1.0,
+      "intensity_mean_db": 84.94879312232084,
+      "jitter_local": 1.6836034773877834e-06,
+      "shimmer_local": 3.970313142542952e-06,
+      "hnr_db": 79.88471995573359
+    },
+    "sine_440hz": {
+      "f0_median_hz": 440.0004163168152,
+      "voiced_fraction": 1.0,
+      "intensity_mean_db": 84.94853972779707,
+      "jitter_local": 5.8417582751260614e-06,
+      "shimmer_local": 9.094903733248336e-06,
+      "hnr_db": 75.66381010340503
+    },
+    "tone_pause_tone": {
+      "f0_median_hz": 150.00135374734117,
+      "voiced_fraction": 0.3967611336032389,
+      "intensity_mean_db": 78.81129858495035,
+      "jitter_local": 1.961024866939855e-06,
+      "shimmer_local": 6.028864468747577e-06,
+      "hnr_db": 72.31955268732233
+    },
+    "white_noise": {
+      "f0_median_hz": null,
+      "voiced_fraction": 0.0,
+      "intensity_mean_db": 78.70377065173828
+    }
+  }
+}
