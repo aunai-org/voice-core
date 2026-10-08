@@ -9,7 +9,7 @@ Add a row when an algorithm lands in the code. A row with status `planned` means
 | Frame RMS level (dBFS) | `loudness` | Root-mean-square definition, 10·log10(mean square) | none | implemented |
 | Framing | `dsp` | Standard fixed-length, fixed-hop windowing | none | implemented |
 | Resampling to 16 kHz | `dsp` | Band-limited sinc interpolation | `rubato` (MIT) | planned |
-| Integrated loudness (LUFS) | `loudness` | ITU-R BS.1770 / EBU R128 | `ebur128` (MIT) | planned |
+| Integrated loudness (LUFS) | `loudness` | ITU-R BS.1770 / EBU R128 | `ebur128` (MIT) | implemented (mono, gated) |
 | Pitch (f0) | `pitch` | pYIN: Mauch and Dixon (2014) | `pyin` (to be confirmed) | planned |
 | Speech/silence detection | `vad` | Voice activity detection | `earshot` (to be confirmed) | planned |
 | Syllable-rate pace | `syllables` | de Jong and Wempe (2009) | none | planned |
