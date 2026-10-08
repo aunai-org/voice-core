@@ -1,0 +1,28 @@
+# cargo-deny policy. Dependencies must be permissively licensed (see docs/spec.md section 9).
+# GPL/AGPL/LGPL code (Praat, rustmouth, praat-sys, aubio, ...) must never enter the tree.
+
+[graph]
+all-features = true
+
+[licenses]
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "Unlicense",
+]
+confidence-threshold = 0.9
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+deny = [
+    { name = "praat-sys" },
+    { name = "rustmouth" },
+]
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
