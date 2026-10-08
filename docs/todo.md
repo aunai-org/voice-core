@@ -12,7 +12,7 @@ Mark items `[x]` with the PR link when the draft PR is open. Last updated: 2026-
 - [ ] Cargo workspace scaffold (`voice-core` crate, MIT, rustfmt, clippy config, empty modules `dsp`, `pitch`, `loudness`, `vad`, `syllables`, `perturbation`, `report`)
 - [ ] CI: fmt, clippy, test on Linux/macOS/Windows
 - [ ] `cargo deny` license allowlist (MIT/Apache/BSD/Unlicense) in CI
-- [ ] CI check builds: wasm32-unknown-unknown, aarch64-linux-android, aarch64-apple-ios
+- [x] CI check builds: wasm32-unknown-unknown, aarch64-linux-android, aarch64-apple-ios — PR claude/ci-target-checks
 - [ ] `PROVENANCE.md` skeleton
 - [ ] Synthetic fixture generator (sines, noise, known-answer signals) and `tools/oracle.py` (Parselmouth, offline only) emitting expected JSON
 - [ ] Real fixture set: 30+ CC0/consented clips (needs audio source, see blocked)
