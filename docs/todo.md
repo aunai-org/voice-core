@@ -19,7 +19,8 @@ Mark items `[x]` with the PR link when the draft PR is open. Last updated: 2026-
 - [ ] Real fixture set: 30+ CC0/consented clips (needs audio source, see blocked)
 ### M1 Basic measures
 - [ ] `dsp`: framing + resample to 16 kHz (`rubato`), unit tests
-- [ ] First measurement with tests: frame RMS dB + loudness (`ebur128` integrated LUFS)
+  - BLOCKED on decision: `rubato` 1.0 pulls `visibility` (proc-macro) -> `syn` -> `unicode-ident`, licensed `(MIT OR Apache-2.0) AND Unicode-3.0`. `cargo deny` would need `Unicode-3.0` added to the allowlist (permissive, but outside the stated MIT/Apache/BSD/Unlicense list). Alternatives: allow Unicode-3.0, or write a small windowed-sinc resampler ourselves.
+- [x] First measurement with tests: frame RMS dB (voice-core PR #1) + integrated LUFS via `ebur128` — PR claude/run-20261008-13-lufs (stacked on the oracle-reference PR; checked against the BS.1770 known answer, -3.01 LUFS for a full-scale 997 Hz sine; Praat has no LUFS; real speech clips and EBU 3341 files still to add)
 - [ ] Pitch behind a trait (`pyin` backend), tests on synthetic sines
 - [ ] VAD/pauses (`earshot`), pause stats
 - [ ] `analyze()` batch API + `VoiceReport` (serde)
