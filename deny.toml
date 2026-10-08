@@ -11,6 +11,8 @@ allow = [
     "BSD-2-Clause",
     "BSD-3-Clause",
     "Unlicense",
+    # Unicode data license (permissive); only reached through proc-macro build deps (syn -> unicode-ident).
+    "Unicode-3.0",
 ]
 confidence-threshold = 0.9
 

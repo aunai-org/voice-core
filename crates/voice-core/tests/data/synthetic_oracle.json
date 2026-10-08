@@ -53,6 +53,16 @@
       "shimmer_local": 9.094903733248336e-06,
       "hnr_db": 75.66381010340503
     },
+    "sine_440hz_48k": {
+      "f0_median_hz": 439.99861769017934,
+      "voiced_fraction": 1.0,
+      "intensity_mean_db": 84.94854218664224,
+      "sample_rate_hz": 48000.0,
+      "resampled_16k_rms_dbfs": -9.031859353739005,
+      "jitter_local": 6.699537854020345e-07,
+      "shimmer_local": 2.0420651732817504e-06,
+      "hnr_db": 94.52228380903179
+    },
     "tone_pause_tone": {
       "f0_median_hz": 150.00135374734117,
       "voiced_fraction": 0.3967611336032389,

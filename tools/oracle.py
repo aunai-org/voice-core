@@ -28,6 +28,13 @@ def measure(path):
         "voiced_fraction": float(len(voiced) / len(f0)) if len(f0) else 0.0,
         "intensity_mean_db": float(call(intensity, "Get mean", 0, 0, "energy")),
     }
+    if snd.sampling_frequency != 16000:
+        # Praat's own resampling to 16 kHz, as the reference for our resampler.
+        v = snd.resample(16000).values[0]
+        trim = 2048  # skip filter edge effects at both ends
+        mid = v[trim:-trim]
+        result["sample_rate_hz"] = float(snd.sampling_frequency)
+        result["resampled_16k_rms_dbfs"] = float(10 * __import__("math").log10(float((mid**2).mean())))
     if len(voiced) > 10:
         pp = call(snd, "To PointProcess (periodic, cc)", 75, 600)
         result["jitter_local"] = float(call(pp, "Get jitter (local)", 0, 0, 0.0001, 0.02, 1.3))
