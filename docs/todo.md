@@ -13,7 +13,7 @@ Mark items `[x]` with the PR link when the draft PR is open. Last updated: 2026-
 - [ ] CI: fmt, clippy, test on Linux/macOS/Windows
 - [x] `cargo deny` license allowlist (MIT/Apache/BSD/Unlicense) in CI — PR claude/ci-cargo-deny (deny.toml + CI job; not validated locally, cargo-deny not installed, CI is the check)
 - [x] CI check builds: wasm32-unknown-unknown, aarch64-linux-android, aarch64-apple-ios — PR claude/ci-target-checks
-- [ ] `PROVENANCE.md` skeleton
+- [x] `PROVENANCE.md` skeleton — PR claude/provenance-skeleton
 - [ ] Synthetic fixture generator (sines, noise, known-answer signals) and `tools/oracle.py` (Parselmouth, offline only) emitting expected JSON
 - [ ] Real fixture set: 30+ CC0/consented clips (needs audio source, see blocked)
 ### M1 Basic measures
