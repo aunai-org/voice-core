@@ -14,7 +14,8 @@ Mark items `[x]` with the PR link when the draft PR is open. Last updated: 2026-
 - [x] `cargo deny` license allowlist (MIT/Apache/BSD/Unlicense) in CI — PR claude/ci-cargo-deny (deny.toml + CI job; not validated locally, cargo-deny not installed, CI is the check)
 - [x] CI check builds: wasm32-unknown-unknown, aarch64-linux-android, aarch64-apple-ios — PR claude/ci-target-checks
 - [x] `PROVENANCE.md` skeleton — PR claude/provenance-skeleton
-- [ ] Synthetic fixture generator (sines, noise, known-answer signals) and `tools/oracle.py` (Parselmouth, offline only) emitting expected JSON
+- [x] Synthetic fixture generator (sines, noise, known-answer signals) and `tools/oracle.py` (Parselmouth, offline only) emitting expected JSON — PR claude/tools-fixtures-oracle (generator run and works; oracle.py compiles but NOT run: Parselmouth not installed)
+- [ ] Run `tools/oracle.py` on the synthetic clips with Parselmouth installed, commit the reference JSON, add a Rust test that loads it (prerequisite for the accuracy rule)
 - [ ] Real fixture set: 30+ CC0/consented clips (needs audio source, see blocked)
 ### M1 Basic measures
 - [ ] `dsp`: framing + resample to 16 kHz (`rubato`), unit tests
