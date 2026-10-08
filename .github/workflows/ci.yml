@@ -3,12 +3,19 @@ on:
   pull_request:
   push:
     branches: [main]
+    tags: ['v*']
+  schedule:
+    - cron: '17 21 * * *'
+  workflow_dispatch:
 
 jobs:
   test:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        # macOS runners queue for long when many PRs run at once, so pull
+        # requests test on Linux and Windows only; macOS runs on main, tags,
+        # the nightly schedule and manual runs.
+        os: ${{ fromJSON(github.event_name == 'pull_request' && '["ubuntu-latest","windows-latest"]' || '["ubuntu-latest","macos-latest","windows-latest"]') }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
