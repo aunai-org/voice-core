@@ -11,7 +11,7 @@ Mark items `[x]` with the PR link when the draft PR is open. Last updated: 2026-
 ### M0 Bootstrap
 - [ ] Cargo workspace scaffold (`voice-core` crate, MIT, rustfmt, clippy config, empty modules `dsp`, `pitch`, `loudness`, `vad`, `syllables`, `perturbation`, `report`)
 - [ ] CI: fmt, clippy, test on Linux/macOS/Windows
-- [ ] `cargo deny` license allowlist (MIT/Apache/BSD/Unlicense) in CI
+- [x] `cargo deny` license allowlist (MIT/Apache/BSD/Unlicense) in CI — PR claude/ci-cargo-deny (deny.toml + CI job; not validated locally, cargo-deny not installed, CI is the check)
 - [ ] CI check builds: wasm32-unknown-unknown, aarch64-linux-android, aarch64-apple-ios
 - [ ] `PROVENANCE.md` skeleton
 - [ ] Synthetic fixture generator (sines, noise, known-answer signals) and `tools/oracle.py` (Parselmouth, offline only) emitting expected JSON
