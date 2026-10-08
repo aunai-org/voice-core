@@ -7,5 +7,8 @@ license.workspace = true
 repository.workspace = true
 rust-version.workspace = true
 readme = "../../README.md"
+# Praat-derived reference numbers are test data only; keep them out of the published crate.
+# (The workspace-root `tools/` directory is outside this package, so it is never packaged.)
+exclude = ["tests/data/", "tests/oracle_reference.rs"]
 
 [dependencies]
