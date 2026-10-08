@@ -16,16 +16,16 @@ from pathlib import Path
 SR = 16_000
 
 
-def write_wav(path, samples):
+def write_wav(path, samples, sr=SR):
     with wave.open(str(path), "wb") as w:
         w.setnchannels(1)
         w.setsampwidth(2)
-        w.setframerate(SR)
+        w.setframerate(sr)
         w.writeframes(b"".join(struct.pack("<h", max(-32768, min(32767, round(s * 32767)))) for s in samples))
 
 
-def sine(freq, amp, secs):
-    return [amp * math.sin(2 * math.pi * freq * i / SR) for i in range(int(SR * secs))]
+def sine(freq, amp, secs, sr=SR):
+    return [amp * math.sin(2 * math.pi * freq * i / sr) for i in range(int(sr * secs))]
 
 
 def harmonic(f0, amp, secs, n=8):
@@ -44,12 +44,14 @@ def main():
     rng = random.Random(1234)
     clips = {}
 
-    def add(name, samples, truth):
-        write_wav(out / f"{name}.wav", samples)
-        clips[name] = {"file": f"{name}.wav", "seconds": len(samples) / SR, **truth}
+    def add(name, samples, truth, sr=SR):
+        write_wav(out / f"{name}.wav", samples, sr)
+        clips[name] = {"file": f"{name}.wav", "sample_rate": sr, "seconds": len(samples) / sr, **truth}
 
     for f in (100, 220, 440):
         add(f"sine_{f}hz", sine(f, 0.5, 2.0), {"f0_hz": f, "rms_dbfs": 20 * math.log10(0.5 / math.sqrt(2))})
+    # 48 kHz clip for resampler checks (resampled to 16 kHz by the code under test)
+    add("sine_440hz_48k", sine(440, 0.5, 2.0, 48_000), {"f0_hz": 440, "rms_dbfs": 20 * math.log10(0.5 / math.sqrt(2))}, 48_000)
     for f in (110, 200):
         add(f"harmonic_{f}hz", harmonic(f, 0.5, 2.0), {"f0_hz": f})
     add("silence", [0.0] * (SR * 2), {"f0_hz": None, "rms_dbfs": -120.0, "voiced": False})
