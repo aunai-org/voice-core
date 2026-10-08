@@ -9,3 +9,6 @@ rust-version.workspace = true
 readme = "../../README.md"
 
 [dependencies]
+
+[dev-dependencies]
+serde_json = "1"
