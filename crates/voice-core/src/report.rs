@@ -80,7 +80,16 @@ mod tests {
         let r = analyze(&sine(150.0, 1.0), SR).unwrap();
         let text = serde_json::to_string(&r).unwrap();
         let back: VoiceReport = serde_json::from_str(&text).unwrap();
-        assert_eq!(r, back);
+        // serde_json's default f64 parsing can differ from the written value
+        // in the last digit (seen on macOS), so f64 fields get a tiny tolerance.
+        assert!((r.duration_s - back.duration_s).abs() < 1e-12);
+        assert!((r.lufs - back.lufs).abs() < 1e-12);
+        let exact = VoiceReport {
+            duration_s: r.duration_s,
+            lufs: r.lufs,
+            ..back
+        };
+        assert_eq!(r, exact);
     }
 
     #[test]
