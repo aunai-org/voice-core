@@ -1,7 +1,9 @@
 # voice-core
 
-[![CI](https://github.com/aunai-org/voice-core/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/aunai-org/voice-core/actions/workflows/ci.yml?query=branch%3Amain)
-[![CI nightly](https://github.com/aunai-org/voice-core/actions/workflows/ci.yml/badge.svg?event=schedule)](https://github.com/aunai-org/voice-core/actions/workflows/ci.yml?query=event%3Aschedule)
+[![Linux](https://github.com/aunai-org/voice-core/actions/workflows/ci-linux.yml/badge.svg?branch=main)](https://github.com/aunai-org/voice-core/actions/workflows/ci-linux.yml?query=branch%3Amain)
+[![Windows](https://github.com/aunai-org/voice-core/actions/workflows/ci-windows.yml/badge.svg?branch=main)](https://github.com/aunai-org/voice-core/actions/workflows/ci-windows.yml?query=branch%3Amain)
+[![macOS](https://github.com/aunai-org/voice-core/actions/workflows/ci-macos.yml/badge.svg?branch=main)](https://github.com/aunai-org/voice-core/actions/workflows/ci-macos.yml?query=branch%3Amain)
+[![wasm, Android, iOS, deny](https://github.com/aunai-org/voice-core/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/aunai-org/voice-core/actions/workflows/ci.yml?query=branch%3Amain)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Pure-Rust, offline library that measures how someone speaks from raw audio: pitch, loudness, pace, pauses and voice steadiness (jitter, shimmer, HNR).

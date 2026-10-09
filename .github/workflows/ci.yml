@@ -1,4 +1,4 @@
-name: CI
+name: Targets and deny
 on:
   pull_request:
   push:
@@ -9,24 +9,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
-    strategy:
-      matrix:
-        # macOS runners queue for long when many PRs run at once, so pull
-        # requests test on Linux and Windows only; macOS runs on main, tags,
-        # the nightly schedule and manual runs.
-        os: ${{ fromJSON(github.event_name == 'pull_request' && '["ubuntu-latest","windows-latest"]' || '["ubuntu-latest","macos-latest","windows-latest"]') }}
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          components: rustfmt, clippy
-      - uses: Swatinem/rust-cache@v2
-      - run: cargo fmt --all -- --check
-      - run: cargo clippy --workspace --all-targets -- -D warnings
-      - run: cargo test --workspace
-
   target-check:
     name: check (${{ matrix.target }})
     runs-on: ubuntu-latest
