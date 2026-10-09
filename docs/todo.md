@@ -22,7 +22,7 @@ Mark items `[x]` with the PR link when the draft PR is open. Last updated: 2026-
 - [x] First measurement with tests: frame RMS dB (voice-core PR #1) + integrated LUFS via `ebur128` — PR claude/run-20261008-13-lufs (stacked on the oracle-reference PR; checked against the BS.1770 known answer, -3.01 LUFS for a full-scale 997 Hz sine; Praat has no LUFS; real speech clips and EBU 3341 files still to add)
 - [x] Pitch behind a trait, own autocorrelation backend (Boersma 1993), tests on synthetic sines — PR claude/run-20261008-17-pitch (`pyin` 1.2.0 dropped: panics on ~20% of sine inputs at a 75 Hz floor and does not compile for wasm32). Still to do: cross-frame path search, real speech clips
 - [ ] VAD/pauses (`earshot`), pause stats
-- [ ] `analyze()` batch API + `VoiceReport` (serde)
+- [x] `analyze()` batch API + `VoiceReport` (serde) — PR claude/run-20261009-05-analyze (level, LUFS, median f0, voiced fraction; pauses and pace join when VAD and pace land)
 - [ ] First benchmark vs Praat; re-evaluate `pyin` vs `pitch-core` (gate)
 ### M1b Live basics
 - [ ] Minimal streaming `Analyzer` (level + speech/silence per frame)

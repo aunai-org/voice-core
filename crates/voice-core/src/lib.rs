@@ -5,6 +5,9 @@
 pub mod dsp;
 pub mod loudness;
 pub mod pitch;
+pub mod report;
+
+pub use report::{analyze, VoiceReport};
 
 /// Errors returned by analysis functions.
 #[derive(Debug, Clone, PartialEq, Eq)]
