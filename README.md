@@ -22,7 +22,8 @@ It takes plain mono `f32` samples (in [-1, 1]) plus a sample rate and returns nu
 | `dsp` | `frames` | Split a signal into fixed-length, overlapping frames |
 | `pitch` | `AutocorrEstimator` (via the `PitchEstimator` trait), `median_f0`, `voiced_fraction` | Fundamental frequency (f0) track, 10 ms frames, 75 to 600 Hz, autocorrelation method after Boersma 1993; median f0 and voiced fraction summaries |
 | `pace` | `syllable_nuclei`, `syllables_per_second` | Syllable nuclei (intensity peaks that are voiced and separated by a 2 dB dip, after de Jong and Wempe 2009) and syllables per second over the recording |
-| crate root | `analyze` returning `VoiceReport` | One call for a whole recording: duration, RMS level (dBFS), integrated loudness (LUFS), median f0, voiced fraction, syllable count and syllables per second; serializable to JSON with serde |
+| `quality` | `check`, `Warning` | Cheap recording checks: too short (under 1 s), clipped (0.1% of samples at full scale), too quiet (RMS under -50 dBFS). Thresholds are practical defaults, not from a standard; "noisy" is not covered yet |
+| crate root | `analyze` returning `VoiceReport` | One call for a whole recording: duration, RMS level (dBFS), integrated loudness (LUFS), median f0, voiced fraction, syllable count, syllables per second and quality warnings; serializable to JSON with serde |
 
 Pitch is checked against Praat 6.1.38 on synthetic signals only (steady sines, glides, vibrato; within 0.1 cent of Praat on the moving-pitch clips). It has not been tested on real speech yet, so octave errors on real voices are possible. Pace is checked on synthetic tone bursts only (counts equal the true count and a Praat-intensity-based reference); fast or noisy real speech is untested.
 
@@ -30,7 +31,7 @@ Levels are **relative** (dBFS / LUFS, full scale = 0): phone microphones are not
 
 ## What is planned
 
-Speech/silence detection and pauses, jitter, shimmer and HNR, reliability warnings in the `analyze` report (too short, noisy, clipped), and a streaming `Analyzer` for live feedback. Accuracy targets and how they are checked are in [docs/spec.md](docs/spec.md) section 7; measured numbers will be published here once the benchmark exists.
+Speech/silence detection and pauses, jitter, shimmer and HNR, a noise warning, and a streaming `Analyzer` for live feedback. Accuracy targets and how they are checked are in [docs/spec.md](docs/spec.md) section 7; measured numbers will be published here once the benchmark exists.
 
 ## Usage
 

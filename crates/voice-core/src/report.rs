@@ -5,11 +5,12 @@ use serde::{Deserialize, Serialize};
 use crate::loudness::{integrated_lufs, rms_db};
 use crate::pace::{syllable_nuclei, PaceConfig};
 use crate::pitch::{median_f0, voiced_fraction, AutocorrEstimator, PitchEstimator};
+use crate::quality::{self, Warning};
 use crate::Error;
 
 /// Summary measurements for one recording.
 ///
-/// Fields are added as new measures land (pace, pauses, steadiness); serialise
+/// Fields are added as new measures land (pauses, steadiness); serialise
 /// with serde to JSON for the app layer.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct VoiceReport {
@@ -29,6 +30,8 @@ pub struct VoiceReport {
     pub syllable_count: u32,
     /// Syllables per second over the whole recording, pauses included.
     pub syllables_per_second: f32,
+    /// Quality warnings for this recording; empty when nothing is wrong.
+    pub warnings: Vec<Warning>,
 }
 
 /// Analyses mono `samples` recorded at `sample_rate` Hz.
@@ -52,6 +55,7 @@ pub fn analyze(samples: &[f32], sample_rate: u32) -> Result<VoiceReport, Error> 
         voiced_fraction: voiced_fraction(&track),
         syllable_count: syllables as u32,
         syllables_per_second: (syllables as f64 / duration_s) as f32,
+        warnings: quality::check(samples, sample_rate)?,
     })
 }
 
@@ -77,6 +81,13 @@ mod tests {
         assert!(r.voiced_fraction > 0.9);
         assert_eq!(r.syllable_count, 0);
         assert_eq!(r.syllables_per_second, 0.0);
+        assert!(r.warnings.is_empty());
+    }
+
+    #[test]
+    fn short_quiet_input_carries_warnings() {
+        let r = analyze(&vec![0.0; SR as usize / 2], SR).unwrap();
+        assert_eq!(r.warnings, vec![Warning::TooShort, Warning::TooQuiet]);
     }
 
     #[test]
