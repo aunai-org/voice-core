@@ -6,6 +6,7 @@ pub mod dsp;
 pub mod loudness;
 pub mod pace;
 pub mod pitch;
+pub mod quality;
 pub mod report;
 
 pub use report::{analyze, VoiceReport};
