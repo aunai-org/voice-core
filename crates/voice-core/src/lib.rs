@@ -4,6 +4,7 @@
 
 pub mod dsp;
 pub mod loudness;
+pub mod pace;
 pub mod pitch;
 pub mod report;
 

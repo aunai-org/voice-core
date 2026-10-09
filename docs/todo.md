@@ -30,7 +30,8 @@ Mark items `[x]` with the PR link when the draft PR is open. Last updated: 2026-
 ### M1b Live basics
 - [ ] Minimal streaming `Analyzer` (level + speech/silence per frame)
 ### M2 Pace and quality
-- [ ] Syllable-rate pace (de Jong & Wempe), quality warnings, accuracy table v1
+- [x] Syllable-rate pace (de Jong & Wempe) — PR claude/run-20261009-11-pace (synthetic tone bursts only; counts match truth and a Praat-intensity-based reference; no real speech yet)
+- [ ] Quality warnings (too short, noisy, clipped), accuracy table v1
 ### M3 Voice steadiness (gate: M1/M2 match Praat on pitch and loudness)
 - [ ] Jitter, shimmer, HNR; max phonation time; level ladder; hesitation events; `window_stats`; oracle tolerances; limits docs
 ### M4 Streaming and release

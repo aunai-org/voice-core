@@ -1,0 +1,103 @@
+{
+ "_meta": {
+  "parselmouth": "0.4.7",
+  "praat": "6.1.38",
+  "intensity": "to_intensity(minimum_pitch=50, time_step=0.01)",
+  "pitch": "to_pitch(time_step=0.01, floor 75, ceiling 600)",
+  "rules": "99th percentile - 25 dB, dip >= 2 dB, voiced"
+ },
+ "clips": {
+  "bursts_3hz": {
+   "true_count": 9,
+   "praat_count": 9,
+   "praat_times_s": [
+    0.165,
+    0.495,
+    0.835,
+    1.165,
+    1.495,
+    1.835,
+    2.165,
+    2.505,
+    2.835
+   ]
+  },
+  "bursts_4hz": {
+   "true_count": 12,
+   "praat_count": 12,
+   "praat_times_s": [
+    0.125,
+    0.375,
+    0.625,
+    0.875,
+    1.125,
+    1.375,
+    1.625,
+    1.875,
+    2.125,
+    2.375,
+    2.625,
+    2.875
+   ]
+  },
+  "bursts_5hz": {
+   "true_count": 15,
+   "praat_count": 15,
+   "praat_times_s": [
+    0.095,
+    0.295,
+    0.495,
+    0.695,
+    0.895,
+    1.095,
+    1.295,
+    1.505,
+    1.695,
+    1.895,
+    2.095,
+    2.305,
+    2.505,
+    2.705,
+    2.905
+   ]
+  },
+  "bursts_6hz": {
+   "true_count": 18,
+   "praat_count": 18,
+   "praat_times_s": [
+    0.085,
+    0.245,
+    0.415,
+    0.585,
+    0.745,
+    0.915,
+    1.085,
+    1.245,
+    1.415,
+    1.585,
+    1.745,
+    1.915,
+    2.085,
+    2.255,
+    2.415,
+    2.585,
+    2.755,
+    2.915
+   ]
+  },
+  "bursts_pause": {
+   "true_count": 8,
+   "praat_count": 8,
+   "praat_times_s": [
+    0.125,
+    0.375,
+    0.625,
+    0.875,
+    2.625,
+    2.875,
+    3.125,
+    3.375
+   ]
+  }
+ }
+}
