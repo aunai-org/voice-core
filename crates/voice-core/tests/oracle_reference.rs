@@ -154,3 +154,39 @@ fn voiced_fraction_matches_praat() {
         r["clips"]["silence"]["voiced_fraction"].as_f64().unwrap()
     );
 }
+
+/// `analyze()` against Praat for the synthetic clips: median f0 (tolerance
+/// 0.5 %), voiced fraction (0.05), and RMS level against Praat's intensity
+/// converted to dBFS (0.05 dB).
+#[test]
+fn analyze_matches_praat() {
+    use voice_core::analyze;
+    let r = reference();
+    let offset = r["_meta"]["intensity_ref_db_offset"].as_f64().unwrap();
+    let clips: [(&str, Vec<f32>); 3] = [
+        ("sine_100hz", sine(100.0, 0.5, 2.0)),
+        ("sine_220hz", sine(220.0, 0.5, 2.0)),
+        ("sine_440hz", sine(440.0, 0.5, 2.0)),
+    ];
+    for (name, samples) in clips {
+        let c = &r["clips"][name];
+        let rep = analyze(&samples, 16_000).unwrap();
+        let f0 = f64::from(rep.f0_median_hz.expect(name));
+        let praat_f0 = c["f0_median_hz"].as_f64().unwrap();
+        let praat_level = c["intensity_mean_db"].as_f64().unwrap() - offset;
+        let praat_voiced = c["voiced_fraction"].as_f64().unwrap();
+        println!(
+            "{name}: f0 praat {praat_f0:.3} ours {f0:.3} | level praat {praat_level:.4} ours {:.4} | voiced praat {praat_voiced:.3} ours {:.3}",
+            rep.rms_dbfs, rep.voiced_fraction
+        );
+        assert!(((f0 - praat_f0) / praat_f0).abs() < 0.005, "{name} f0");
+        assert!(
+            (f64::from(rep.rms_dbfs) - praat_level).abs() < 0.05,
+            "{name} level"
+        );
+        assert!(
+            (f64::from(rep.voiced_fraction) - praat_voiced).abs() < 0.05,
+            "{name} voiced"
+        );
+    }
+}
