@@ -3,6 +3,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::loudness::{integrated_lufs, rms_db};
+use crate::pace::{syllable_nuclei, PaceConfig};
 use crate::pitch::{median_f0, voiced_fraction, AutocorrEstimator, PitchEstimator};
 use crate::Error;
 
@@ -24,6 +25,10 @@ pub struct VoiceReport {
     pub f0_median_hz: Option<f32>,
     /// Share of 10 ms frames that are voiced, 0 to 1.
     pub voiced_fraction: f32,
+    /// Number of detected syllable nuclei.
+    pub syllable_count: u32,
+    /// Syllables per second over the whole recording, pauses included.
+    pub syllables_per_second: f32,
 }
 
 /// Analyses mono `samples` recorded at `sample_rate` Hz.
@@ -36,13 +41,17 @@ pub fn analyze(samples: &[f32], sample_rate: u32) -> Result<VoiceReport, Error> 
     }
     let lufs = integrated_lufs(samples, sample_rate)?;
     let track = AutocorrEstimator::default().estimate(samples, sample_rate)?;
+    let duration_s = samples.len() as f64 / f64::from(sample_rate);
+    let syllables = syllable_nuclei(samples, sample_rate, &PaceConfig::default())?.len();
     Ok(VoiceReport {
-        duration_s: samples.len() as f64 / f64::from(sample_rate),
+        duration_s,
         sample_rate_hz: sample_rate,
         rms_dbfs: rms_db(samples),
         lufs,
         f0_median_hz: median_f0(&track),
         voiced_fraction: voiced_fraction(&track),
+        syllable_count: syllables as u32,
+        syllables_per_second: (syllables as f64 / duration_s) as f32,
     })
 }
 
@@ -66,6 +75,23 @@ mod tests {
         assert!((r.rms_dbfs + 9.03).abs() < 0.05);
         assert!((r.f0_median_hz.unwrap() - 220.0).abs() < 1.0);
         assert!(r.voiced_fraction > 0.9);
+        assert_eq!(r.syllable_count, 0);
+        assert_eq!(r.syllables_per_second, 0.0);
+    }
+
+    #[test]
+    fn burst_report_counts_syllables() {
+        // 150 Hz tone in raised-cosine bursts at 4 Hz for 3 s: 12 syllable-like bursts.
+        let x: Vec<f32> = (0..3 * SR as usize)
+            .map(|i| {
+                let t = i as f64 / f64::from(SR);
+                let env = 0.5 * (1.0 - (std::f64::consts::TAU * 4.0 * t).cos());
+                (0.5 * env * (std::f64::consts::TAU * 150.0 * t).sin()) as f32
+            })
+            .collect();
+        let r = analyze(&x, SR).unwrap();
+        assert_eq!(r.syllable_count, 12);
+        assert!((r.syllables_per_second - 4.0).abs() < 1e-6);
     }
 
     #[test]
