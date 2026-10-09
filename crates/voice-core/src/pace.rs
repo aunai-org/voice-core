@@ -78,6 +78,15 @@ pub fn syllable_nuclei(samples: &[f32], sample_rate: u32, config: &PaceConfig) -
         pitch[idx].f0_hz.is_some()
     };
 
+    // A contour that never moves by the minimum dip (steady tone) has no syllables.
+    let (lo, hi) = levels
+        .iter()
+        .fold((f32::INFINITY, f32::NEG_INFINITY), |(lo, hi), &v| {
+            (lo.min(v), hi.max(v))
+        });
+    if hi - lo < config.min_dip_db {
+        return Ok(Vec::new());
+    }
     let threshold = percentile(&levels, 0.99) - config.range_db;
     let mut nuclei: Vec<usize> = Vec::new();
     for i in 1..levels.len() - 1 {
