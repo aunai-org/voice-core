@@ -4,6 +4,8 @@ Source of truth for the scheduled routine. Order follows the roadmaps: voice-cor
 
 Mark items `[x]` with the PR link when the draft PR is open. Last updated: 2026-10-08.
 
+**Standing rule:** any PR that adds or changes a public feature or metric in voice-core updates the README's "What works today" / "What is planned" tables in the same PR, and the routine then refreshes `/mnt/project-files/voice-lib/STATUS.md` (what exists on main per repo) so other threads can read current state.
+
 ## Setup (done by the first thread)
 - [x] Initial commit on main in all three repos (README, LICENSE, .claude/settings.json, docs/ from roadmaps)
 
