@@ -28,7 +28,8 @@ Mark items `[x]` with the PR link when the draft PR is open. Last updated: 2026-
 - [x] `analyze()` batch API + `VoiceReport` (serde) — PR claude/run-20261009-05-analyze (level, LUFS, median f0, voiced fraction; pauses and pace join when VAD and pace land)
 - [x] First benchmark vs Praat on moving-pitch synthetic signals (glide, vibrato, harmonic glide): median f0 difference from Praat 0.02 to 0.06 cents, 95th percentile under 0.1 cents, voicing agreement 1.000 on all three; the pyin vs pitch-core gate is settled (own Boersma 1993 backend, see pitch row) — PR claude/run-20261009-09-pitch-benchmark
 - [x] First benchmark vs Praat on real speech: 8 Common Voice clips (CC0), median 4.3 ct from Praat, voicing agreement 0.94, 9.4% gross (octave) errors — PR claude/run-20261009-15-real-speech
-- [ ] Cross-frame path search in `pitch` to cut octave errors (target under 2% of frames; same 8 clips, then more)
+- [x] Cross-frame path search (Viterbi, Boersma 1993 costs) in `pitch`: gross errors 9.4% to 1.5% of both-voiced frames on the 8 clips, median 3.5 ct, voicing agreement 0.97; synthetic results unchanged — PR claude/run-20261009-17-pitch-path
+- [ ] Pitch path search on more clips (14 of the 25 remaining gross errors are in one clip, common_voice_en_665631) and on noisy/breathy voices
 - [ ] Noisy and breathy voices: add clips (noisy mic, whisper, child) to the real-speech set
 ### M1b Live basics
 - [ ] Minimal streaming `Analyzer` (level + speech/silence per frame; batch `pauses` exists to compare against)

@@ -12,7 +12,7 @@ Add a row when an algorithm lands in the code. A row with status `planned` means
 | Framing | `dsp` | Standard fixed-length, fixed-hop windowing | none | implemented |
 | Resampling to 16 kHz | `dsp` | Band-limited FFT resampling | `rubato` (MIT) | implemented |
 | Integrated loudness (LUFS) | `loudness` | ITU-R BS.1770 / EBU R128 | `ebur128` (MIT) | implemented (mono, gated) |
-| Pitch (f0) | `pitch` | Boersma (1993), "Accurate short-term analysis of the fundamental frequency and the harmonics-to-noise ratio of a sampled sound": windowed normalised autocorrelation, peak picking, parabolic interpolation (no cross-frame path search yet) | none | implemented (checked on synthetic signals and eight real clips) |
+| Pitch (f0) | `pitch` | Boersma (1993), "Accurate short-term analysis of the fundamental frequency and the harmonics-to-noise ratio of a sampled sound": windowed normalised autocorrelation, candidate peaks with parabolic interpolation, Viterbi path search over frames with octave, octave-jump and voiced/unvoiced costs (the paper's default values) | none | implemented (checked on synthetic signals and eight real clips) |
 | Speech/silence segmentation, pauses | `pauses` | Energy-based: Gaussian-windowed mean-square level (32 ms) against a threshold 25 dB below the loudest frame, minimum sounding and silent run lengths of 0.1 s; same settings as Praat's silence detection, used as the offline reference | none | implemented (checked on eight clean clips) |
 | Syllable-rate pace | `pace` | de Jong and Wempe (2009) | none | implemented (synthetic bursts only) |
 | Recording-quality warnings | `quality` | Practical thresholds (duration, clipped-sample share, RMS level); no published basis | none | implemented |

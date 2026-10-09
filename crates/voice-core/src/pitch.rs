@@ -6,10 +6,12 @@
 //! of Phonetic Sciences 17, 97-110.
 //!
 //! Per frame: Hann window, normalised autocorrelation divided by the window's own
-//! autocorrelation, strongest peak in the pitch range (the shortest lag within 10 %
-//! of it, to avoid octave-down errors), parabolic interpolation of the peak.
-//! Limits: there is no path search across frames, so octave jumps are possible on
-//! real speech; only synthetic signals are validated so far.
+//! autocorrelation, the strongest peaks in the pitch range as candidates (parabolic
+//! interpolation), plus an "unvoiced" candidate. A Viterbi search over the whole
+//! recording then picks one candidate per frame, trading candidate strength against
+//! costs for octave jumps and for voiced/unvoiced switches, as in the paper.
+//! Limits: checked on synthetic signals and eight clean read-speech clips; noisy,
+//! breathy and creaky voices are untested.
 
 use crate::Error;
 
@@ -22,6 +24,53 @@ pub struct PitchFrame {
     pub f0_hz: Option<f32>,
     /// Height of the autocorrelation peak, 0 to 1 (higher means more periodic).
     pub strength: f32,
+}
+
+/// One pitch candidate for a frame; `f0_hz` is `None` for the unvoiced candidate.
+#[derive(Debug, Clone, Copy)]
+struct Candidate {
+    f0_hz: Option<f64>,
+    strength: f64,
+}
+
+/// Picks the best candidate sequence (maximum summed strength minus transition costs).
+fn best_path(frames: &[Vec<Candidate>], octave_jump_cost: f64, voiced_unvoiced_cost: f64) -> Vec<usize> {
+    let transition = |a: &Candidate, b: &Candidate| match (a.f0_hz, b.f0_hz) {
+        (Some(x), Some(y)) => octave_jump_cost * (x / y).log2().abs(),
+        (None, None) => 0.0,
+        _ => voiced_unvoiced_cost,
+    };
+    let mut score: Vec<f64> = frames[0].iter().map(|c| c.strength).collect();
+    let mut back: Vec<Vec<usize>> = Vec::with_capacity(frames.len());
+    back.push(vec![0; frames[0].len()]);
+    for t in 1..frames.len() {
+        let mut next = Vec::with_capacity(frames[t].len());
+        let mut from = Vec::with_capacity(frames[t].len());
+        for cur in &frames[t] {
+            let (best_i, best_v) = frames[t - 1]
+                .iter()
+                .enumerate()
+                .map(|(i, prev)| (i, score[i] - transition(prev, cur)))
+                .max_by(|a, b| a.1.total_cmp(&b.1))
+                .expect("every frame has an unvoiced candidate");
+            next.push(best_v + cur.strength);
+            from.push(best_i);
+        }
+        score = next;
+        back.push(from);
+    }
+    let mut idx = score
+        .iter()
+        .enumerate()
+        .max_by(|a, b| a.1.total_cmp(b.1))
+        .map(|(i, _)| i)
+        .expect("non-empty");
+    let mut path = vec![0; frames.len()];
+    for t in (0..frames.len()).rev() {
+        path[t] = idx;
+        idx = back[t][idx];
+    }
+    path
 }
 
 /// Anything that turns audio into a pitch track.
@@ -43,10 +92,19 @@ pub struct AutocorrEstimator {
     pub voicing_threshold: f32,
     /// Frames quieter than this share of the loudest sample are unvoiced.
     pub silence_threshold: f32,
+    /// Cost per octave of preferring a longer lag, so the shortest plausible period wins ties.
+    pub octave_cost: f32,
+    /// Cost per octave of jumping in f0 between neighbouring voiced frames.
+    pub octave_jump_cost: f32,
+    /// Cost of switching between voiced and unvoiced between neighbouring frames.
+    pub voiced_unvoiced_cost: f32,
+    /// Most candidates kept per frame (the strongest autocorrelation peaks).
+    pub max_candidates: usize,
 }
 
 impl Default for AutocorrEstimator {
-    /// 75 to 600 Hz, 10 ms hop, voicing 0.45, silence 0.03.
+    /// 75 to 600 Hz, 10 ms hop, voicing 0.45, silence 0.03, octave cost 0.01, octave jump cost
+    /// 0.35, voiced/unvoiced cost 0.14, 15 candidates (the values of Boersma 1993).
     fn default() -> Self {
         Self {
             fmin_hz: 75.0,
@@ -54,6 +112,10 @@ impl Default for AutocorrEstimator {
             hop_s: 0.01,
             voicing_threshold: 0.45,
             silence_threshold: 0.03,
+            octave_cost: 0.01,
+            octave_jump_cost: 0.35,
+            voiced_unvoiced_cost: 0.14,
+            max_candidates: 15,
         }
     }
 }
@@ -101,7 +163,12 @@ impl PitchEstimator for AutocorrEstimator {
         let win_ac = autocorr(&hann, max_lag);
         let peak = samples.iter().fold(0.0_f32, |m, x| m.max(x.abs()));
 
-        let mut track = Vec::new();
+        if self.max_candidates == 0 {
+            return Err(Error::InvalidConfig("max_candidates must be positive"));
+        }
+        let vt = f64::from(self.voicing_threshold);
+        let mut times = Vec::new();
+        let mut frames: Vec<Vec<Candidate>> = Vec::new();
         let mut centre = 0usize;
         let mut buf = vec![0.0_f32; win];
         while centre < samples.len() {
@@ -124,8 +191,16 @@ impl PitchEstimator for AutocorrEstimator {
                 }
             }
             let mean = if n > 0 { sum / n as f32 } else { 0.0 };
-            let mut f0_hz = None;
-            let mut strength = 0.0_f32;
+            // The unvoiced candidate gets stronger as the frame gets quieter.
+            let quiet = if peak > 0.0 {
+                f64::from(local_peak / peak) / (f64::from(self.silence_threshold) / (1.0 + vt))
+            } else {
+                0.0
+            };
+            let mut cands = vec![Candidate {
+                f0_hz: None,
+                strength: vt + (2.0 - quiet).max(0.0),
+            }];
             if peak > 0.0 && local_peak >= self.silence_threshold * peak {
                 for (b, w) in buf.iter_mut().zip(&hann) {
                     *b = (*b - mean) * w;
@@ -135,40 +210,56 @@ impl PitchEstimator for AutocorrEstimator {
                     let r: Vec<f64> = (0..=max_lag)
                         .map(|l| (ac[l] / ac[0]) / (win_ac[l] / win_ac[0]))
                         .collect();
-                    let mut best = 0.0_f64;
+                    let mut peaks: Vec<Candidate> = Vec::new();
                     for l in min_lag..max_lag {
-                        if r[l] > r[l - 1] && r[l] >= r[l + 1] && r[l] > best {
-                            best = r[l];
+                        if r[l] > r[l - 1] && r[l] >= r[l + 1] && r[l] > 0.0 {
+                            let (a, b, c) = (r[l - 1], r[l], r[l + 1]);
+                            let denom = a - 2.0 * b + c;
+                            let shift = if denom.abs() > 1e-12 {
+                                0.5 * (a - c) / denom
+                            } else {
+                                0.0
+                            };
+                            let height = (b - 0.25 * (a - c) * shift).clamp(0.0, 1.0);
+                            let lag = l as f64 + shift;
+                            peaks.push(Candidate {
+                                f0_hz: Some(sr / lag),
+                                // Longer lags (lower f0) pay a small octave cost.
+                                strength: height
+                                    - f64::from(self.octave_cost) * (self.fmin_hz * lag / sr).log2(),
+                            });
                         }
                     }
-                    if best > 0.0 {
-                        // Shortest peak within 10 % of the best one avoids octave-down picks.
-                        let lag = (min_lag..max_lag)
-                            .find(|&l| r[l] > r[l - 1] && r[l] >= r[l + 1] && r[l] >= 0.9 * best)
-                            .unwrap_or(min_lag);
-                        let (a, b, c) = (r[lag - 1], r[lag], r[lag + 1]);
-                        let denom = a - 2.0 * b + c;
-                        let shift = if denom.abs() > 1e-12 {
-                            0.5 * (a - c) / denom
-                        } else {
-                            0.0
-                        };
-                        let peak_r = b - 0.25 * (a - c) * shift;
-                        strength = peak_r.clamp(0.0, 1.0) as f32;
-                        if strength >= self.voicing_threshold {
-                            f0_hz = Some((sr / (lag as f64 + shift)) as f32);
-                        }
-                    }
+                    peaks.sort_by(|a, b| b.strength.total_cmp(&a.strength));
+                    peaks.truncate(self.max_candidates);
+                    cands.extend(peaks);
                 }
             }
-            track.push(PitchFrame {
-                time_s: centre as f64 / sr,
-                f0_hz,
-                strength,
-            });
+            times.push(centre as f64 / sr);
+            frames.push(cands);
             centre += hop;
         }
-        Ok(track)
+        let path = best_path(
+            &frames,
+            f64::from(self.octave_jump_cost),
+            f64::from(self.voiced_unvoiced_cost),
+        );
+        Ok(times
+            .into_iter()
+            .zip(frames.iter().zip(path))
+            .map(|(time_s, (cands, i))| {
+                let c = cands[i];
+                PitchFrame {
+                    time_s,
+                    f0_hz: c.f0_hz.map(|f| f as f32),
+                    strength: c.f0_hz.map_or(0.0, |f| {
+                        // Report the raw peak height, undoing the octave cost.
+                        (c.strength + f64::from(self.octave_cost) * (self.fmin_hz / f).log2()).clamp(0.0, 1.0)
+                            as f32
+                    }),
+                }
+            })
+            .collect())
     }
 }
 
@@ -238,6 +329,15 @@ mod tests {
         let track = AutocorrEstimator::default().estimate(&x, SR).unwrap();
         let frac = voiced_fraction(&track);
         assert!((0.55..0.75).contains(&frac), "voiced fraction {frac}");
+    }
+
+    #[test]
+    fn zero_candidates_is_an_error() {
+        let est = AutocorrEstimator {
+            max_candidates: 0,
+            ..AutocorrEstimator::default()
+        };
+        assert!(est.estimate(&sine(200.0, 0.5), 16_000).is_err());
     }
 
     #[test]
