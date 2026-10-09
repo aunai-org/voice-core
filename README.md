@@ -20,12 +20,16 @@ It takes plain mono `f32` samples (in [-1, 1]) plus a sample rate and returns nu
 | `loudness` | `rms_db`, `frame_rms_db` | RMS level in dBFS for a block, or per frame |
 | `dsp` | `resample` | Band-limited resampling (via `rubato`), e.g. any input rate to 16 kHz |
 | `dsp` | `frames` | Split a signal into fixed-length, overlapping frames |
+| `pitch` | `AutocorrEstimator` (via the `PitchEstimator` trait), `median_f0`, `voiced_fraction` | Fundamental frequency (f0) track, 10 ms frames, 75 to 600 Hz, autocorrelation method after Boersma 1993; median f0 and voiced fraction summaries |
+| crate root | `analyze` returning `VoiceReport` | One call for a whole recording: duration, RMS level (dBFS), integrated loudness (LUFS), median f0 and voiced fraction; serializable to JSON with serde |
+
+Pitch is checked against Praat 6.1.38 on synthetic signals only (steady sines, glides, vibrato; within 0.1 cent of Praat on the moving-pitch clips). It has not been tested on real speech yet, so octave errors on real voices are possible.
 
 Levels are **relative** (dBFS / LUFS, full scale = 0): phone microphones are not calibrated, so values are comparable on the same device and mic, never absolute sound pressure.
 
 ## What is planned
 
-Pitch (f0 track and summary), speech/silence detection and pauses, speaking pace (syllables per second), jitter, shimmer and HNR, a one-call `analyze` that returns a report with reliability warnings (too short, noisy, clipped), and a streaming `Analyzer` for live feedback. Accuracy targets and how they are checked are in [docs/spec.md](docs/spec.md) section 7; measured numbers will be published here once the benchmark exists.
+Speech/silence detection and pauses, speaking pace (syllables per second), jitter, shimmer and HNR, reliability warnings in the `analyze` report (too short, noisy, clipped), and a streaming `Analyzer` for live feedback. Accuracy targets and how they are checked are in [docs/spec.md](docs/spec.md) section 7; measured numbers will be published here once the benchmark exists.
 
 ## Usage
 
@@ -61,6 +65,8 @@ fn main() -> Result<(), Error> {
     Ok(())
 }
 ```
+
+To get everything that exists today in one call, use `voice_core::analyze(&samples, sample_rate)?`, which returns a `VoiceReport`.
 
 All functions return `Result<_, voice_core::Error>`; empty input and invalid settings (zero rate, zero frame length) are errors, not panics.
 
