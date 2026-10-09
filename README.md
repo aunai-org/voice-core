@@ -25,7 +25,7 @@ It takes plain mono `f32` samples (in [-1, 1]) plus a sample rate and returns nu
 | `quality` | `check`, `Warning` | Cheap recording checks: too short (under 1 s), clipped (0.1% of samples at full scale), too quiet (RMS under -50 dBFS). Thresholds are practical defaults, not from a standard; "noisy" is not covered yet |
 | crate root | `analyze` returning `VoiceReport` | One call for a whole recording: duration, RMS level (dBFS), integrated loudness (LUFS), median f0, voiced fraction, syllable count, syllables per second and quality warnings; serializable to JSON with serde |
 
-Pitch is checked against Praat 6.1.38 on synthetic signals only (steady sines, glides, vibrato; within 0.1 cent of Praat on the moving-pitch clips). It has not been tested on real speech yet, so octave errors on real voices are possible. Pace is checked on synthetic tone bursts only (counts equal the true count and a Praat-intensity-based reference); fast or noisy real speech is untested.
+Pitch is checked against Praat 6.1.38 on synthetic signals (steady sines, glides, vibrato; within 0.1 cent of Praat on the moving-pitch clips) and on eight real Common Voice clips (median 4.3 cents from Praat, voicing agreement 0.94, but 9.4% of the frames voiced in both are more than 300 cents away, mostly octave-up jumps, because the tracker has no cross-frame path search yet). Pace is checked on synthetic tone bursts only (counts equal the true count and a Praat-intensity-based reference); fast or noisy real speech is untested.
 
 Levels are **relative** (dBFS / LUFS, full scale = 0): phone microphones are not calibrated, so values are comparable on the same device and mic, never absolute sound pressure.
 

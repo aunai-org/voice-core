@@ -18,7 +18,7 @@ Mark items `[x]` with the PR link when the draft PR is open. Last updated: 2026-
 - [x] `PROVENANCE.md` skeleton — PR claude/provenance-skeleton
 - [x] Synthetic fixture generator (sines, noise, known-answer signals) and `tools/oracle.py` (Parselmouth, offline only) emitting expected JSON — PR claude/tools-fixtures-oracle (generator run and works; oracle.py compiles but NOT run: Parselmouth not installed)
 - [x] Run `tools/oracle.py` on the synthetic clips with Parselmouth (0.4.7, Praat 6.1.38; pip-installs fine in the routine env, ~4 MB), commit the reference JSON, add a Rust test that loads it — PR claude/run-20261008-12-oracle-reference (reference = pure sines/harmonics only; jitter/shimmer/HNR on pure tones are ~0/>75 dB and not meaningful as accuracy targets, real speech clips still needed)
-- [ ] Real fixture set: 30+ CC0/consented clips (needs audio source, see blocked)
+- [ ] Real fixture set: 30+ CC0/consented clips (source chosen: Common Voice CC0 via a Hugging Face re-upload; 8 clips in so far, PR claude/run-20261009-15-real-speech)
 ### M1 Basic measures
 - [x] `dsp`: framing + resample to 16 kHz (`rubato`), unit tests — PR claude/run-20261008-14-resample (stacked on the LUFS PR; Unicode-3.0 allowed in deny.toml per omr; level matches Praat's own resample within 0.0003 dB)
 - [x] First measurement with tests: frame RMS dB (voice-core PR #1) + integrated LUFS via `ebur128` — PR claude/run-20261008-13-lufs (stacked on the oracle-reference PR; checked against the BS.1770 known answer, -3.01 LUFS for a full-scale 997 Hz sine; Praat has no LUFS; real speech clips and EBU 3341 files still to add)
@@ -26,7 +26,9 @@ Mark items `[x]` with the PR link when the draft PR is open. Last updated: 2026-
 - [ ] VAD/pauses (`earshot`), pause stats
 - [x] `analyze()` batch API + `VoiceReport` (serde) — PR claude/run-20261009-05-analyze (level, LUFS, median f0, voiced fraction; pauses and pace join when VAD and pace land)
 - [x] First benchmark vs Praat on moving-pitch synthetic signals (glide, vibrato, harmonic glide): median f0 difference from Praat 0.02 to 0.06 cents, 95th percentile under 0.1 cents, voicing agreement 1.000 on all three; the pyin vs pitch-core gate is settled (own Boersma 1993 backend, see pitch row) — PR claude/run-20261009-09-pitch-benchmark
-- [ ] Benchmark vs Praat on real speech (octave jumps, noisy and breathy voices; needs the fixture audio source)
+- [x] First benchmark vs Praat on real speech: 8 Common Voice clips (CC0), median 4.3 ct from Praat, voicing agreement 0.94, 9.4% gross (octave) errors — PR claude/run-20261009-15-real-speech
+- [ ] Cross-frame path search in `pitch` to cut octave errors (target under 2% of frames; same 8 clips, then more)
+- [ ] Noisy and breathy voices: add clips (noisy mic, whisper, child) to the real-speech set
 ### M1b Live basics
 - [ ] Minimal streaming `Analyzer` (level + speech/silence per frame)
 ### M2 Pace and quality
