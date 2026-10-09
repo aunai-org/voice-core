@@ -5,6 +5,7 @@
 pub mod dsp;
 pub mod loudness;
 pub mod pace;
+pub mod pauses;
 pub mod pitch;
 pub mod quality;
 pub mod report;

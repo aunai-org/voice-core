@@ -1,0 +1,133 @@
+{
+ "_meta": {
+  "parselmouth": "0.4.7",
+  "praat": "6.1.38",
+  "minimum_pitch_hz": 100.0,
+  "silence_threshold_db": -25.0,
+  "min_silent_s": 0.1,
+  "min_sounding_s": 0.1,
+  "note": "sounding = [start_s, end_s] intervals labelled 'sounding'"
+ },
+ "clips": {
+  "common_voice_en_18179121": {
+   "duration_s": 4.176,
+   "sounding": [
+    [
+     0.856,
+     2.24
+    ],
+    [
+     2.4,
+     3.2
+    ]
+   ]
+  },
+  "common_voice_en_18188256": {
+   "duration_s": 3.744,
+   "sounding": [
+    [
+     0.744,
+     2.616
+    ]
+   ]
+  },
+  "common_voice_en_18365693": {
+   "duration_s": 3.096,
+   "sounding": [
+    [
+     0.856,
+     1.92
+    ]
+   ]
+  },
+  "common_voice_en_18373309": {
+   "duration_s": 6.624,
+   "sounding": [
+    [
+     0.552,
+     1.368
+    ],
+    [
+     1.64,
+     2.88
+    ],
+    [
+     3.344,
+     4.016
+    ],
+    [
+     4.192,
+     4.992
+    ]
+   ]
+  },
+  "common_voice_en_34382925": {
+   "duration_s": 2.268,
+   "sounding": [
+    [
+     0.426,
+     1.618
+    ],
+    [
+     1.762,
+     2.01
+    ]
+   ]
+  },
+  "common_voice_en_36734620": {
+   "duration_s": 5.328,
+   "sounding": [
+    [
+     0.96,
+     1.976
+    ],
+    [
+     2.192,
+     3.296
+    ],
+    [
+     3.416,
+     3.544
+    ],
+    [
+     3.72,
+     3.864
+    ]
+   ]
+  },
+  "common_voice_en_39751075": {
+   "duration_s": 6.012,
+   "sounding": [
+    [
+     0.834,
+     1.954
+    ],
+    [
+     2.138,
+     2.77
+    ],
+    [
+     3.082,
+     4.274
+    ],
+    [
+     4.674,
+     4.85
+    ]
+   ]
+  },
+  "common_voice_en_665631": {
+   "duration_s": 4.944,
+   "sounding": [
+    [
+     0.0,
+     2.832
+    ],
+    [
+     3.072,
+     4.944
+    ]
+   ]
+  }
+ }
+}
