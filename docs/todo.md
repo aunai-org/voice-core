@@ -23,7 +23,8 @@ Mark items `[x]` with the PR link when the draft PR is open. Last updated: 2026-
 - [x] Pitch behind a trait, own autocorrelation backend (Boersma 1993), tests on synthetic sines — PR claude/run-20261008-17-pitch (`pyin` 1.2.0 dropped: panics on ~20% of sine inputs at a 75 Hz floor and does not compile for wasm32). Still to do: cross-frame path search, real speech clips
 - [ ] VAD/pauses (`earshot`), pause stats
 - [x] `analyze()` batch API + `VoiceReport` (serde) — PR claude/run-20261009-05-analyze (level, LUFS, median f0, voiced fraction; pauses and pace join when VAD and pace land)
-- [ ] First benchmark vs Praat; re-evaluate `pyin` vs `pitch-core` (gate)
+- [x] First benchmark vs Praat on moving-pitch synthetic signals (glide, vibrato, harmonic glide): median f0 difference from Praat 0.02 to 0.06 cents, 95th percentile under 0.1 cents, voicing agreement 1.000 on all three; the pyin vs pitch-core gate is settled (own Boersma 1993 backend, see pitch row) — PR claude/run-20261009-09-pitch-benchmark
+- [ ] Benchmark vs Praat on real speech (octave jumps, noisy and breathy voices; needs the fixture audio source)
 ### M1b Live basics
 - [ ] Minimal streaming `Analyzer` (level + speech/silence per frame)
 ### M2 Pace and quality
