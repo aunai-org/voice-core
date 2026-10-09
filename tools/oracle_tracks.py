@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """Offline oracle for moving-pitch signals: frame-by-frame Praat f0 tracks.
 
-Same GPL rules as tools/oracle.py: development tool only, never built into or
-published with voice-core, no Praat code copied. The signals are defined by
+Development tool only (see tools/oracle.py). The signals are defined by
 closed-form phase formulas that the Rust test (tests/pitch_tracks.rs)
 re-implements, so no audio files are needed.
 

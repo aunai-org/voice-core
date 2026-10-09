@@ -3,7 +3,7 @@
 //! The first backend is an autocorrelation tracker written from the published
 //! method: Boersma, P. (1993), "Accurate short-term analysis of the fundamental
 //! frequency and the harmonics-to-noise ratio of a sampled sound", Proc. Institute
-//! of Phonetic Sciences 17, 97-110. No Praat source was read or copied.
+//! of Phonetic Sciences 17, 97-110.
 //!
 //! Per frame: Hann window, normalised autocorrelation divided by the window's own
 //! autocorrelation, strongest peak in the pitch range (the shortest lag within 10 %

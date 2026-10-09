@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """Offline test oracle: emit Praat reference values (via Parselmouth) as JSON.
 
-Praat and Parselmouth are GPL-3. This script is a development tool only: it is
-never built into, linked with or published alongside voice-core, and no Praat
-code is copied. Run it by hand, commit the JSON it produces, and have the Rust
+Praat and Parselmouth are GPL-3, so this script is a development tool only: it
+is never built into, linked with or published alongside voice-core. Run it by hand, commit the JSON it produces, and have the Rust
 tests compare against that JSON.
 
 Setup (not needed by CI):  pip install praat-parselmouth
