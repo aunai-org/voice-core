@@ -2,8 +2,7 @@
 //!
 //! Follows the idea of de Jong, N. H. & Wempe, T. (2009), "Praat script to detect
 //! syllable nuclei and measure speech rate automatically", Behavior Research
-//! Methods 41(2), 385-390, implemented here from the paper's description (no Praat
-//! script or source was read or copied). A syllable nucleus is a peak of the
+//! Methods 41(2), 385-390, implemented here from the paper's description. A syllable nucleus is a peak of the
 //! intensity contour that
 //!
 //! 1. lies within 25 dB of the 99th percentile of the contour,

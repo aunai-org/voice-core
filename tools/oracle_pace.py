@@ -2,12 +2,10 @@
 """Offline oracle for syllable-nucleus counts: Praat intensity and pitch plus the
 de Jong & Wempe (2009) peak rules, written independently of the Rust code.
 
-Same GPL rules as tools/oracle.py: development tool only, never built into or
-published with voice-core, no Praat code or script copied. Praat supplies the
-intensity contour (Gaussian window, 50 Hz minimum pitch) and the voicing from its
-own pitch tracker; the peak rules below are re-implemented from the paper. This is
-therefore a check against Praat's measurements plus an independent reading of the
-rules, not a Praat-script oracle.
+Development tool only (see tools/oracle.py): never built into or published with
+voice-core. Praat supplies the intensity contour (Gaussian window, 50 Hz minimum
+pitch) and the voicing from its own pitch tracker; the peak rules below follow the
+paper.
 
 The clips are closed-form (raised-cosine tone bursts) and are rebuilt in
 tests/pace_reference.rs from the same formulas.
