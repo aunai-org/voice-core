@@ -22,16 +22,17 @@ It takes plain mono `f32` samples (in [-1, 1]) plus a sample rate and returns nu
 | `dsp` | `frames` | Split a signal into fixed-length, overlapping frames |
 | `pitch` | `AutocorrEstimator` (via the `PitchEstimator` trait), `median_f0`, `voiced_fraction` | Fundamental frequency (f0) track, 10 ms frames, 75 to 600 Hz, autocorrelation method after Boersma 1993; median f0 and voiced fraction summaries |
 | `pace` | `syllable_nuclei`, `syllables_per_second` | Syllable nuclei (intensity peaks that are voiced and separated by a 2 dB dip, after de Jong and Wempe 2009) and syllables per second over the recording |
+| `pauses` | `speech_segments`, `pause_stats` | Speech/silence segmentation: frames within 25 dB of the loudest frame are sounding, sounding runs under 0.1 s are dropped and silent gaps under 0.1 s are filled; pause count, total and longest pause, speech ratio. Leading and trailing silence is not a pause |
 | `quality` | `check`, `Warning` | Cheap recording checks: too short (under 1 s), clipped (0.1% of samples at full scale), too quiet (RMS under -50 dBFS). Thresholds are practical defaults, not from a standard; "noisy" is not covered yet |
-| crate root | `analyze` returning `VoiceReport` | One call for a whole recording: duration, RMS level (dBFS), integrated loudness (LUFS), median f0, voiced fraction, syllable count, syllables per second and quality warnings; serializable to JSON with serde |
+| crate root | `analyze` returning `VoiceReport` | One call for a whole recording: duration, RMS level (dBFS), integrated loudness (LUFS), median f0, voiced fraction, syllable count, syllables per second, pause count, total and longest pause, and quality warnings; serializable to JSON with serde |
 
-Pitch is checked against Praat 6.1.38 on synthetic signals (steady sines, glides, vibrato; within 0.1 cent of Praat on the moving-pitch clips) and on eight real Common Voice clips (median 4.3 cents from Praat, voicing agreement 0.94, but 9.4% of the frames voiced in both are more than 300 cents away, mostly octave-up jumps, because the tracker has no cross-frame path search yet). Pace is checked on synthetic tone bursts only (counts equal the true count and a Praat-intensity-based reference); fast or noisy real speech is untested.
+Pitch is checked against Praat 6.1.38 on synthetic signals (steady sines, glides, vibrato; within 0.1 cent of Praat on the moving-pitch clips) and on eight real Common Voice clips (median 4.3 cents from Praat, voicing agreement 0.94, but 9.4% of the frames voiced in both are more than 300 cents away, mostly octave-up jumps, because the tracker has no cross-frame path search yet). Speech/silence segmentation is checked against Praat 6.1.38's silence detection on the same eight clips (same segment count in 8 of 8, 99.0% agreement on a 10 ms grid, boundaries within 83 ms, total pause time within 90 ms); the threshold is relative to the loudest frame, so one loud click in a quiet recording can hide the speech. Pace is checked on synthetic tone bursts only (counts equal the true count and a Praat-intensity-based reference); fast or noisy real speech is untested.
 
 Levels are **relative** (dBFS / LUFS, full scale = 0): phone microphones are not calibrated, so values are comparable on the same device and mic, never absolute sound pressure.
 
 ## What is planned
 
-Speech/silence detection and pauses, jitter, shimmer and HNR, a noise warning, and a streaming `Analyzer` for live feedback. Accuracy targets and how they are checked are in [docs/spec.md](docs/spec.md) section 7; measured numbers will be published here once the benchmark exists.
+Jitter, shimmer and HNR, a noise warning, and a streaming `Analyzer` for live feedback. Accuracy targets and how they are checked are in [docs/spec.md](docs/spec.md) section 7; measured numbers will be published here once the benchmark exists.
 
 ## Usage
 

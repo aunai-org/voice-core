@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::loudness::{integrated_lufs, rms_db};
 use crate::pace::{syllable_nuclei, PaceConfig};
+use crate::pauses::{pause_stats, speech_segments, PauseConfig};
 use crate::pitch::{median_f0, voiced_fraction, AutocorrEstimator, PitchEstimator};
 use crate::quality::{self, Warning};
 use crate::Error;
@@ -30,6 +31,13 @@ pub struct VoiceReport {
     pub syllable_count: u32,
     /// Syllables per second over the whole recording, pauses included.
     pub syllables_per_second: f32,
+    /// Number of pauses (silent gaps of at least 0.1 s between speech segments;
+    /// leading and trailing silence does not count).
+    pub pause_count: u32,
+    /// Total pause time in seconds.
+    pub pause_total_s: f32,
+    /// Longest pause in seconds, 0 when there is none.
+    pub longest_pause_s: f32,
     /// Quality warnings for this recording; empty when nothing is wrong.
     pub warnings: Vec<Warning>,
 }
@@ -46,6 +54,7 @@ pub fn analyze(samples: &[f32], sample_rate: u32) -> Result<VoiceReport, Error> 
     let track = AutocorrEstimator::default().estimate(samples, sample_rate)?;
     let duration_s = samples.len() as f64 / f64::from(sample_rate);
     let syllables = syllable_nuclei(samples, sample_rate, &PaceConfig::default())?.len();
+    let pauses = pause_stats(&speech_segments(samples, sample_rate, &PauseConfig::default())?);
     Ok(VoiceReport {
         duration_s,
         sample_rate_hz: sample_rate,
@@ -55,6 +64,9 @@ pub fn analyze(samples: &[f32], sample_rate: u32) -> Result<VoiceReport, Error> 
         voiced_fraction: voiced_fraction(&track),
         syllable_count: syllables as u32,
         syllables_per_second: (syllables as f64 / duration_s) as f32,
+        pause_count: pauses.count as u32,
+        pause_total_s: pauses.total_s as f32,
+        longest_pause_s: pauses.longest_s as f32,
         warnings: quality::check(samples, sample_rate)?,
     })
 }
@@ -81,6 +93,8 @@ mod tests {
         assert!(r.voiced_fraction > 0.9);
         assert_eq!(r.syllable_count, 0);
         assert_eq!(r.syllables_per_second, 0.0);
+        assert_eq!(r.pause_count, 0);
+        assert_eq!(r.longest_pause_s, 0.0);
         assert!(r.warnings.is_empty());
     }
 
@@ -103,6 +117,17 @@ mod tests {
         let r = analyze(&x, SR).unwrap();
         assert_eq!(r.syllable_count, 12);
         assert!((r.syllables_per_second - 4.0).abs() < 1e-6);
+    }
+
+    #[test]
+    fn gap_between_tones_is_one_pause() {
+        let mut x = sine(150.0, 1.0);
+        x.extend(vec![0.0; SR as usize / 2]);
+        x.extend(sine(150.0, 1.0));
+        let r = analyze(&x, SR).unwrap();
+        assert_eq!(r.pause_count, 1);
+        assert!((r.pause_total_s - 0.5).abs() < 0.05, "{}", r.pause_total_s);
+        assert!((r.longest_pause_s - 0.5).abs() < 0.05);
     }
 
     #[test]

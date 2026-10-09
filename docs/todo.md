@@ -23,14 +23,15 @@ Mark items `[x]` with the PR link when the draft PR is open. Last updated: 2026-
 - [x] `dsp`: framing + resample to 16 kHz (`rubato`), unit tests — PR claude/run-20261008-14-resample (stacked on the LUFS PR; Unicode-3.0 allowed in deny.toml per omr; level matches Praat's own resample within 0.0003 dB)
 - [x] First measurement with tests: frame RMS dB (voice-core PR #1) + integrated LUFS via `ebur128` — PR claude/run-20261008-13-lufs (stacked on the oracle-reference PR; checked against the BS.1770 known answer, -3.01 LUFS for a full-scale 997 Hz sine; Praat has no LUFS; real speech clips and EBU 3341 files still to add)
 - [x] Pitch behind a trait, own autocorrelation backend (Boersma 1993), tests on synthetic sines — PR claude/run-20261008-17-pitch (`pyin` 1.2.0 dropped: panics on ~20% of sine inputs at a 75 Hz floor and does not compile for wasm32). Still to do: cross-frame path search, real speech clips
-- [ ] VAD/pauses (`earshot`), pause stats
+- [x] Speech/silence segmentation and pause stats (own energy-based `pauses` module, no `earshot`): same segment count as Praat's silence detection on 8 of 8 clips, 99.0% grid agreement, boundaries within 83 ms, total pause within 90 ms — PR claude/run-20261009-15-pauses
+- [ ] Pauses on noisy and whispered clips (threshold is relative to the loudest frame, so a loud click or steady noise breaks it); decide whether to add a noise floor
 - [x] `analyze()` batch API + `VoiceReport` (serde) — PR claude/run-20261009-05-analyze (level, LUFS, median f0, voiced fraction; pauses and pace join when VAD and pace land)
 - [x] First benchmark vs Praat on moving-pitch synthetic signals (glide, vibrato, harmonic glide): median f0 difference from Praat 0.02 to 0.06 cents, 95th percentile under 0.1 cents, voicing agreement 1.000 on all three; the pyin vs pitch-core gate is settled (own Boersma 1993 backend, see pitch row) — PR claude/run-20261009-09-pitch-benchmark
 - [x] First benchmark vs Praat on real speech: 8 Common Voice clips (CC0), median 4.3 ct from Praat, voicing agreement 0.94, 9.4% gross (octave) errors — PR claude/run-20261009-15-real-speech
 - [ ] Cross-frame path search in `pitch` to cut octave errors (target under 2% of frames; same 8 clips, then more)
 - [ ] Noisy and breathy voices: add clips (noisy mic, whisper, child) to the real-speech set
 ### M1b Live basics
-- [ ] Minimal streaming `Analyzer` (level + speech/silence per frame)
+- [ ] Minimal streaming `Analyzer` (level + speech/silence per frame; batch `pauses` exists to compare against)
 ### M2 Pace and quality
 - [x] Syllable-rate pace (de Jong & Wempe) — PR claude/run-20261009-11-pace (synthetic tone bursts only; counts match truth and a Praat-intensity-based reference; no real speech yet)
 - [x] Quality warnings: too short, clipped, too quiet in `analyze` report — PR claude/run-20261009-12-quality (thresholds are defaults, no Praat equivalent)
