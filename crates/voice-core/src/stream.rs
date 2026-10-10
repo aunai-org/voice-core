@@ -7,8 +7,9 @@
 //! frame heard so far and above [`SPEECH_FLOOR_DBFS`].
 //!
 //! Pitch uses the same per-frame candidates as the batch [`crate::pitch`] tracker but
-//! picks the strongest candidate of each frame on its own, with no Viterbi path search
-//! (that needs the whole recording), and judges frame loudness against the loudest
+//! picks one per frame using only the past (the batch octave-jump and voiced/unvoiced
+//! costs relative to the previous frame's choice, with no lookahead and no path search),
+//! and judges frame loudness against the loudest
 //! sample heard up to the end of the frame's window. Expect more octave errors and
 //! flicker than the batch track.
 //!
@@ -20,7 +21,7 @@
 //! these limits; use it for the final numbers.
 
 use crate::pauses::LevelMeter;
-use crate::pitch::{AutocorrEstimator, FrameSearch};
+use crate::pitch::{AutocorrEstimator, Candidate, FrameSearch};
 use crate::Error;
 
 /// Frames at or below this level are never speech, so digital silence and a quiet
@@ -57,6 +58,9 @@ pub struct Analyzer {
     next_frame: usize,
     max_level: f32,
     search: FrameSearch,
+    pitch_cfg: AutocorrEstimator,
+    /// f0 chosen for the previous frame, for the transition costs.
+    last_f0: Option<f64>,
     /// Running maximum of the absolute sample value, one entry per `buf` entry.
     peaks: Vec<f32>,
     /// Running maximum before `buf[0]`.
@@ -70,7 +74,8 @@ impl Analyzer {
             return Err(Error::InvalidConfig("sample_rate must be positive"));
         }
         let sr = f64::from(sample_rate);
-        let search = FrameSearch::new(&AutocorrEstimator::default(), sample_rate)?;
+        let pitch_cfg = AutocorrEstimator::default();
+        let search = FrameSearch::new(&pitch_cfg, sample_rate)?;
         Ok(Self {
             sample_rate,
             hop: ((HOP_S * sr).round() as usize).max(1),
@@ -81,6 +86,8 @@ impl Analyzer {
             next_frame: 0,
             max_level: f32::NEG_INFINITY,
             search,
+            pitch_cfg,
+            last_f0: None,
             peaks: Vec::new(),
             peak_before: 0.0,
         })
@@ -122,9 +129,21 @@ impl Analyzer {
                     None
                 }
             });
+            // One step of the batch path search with no lookahead: each candidate pays the
+            // transition cost from the previous frame's choice.
+            let (jump, vu) = (
+                f64::from(self.pitch_cfg.octave_jump_cost),
+                f64::from(self.pitch_cfg.voiced_unvoiced_cost),
+            );
+            let score = |c: &Candidate| match (c.f0_hz, self.last_f0) {
+                (Some(f), Some(prev)) => c.strength - jump * (f / prev).log2().abs(),
+                (None, None) => c.strength,
+                _ => c.strength - vu,
+            };
             let best = cands
                 .iter()
-                .fold(&cands[0], |b, c| if c.strength > b.strength { c } else { b });
+                .fold(&cands[0], |b, c| if score(c) > score(b) { c } else { b });
+            self.last_f0 = best.f0_hz;
             out.push(FrameInfo {
                 time_s: centre as f64 / f64::from(self.sample_rate),
                 level_dbfs: level,
