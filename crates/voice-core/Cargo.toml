@@ -9,7 +9,7 @@ rust-version.workspace = true
 readme = "../../README.md"
 # Praat-derived reference numbers are test data only; keep them out of the published crate.
 # (The workspace-root `tools/` directory is outside this package, so it is never packaged.)
-exclude = ["tests/data/", "tests/oracle_reference.rs", "tests/pitch_tracks.rs", "tests/pace_reference.rs", "tests/speech_pitch.rs", "tests/speech_pauses.rs"]
+exclude = ["tests/data/", "tests/oracle_reference.rs", "tests/pitch_tracks.rs", "tests/pace_reference.rs", "tests/speech_pitch.rs", "tests/speech_pauses.rs", "tests/speech_stream.rs"]
 
 [dependencies]
 audioadapter-buffers = "2.0.0"

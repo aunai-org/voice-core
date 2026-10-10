@@ -15,6 +15,7 @@ Add a row when an algorithm lands in the code. A row with status `planned` means
 | Pitch (f0) | `pitch` | Boersma (1993), "Accurate short-term analysis of the fundamental frequency and the harmonics-to-noise ratio of a sampled sound": windowed normalised autocorrelation, candidate peaks with parabolic interpolation, Viterbi path search over frames with octave, octave-jump and voiced/unvoiced costs (the paper's default values) | none | implemented (checked on synthetic signals and eight real clips) |
 | Speech/silence segmentation, pauses | `pauses` | Energy-based: Gaussian-windowed mean-square level (32 ms) against a threshold 25 dB below the loudest frame, minimum sounding and silent run lengths of 0.1 s; same settings as Praat's silence detection, used as the offline reference | none | implemented (checked on eight clean clips) |
 | Syllable-rate pace | `pace` | de Jong and Wempe (2009) | none | implemented (synthetic bursts only) |
+| Streaming level and speech/silence per frame | `stream` | Same level and threshold as `pauses`, computed causally: Gaussian-windowed mean square, speech within 25 dB of the loudest frame so far, floor at -70 dBFS | none | implemented (checked on eight clean clips) |
 | Recording-quality warnings | `quality` | Practical thresholds (duration, clipped-sample share, RMS level); no published basis | none | implemented |
 | Jitter (local, RAP, PPQ5) | `perturbation` | Boersma (1993) style definitions | none | planned |
 | Shimmer (local, APQ3, APQ5) | `perturbation` | Public perturbation-measure definitions | none | planned |

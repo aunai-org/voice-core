@@ -67,29 +67,58 @@ pub struct PauseStats {
     pub speech_ratio: f64,
 }
 
-/// Level in dB (relative to full scale) of the squared signal under a Gaussian
-/// window of `len` samples, one value per `hop` samples; samples beyond the ends
-/// count as silence, so the first frame is centred on sample 0.
-fn smoothed_levels(samples: &[f32], len: usize, hop: usize) -> Vec<f32> {
-    // w(x) = exp(-12 (x - 1/2)^2) for x in 0..1, so the edges sit near 5% of the peak.
-    let weights: Vec<f64> = (0..len)
-        .map(|i| (-12.0 * ((i as f64 + 0.5) / len as f64 - 0.5).powi(2)).exp())
-        .collect();
-    let total: f64 = weights.iter().sum();
-    let half = len / 2;
+/// Level meter: the squared signal averaged under a Gaussian window, in dB relative to
+/// full scale. Samples beyond either end of the signal count as silence.
+pub(crate) struct LevelMeter {
+    weights: Vec<f64>,
+    total: f64,
+    half: usize,
+}
+
+impl LevelMeter {
+    pub(crate) fn new(len: usize) -> Self {
+        // w(x) = exp(-12 (x - 1/2)^2) for x in 0..1, so the edges sit near 5% of the peak.
+        let weights: Vec<f64> = (0..len)
+            .map(|i| (-12.0 * ((i as f64 + 0.5) / len as f64 - 0.5).powi(2)).exp())
+            .collect();
+        Self {
+            total: weights.iter().sum(),
+            half: len / 2,
+            weights,
+        }
+    }
+
+    /// Samples before the centre that the window reaches.
+    pub(crate) fn half(&self) -> usize {
+        self.half
+    }
+
+    /// Window length in samples.
+    pub(crate) fn len(&self) -> usize {
+        self.weights.len()
+    }
+
+    /// Level of the window centred on sample `centre` of a signal whose first
+    /// sample held in `buf` is sample number `buf_start`.
+    pub(crate) fn level(&self, buf: &[f32], buf_start: usize, centre: usize) -> f32 {
+        let acc: f64 = self
+            .weights
+            .iter()
+            .enumerate()
+            .filter_map(|(k, w)| {
+                let idx = (centre + k).checked_sub(self.half)?.checked_sub(buf_start)?;
+                buf.get(idx).map(|&x| w * f64::from(x) * f64::from(x))
+            })
+            .sum();
+        (10.0 * (acc / self.total).max(1e-12).log10()) as f32
+    }
+}
+
+/// One level per `hop` samples; the first frame is centred on sample 0.
+pub(crate) fn smoothed_levels(samples: &[f32], len: usize, hop: usize) -> Vec<f32> {
+    let meter = LevelMeter::new(len);
     (0..samples.len().div_ceil(hop))
-        .map(|f| {
-            let centre = f * hop;
-            let acc: f64 = weights
-                .iter()
-                .enumerate()
-                .filter_map(|(k, w)| {
-                    let idx = (centre + k).checked_sub(half)?;
-                    samples.get(idx).map(|&x| w * f64::from(x) * f64::from(x))
-                })
-                .sum();
-            (10.0 * (acc / total).max(1e-12).log10()) as f32
-        })
+        .map(|f| meter.level(samples, 0, f * hop))
         .collect()
 }
 
