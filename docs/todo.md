@@ -32,7 +32,8 @@ Mark items `[x]` with the PR link when the draft PR is open. Last updated: 2026-
 - [ ] Pitch path search on more clips (14 of the 25 remaining gross errors are in one clip, common_voice_en_665631) and on noisy/breathy voices
 - [ ] Noisy and breathy voices: add clips (noisy mic, whisper, child) to the real-speech set
 ### M1b Live basics
-- [ ] Minimal streaming `Analyzer` (level + speech/silence per frame; batch `pauses` exists to compare against)
+- [x] Minimal streaming `Analyzer` (level + speech/silence per 10 ms frame, `push`/`finish`, chunk-size independent): levels equal the batch ones, speech flag agrees with Praat's silence detection on 88.5% of frames (95.4% when seeded with a reference level) — PR claude/run-20261010-05-stream
+- [ ] Streaming `Analyzer`: add live pitch and syllable pace; causal minimum-run smoothing for the speech flag
 ### M2 Pace and quality
 - [x] Syllable-rate pace (de Jong & Wempe) — PR claude/run-20261009-11-pace (synthetic tone bursts only; counts match truth and a Praat-intensity-based reference; no real speech yet)
 - [x] Quality warnings: too short, clipped, too quiet in `analyze` report — PR claude/run-20261009-12-quality (thresholds are defaults, no Praat equivalent)
