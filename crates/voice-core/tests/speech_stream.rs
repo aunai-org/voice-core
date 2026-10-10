@@ -160,12 +160,12 @@ fn streaming_pitch_against_praat_and_batch() {
         100.0 * gross as f64 / both as f64
     );
     assert!(
-        agree_p as f64 / frames as f64 > 0.91,
+        agree_p as f64 / frames as f64 > 0.94,
         "voicing agreement with Praat"
     );
-    assert!(median < 34.0, "median {median} ct");
+    assert!(median < 3.5, "median {median} ct");
     assert!(
-        (gross as f64) / (both as f64) < 0.08,
+        (gross as f64) / (both as f64) < 0.025,
         "gross errors {gross} of {both}"
     );
 }

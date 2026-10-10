@@ -2,16 +2,17 @@
 //!
 //! Audio is pushed in chunks of any size; a [`FrameInfo`] is emitted for every frame
 //! whose analysis windows are complete, so a frame arrives about 20 ms after its centre
-//! (the pitch window is 40 ms). Levels are the same Gaussian-windowed levels as the batch [`crate::pauses`] module
+//! (the pitch window is 40 ms), plus the pitch lag below. Levels are the same Gaussian-windowed levels as the batch [`crate::pauses`] module
 //! and match it exactly. A frame is speech when its level is within 25 dB of the loudest
 //! frame heard so far and above [`SPEECH_FLOOR_DBFS`].
 //!
-//! Pitch uses the same per-frame candidates as the batch [`crate::pitch`] tracker but
-//! picks one per frame using only the past (the batch octave-jump and voiced/unvoiced
-//! costs relative to the previous frame's choice, with no lookahead and no path search),
-//! and judges frame loudness against the loudest
-//! sample heard up to the end of the frame's window. Expect more octave errors and
-//! flicker than the batch track.
+//! Pitch uses the same per-frame candidates and transition costs as the batch
+//! [`crate::pitch`] tracker, but the path search looks ahead only [`PITCH_LAG_FRAMES`]
+//! frames (100 ms): a frame is reported once that many later frames have been heard, by
+//! tracing back from the best path at that point. Frame loudness is judged against the
+//! loudest sample heard up to the end of the frame's window. A frame therefore arrives
+//! about 120 ms after its centre, and the track can still differ from the batch one
+//! where a decision needs more than 100 ms of context.
 //!
 //! Limits: the decision is made frame by frame with no minimum run lengths, so it
 //! flickers at word edges, short gaps under 0.1 s show as silence and short sounds
@@ -23,6 +24,7 @@
 use crate::pauses::LevelMeter;
 use crate::pitch::{AutocorrEstimator, Candidate, FrameSearch};
 use crate::Error;
+use std::collections::VecDeque;
 
 /// Frames at or below this level are never speech, so digital silence and a quiet
 /// room do not count as speech before the first real sound.
@@ -31,6 +33,9 @@ pub const SPEECH_FLOOR_DBFS: f32 = -70.0;
 const WINDOW_S: f64 = 0.032;
 const HOP_S: f64 = 0.01;
 const THRESHOLD_DB: f32 = 25.0;
+
+/// Frames of lookahead for the pitch path search (100 ms).
+pub const PITCH_LAG_FRAMES: usize = 10;
 
 /// What is known about one 10 ms frame.
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -43,6 +48,14 @@ pub struct FrameInfo {
     pub speech: bool,
     /// Estimated fundamental frequency in Hz, or `None` when the frame is unvoiced.
     pub f0_hz: Option<f32>,
+}
+
+/// A frame waiting for its pitch decision.
+struct Pending {
+    info: FrameInfo,
+    cands: Vec<Candidate>,
+    /// For each candidate, the best previous candidate on its path.
+    back: Vec<usize>,
 }
 
 /// Push-style analyzer for one mono stream.
@@ -59,8 +72,10 @@ pub struct Analyzer {
     max_level: f32,
     search: FrameSearch,
     pitch_cfg: AutocorrEstimator,
-    /// f0 chosen for the previous frame, for the transition costs.
-    last_f0: Option<f64>,
+    /// Frames whose pitch is not decided yet, oldest first.
+    pending: VecDeque<Pending>,
+    /// Best path score ending in each candidate of the newest pending frame.
+    path_score: Vec<f64>,
     /// Running maximum of the absolute sample value, one entry per `buf` entry.
     peaks: Vec<f32>,
     /// Running maximum before `buf[0]`.
@@ -87,7 +102,8 @@ impl Analyzer {
             max_level: f32::NEG_INFINITY,
             search,
             pitch_cfg,
-            last_f0: None,
+            pending: VecDeque::new(),
+            path_score: Vec::new(),
             peaks: Vec::new(),
             peak_before: 0.0,
         })
@@ -99,6 +115,65 @@ impl Analyzer {
     pub fn with_reference_level(mut self, level_dbfs: f32) -> Self {
         self.max_level = level_dbfs;
         self
+    }
+
+    /// One step of the batch Viterbi search: extends every path by the new frame.
+    fn push_pending(&mut self, info: FrameInfo, cands: Vec<Candidate>) {
+        let (jump, vu) = (
+            f64::from(self.pitch_cfg.octave_jump_cost),
+            f64::from(self.pitch_cfg.voiced_unvoiced_cost),
+        );
+        let transition = |a: &Candidate, b: &Candidate| match (a.f0_hz, b.f0_hz) {
+            (Some(x), Some(y)) => jump * (x / y).log2().abs(),
+            (None, None) => 0.0,
+            _ => vu,
+        };
+        let mut back = vec![0; cands.len()];
+        let mut score = Vec::with_capacity(cands.len());
+        for (k, cur) in cands.iter().enumerate() {
+            let mut best = 0.0;
+            if let Some(prev) = self.pending.back() {
+                let (i, v) = prev
+                    .cands
+                    .iter()
+                    .enumerate()
+                    .map(|(i, p)| (i, self.path_score[i] - transition(p, cur)))
+                    .max_by(|a, b| a.1.total_cmp(&b.1))
+                    .expect("every frame has an unvoiced candidate");
+                back[k] = i;
+                best = v;
+            }
+            score.push(best + cur.strength);
+        }
+        self.path_score = score;
+        self.pending.push_back(Pending { info, cands, back });
+    }
+
+    /// Candidate index chosen for each pending frame by the best path ending at the newest one.
+    fn best_path(&self) -> Vec<usize> {
+        let mut idx = self
+            .path_score
+            .iter()
+            .enumerate()
+            .max_by(|a, b| a.1.total_cmp(b.1))
+            .map(|(i, _)| i)
+            .unwrap_or(0);
+        let mut path = vec![0; self.pending.len()];
+        for t in (0..self.pending.len()).rev() {
+            path[t] = idx;
+            idx = self.pending[t].back[idx];
+        }
+        path
+    }
+
+    /// Decides and removes the oldest pending frame.
+    fn release(&mut self) -> FrameInfo {
+        let choice = self.best_path()[0];
+        let p = self.pending.pop_front().expect("pending frame");
+        FrameInfo {
+            f0_hz: p.cands[choice].f0_hz.map(|f| f as f32),
+            ..p.info
+        }
     }
 
     fn emit(&mut self, out: &mut Vec<FrameInfo>, flush: bool) {
@@ -129,27 +204,16 @@ impl Analyzer {
                     None
                 }
             });
-            // One step of the batch path search with no lookahead: each candidate pays the
-            // transition cost from the previous frame's choice.
-            let (jump, vu) = (
-                f64::from(self.pitch_cfg.octave_jump_cost),
-                f64::from(self.pitch_cfg.voiced_unvoiced_cost),
-            );
-            let score = |c: &Candidate| match (c.f0_hz, self.last_f0) {
-                (Some(f), Some(prev)) => c.strength - jump * (f / prev).log2().abs(),
-                (None, None) => c.strength,
-                _ => c.strength - vu,
-            };
-            let best = cands
-                .iter()
-                .fold(&cands[0], |b, c| if score(c) > score(b) { c } else { b });
-            self.last_f0 = best.f0_hz;
-            out.push(FrameInfo {
+            let info = FrameInfo {
                 time_s: centre as f64 / f64::from(self.sample_rate),
                 level_dbfs: level,
                 speech: level > SPEECH_FLOOR_DBFS && level >= self.max_level - THRESHOLD_DB,
-                f0_hz: best.f0_hz.map(|f| f as f32),
-            });
+                f0_hz: None,
+            };
+            self.push_pending(info, cands);
+            while self.pending.len() > PITCH_LAG_FRAMES {
+                out.push(self.release());
+            }
             self.next_frame += 1;
         }
         // Drop samples the next window no longer reaches.
@@ -183,6 +247,13 @@ impl Analyzer {
     pub fn finish(mut self) -> Vec<FrameInfo> {
         let mut out = Vec::new();
         self.emit(&mut out, true);
+        let path = self.best_path();
+        for (p, choice) in self.pending.drain(..).zip(path) {
+            out.push(FrameInfo {
+                f0_hz: p.cands[choice].f0_hz.map(|f| f as f32),
+                ..p.info
+            });
+        }
         out
     }
 }
@@ -242,9 +313,10 @@ mod tests {
     #[test]
     fn frames_arrive_with_a_short_delay() {
         let mut a = Analyzer::new(SR).unwrap();
-        // The first frame is centred on sample 0 and needs 20 ms (321 samples) of audio
-        // for the 40 ms pitch window.
-        assert!(a.push(&vec![0.1; 320]).is_empty());
+        // Frame 0 is centred on sample 0 and needs 20 ms (321 samples) for the 40 ms pitch
+        // window; frame 0 is reported once the 10 later frames are complete (100 ms more).
+        let hop = 160;
+        assert!(a.push(&vec![0.1; 320 + PITCH_LAG_FRAMES * hop]).is_empty());
         assert_eq!(a.push(&[0.1]).len(), 1);
     }
 
