@@ -174,7 +174,6 @@ impl PitchEstimator for AutocorrEstimator {
         while centre < samples.len() {
             // Window centred on `centre`, zero-padded outside the signal.
             let start = centre as isize - (win / 2) as isize;
-            let mut local_peak = 0.0_f32;
             let mut sum = 0.0_f32;
             let mut n = 0usize;
             for (i, b) in buf.iter_mut().enumerate() {
@@ -187,10 +186,18 @@ impl PitchEstimator for AutocorrEstimator {
                 if j >= 0 && (j as usize) < samples.len() {
                     sum += *b;
                     n += 1;
-                    local_peak = local_peak.max(b.abs());
                 }
             }
             let mean = if n > 0 { sum / n as f32 } else { 0.0 };
+            // Loudness of the frame as the window sees it: the peak of the mean-removed,
+            // windowed samples (zero padding outside the signal stays zero).
+            let mut local_peak = 0.0_f32;
+            for (i, (b, w)) in buf.iter().zip(&hann).enumerate() {
+                let j = start + i as isize;
+                if j >= 0 && (j as usize) < samples.len() {
+                    local_peak = local_peak.max(((*b - mean) * w).abs());
+                }
+            }
             // The unvoiced candidate gets stronger as the frame gets quieter.
             let quiet = if peak > 0.0 {
                 f64::from(local_peak / peak) / (f64::from(self.silence_threshold) / (1.0 + vt))
