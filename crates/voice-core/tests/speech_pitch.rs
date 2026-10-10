@@ -126,9 +126,9 @@ fn real_speech_pitch_against_praat() {
     );
     // Targets from docs/spec.md section 7: median f0 within 2% (about 34 cents) on
     // voiced frames and voicing agreement above 90%. Gross errors (more than 300
-    // cents, mostly octave jumps) are bounded at 3%; the path search gives 1.1% on the 20 clips.
+    // cents, mostly octave jumps) are bounded at 3%; the path search gives 0.9% on the 20 clips.
     let agree = t.agree as f64 / t.frames as f64;
-    assert!(agree > 0.95, "voicing agreement {agree}");
+    assert!(agree > 0.97, "voicing agreement {agree}");
     assert!(
         percentile(&t.diffs, 0.5) < 34.0,
         "median {} ct",
