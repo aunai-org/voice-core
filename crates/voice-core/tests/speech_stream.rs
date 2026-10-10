@@ -104,3 +104,68 @@ fn streaming_flags_against_praat_and_batch() {
     assert!(f(t[1]) > 0.85, "plain agreement with Praat {}", f(t[1]));
     assert!(f(t[3]) > 0.93, "seeded agreement with Praat {}", f(t[3]));
 }
+
+#[test]
+fn streaming_pitch_against_praat_and_batch() {
+    use voice_core::pitch::{AutocorrEstimator, PitchEstimator};
+    let r: Value = serde_json::from_str(include_str!("data/speech_pitch_oracle.json")).unwrap();
+    let cents = |a: f64, b: f64| 1200.0 * (a / b).log2();
+    // Frames, voicing agreement with Praat / batch, voiced in both with Praat,
+    // more than 300 ct away, and the cent differences.
+    let (mut frames, mut agree_p, mut agree_b, mut both, mut gross) =
+        (0usize, 0usize, 0usize, 0usize, 0usize);
+    let mut diffs: Vec<f64> = vec![];
+    for (id, c) in r["clips"].as_object().unwrap() {
+        let col = |k: &str| -> Vec<f64> {
+            c[k].as_array()
+                .unwrap()
+                .iter()
+                .map(|v| v.as_f64().unwrap())
+                .collect()
+        };
+        let (times, praat) = (col("times_s"), col("praat_hz"));
+        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("tests/data/speech")
+            .join(format!("{id}.wav"));
+        let samples = read_wav(&path);
+        let live = stream(&samples, None);
+        let batch = AutocorrEstimator::default().estimate(&samples, SR).unwrap();
+        for (i, &time) in times.iter().enumerate() {
+            let nearest = |t: f64, times_of: &dyn Fn(usize) -> f64, n: usize| {
+                (0..n)
+                    .min_by(|&a, &b| (times_of(a) - t).abs().total_cmp(&(times_of(b) - t).abs()))
+                    .unwrap()
+            };
+            let k = nearest(time, &|j| live[j].time_s, live.len());
+            let m = nearest(time, &|j| batch[j].time_s, batch.len());
+            let ours = live[k].f0_hz.map(f64::from);
+            let reference = (praat[i] > 0.0).then_some(praat[i]);
+            frames += 1;
+            agree_p += usize::from(ours.is_some() == reference.is_some());
+            agree_b += usize::from(ours.is_some() == batch[m].f0_hz.is_some());
+            if let (Some(a), Some(b)) = (ours, reference) {
+                both += 1;
+                let d = cents(a, b).abs();
+                diffs.push(d);
+                gross += usize::from(d > 300.0);
+            }
+        }
+    }
+    diffs.sort_by(f64::total_cmp);
+    let median = diffs[diffs.len() / 2];
+    println!(
+        "ALL: {frames} frames | voicing agreement with Praat {:.3}, with the batch track {:.3} | both voiced {both}, median {median:.1} ct, off by more than 300 ct: {gross} ({:.1}%)",
+        agree_p as f64 / frames as f64,
+        agree_b as f64 / frames as f64,
+        100.0 * gross as f64 / both as f64
+    );
+    assert!(
+        agree_p as f64 / frames as f64 > 0.9,
+        "voicing agreement with Praat"
+    );
+    assert!(median < 34.0, "median {median} ct");
+    assert!(
+        (gross as f64) / (both as f64) < 0.1,
+        "gross errors {gross} of {both}"
+    );
+}

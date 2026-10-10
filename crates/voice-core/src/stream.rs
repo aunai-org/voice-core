@@ -1,10 +1,16 @@
-//! Streaming analysis for live feedback: level and speech/silence per 10 ms frame.
+//! Streaming analysis for live feedback: level, speech/silence and pitch per 10 ms frame.
 //!
 //! Audio is pushed in chunks of any size; a [`FrameInfo`] is emitted for every frame
-//! whose 32 ms window is complete, so a frame arrives about 16 ms after its centre.
-//! Levels are the same Gaussian-windowed levels as the batch [`crate::pauses`] module
+//! whose analysis windows are complete, so a frame arrives about 20 ms after its centre
+//! (the pitch window is 40 ms). Levels are the same Gaussian-windowed levels as the batch [`crate::pauses`] module
 //! and match it exactly. A frame is speech when its level is within 25 dB of the loudest
 //! frame heard so far and above [`SPEECH_FLOOR_DBFS`].
+//!
+//! Pitch uses the same per-frame candidates as the batch [`crate::pitch`] tracker but
+//! picks the strongest candidate of each frame on its own, with no Viterbi path search
+//! (that needs the whole recording), and judges frame loudness against the loudest
+//! sample heard up to the end of the frame's window. Expect more octave errors and
+//! flicker than the batch track.
 //!
 //! Limits: the decision is made frame by frame with no minimum run lengths, so it
 //! flickers at word edges, short gaps under 0.1 s show as silence and short sounds
@@ -14,6 +20,7 @@
 //! these limits; use it for the final numbers.
 
 use crate::pauses::LevelMeter;
+use crate::pitch::{AutocorrEstimator, FrameSearch};
 use crate::Error;
 
 /// Frames at or below this level are never speech, so digital silence and a quiet
@@ -33,6 +40,8 @@ pub struct FrameInfo {
     pub level_dbfs: f32,
     /// Whether the frame counts as speech.
     pub speech: bool,
+    /// Estimated fundamental frequency in Hz, or `None` when the frame is unvoiced.
+    pub f0_hz: Option<f32>,
 }
 
 /// Push-style analyzer for one mono stream.
@@ -47,6 +56,11 @@ pub struct Analyzer {
     total: usize,
     next_frame: usize,
     max_level: f32,
+    search: FrameSearch,
+    /// Running maximum of the absolute sample value, one entry per `buf` entry.
+    peaks: Vec<f32>,
+    /// Running maximum before `buf[0]`.
+    peak_before: f32,
 }
 
 impl Analyzer {
@@ -56,6 +70,7 @@ impl Analyzer {
             return Err(Error::InvalidConfig("sample_rate must be positive"));
         }
         let sr = f64::from(sample_rate);
+        let search = FrameSearch::new(&AutocorrEstimator::default(), sample_rate)?;
         Ok(Self {
             sample_rate,
             hop: ((HOP_S * sr).round() as usize).max(1),
@@ -65,6 +80,9 @@ impl Analyzer {
             total: 0,
             next_frame: 0,
             max_level: f32::NEG_INFINITY,
+            search,
+            peaks: Vec::new(),
+            peak_before: 0.0,
         })
     }
 
@@ -79,7 +97,8 @@ impl Analyzer {
     fn emit(&mut self, out: &mut Vec<FrameInfo>, flush: bool) {
         loop {
             let centre = self.next_frame * self.hop;
-            let window_end = centre + self.meter.len() - self.meter.half();
+            let window_end = (centre + self.meter.len() - self.meter.half())
+                .max(centre + self.search.window_len() - self.search.half());
             if flush {
                 if centre >= self.total {
                     break;
@@ -89,23 +108,51 @@ impl Analyzer {
             }
             let level = self.meter.level(&self.buf, self.buf_start, centre);
             self.max_level = self.max_level.max(level);
+            // Loudest sample up to the end of this frame's window (or of the stream).
+            let last = window_end.min(self.total).saturating_sub(1);
+            let peak = last
+                .checked_sub(self.buf_start)
+                .and_then(|i| self.peaks.get(i).copied())
+                .unwrap_or(self.peak_before);
+            let (buf, start) = (&self.buf, self.buf_start);
+            let cands = self.search.candidates(centre, peak, |j| {
+                if j < window_end {
+                    j.checked_sub(start).and_then(|i| buf.get(i).copied())
+                } else {
+                    None
+                }
+            });
+            let best = cands
+                .iter()
+                .fold(&cands[0], |b, c| if c.strength > b.strength { c } else { b });
             out.push(FrameInfo {
                 time_s: centre as f64 / f64::from(self.sample_rate),
                 level_dbfs: level,
                 speech: level > SPEECH_FLOOR_DBFS && level >= self.max_level - THRESHOLD_DB,
+                f0_hz: best.f0_hz.map(|f| f as f32),
             });
             self.next_frame += 1;
         }
         // Drop samples the next window no longer reaches.
-        let keep_from = (self.next_frame * self.hop).saturating_sub(self.meter.half());
+        let keep_from =
+            (self.next_frame * self.hop).saturating_sub(self.meter.half().max(self.search.half()));
         let drop = keep_from.saturating_sub(self.buf_start).min(self.buf.len());
+        if drop > 0 {
+            self.peak_before = self.peaks[drop - 1];
+        }
         self.buf.drain(..drop);
+        self.peaks.drain(..drop);
         self.buf_start += drop;
     }
 
     /// Adds `samples` and returns the frames that are now complete (possibly none).
     pub fn push(&mut self, samples: &[f32]) -> Vec<FrameInfo> {
         self.buf.extend_from_slice(samples);
+        let mut running = self.peaks.last().copied().unwrap_or(self.peak_before);
+        for x in samples {
+            running = running.max(x.abs());
+            self.peaks.push(running);
+        }
         self.total += samples.len();
         let mut out = Vec::new();
         self.emit(&mut out, false);
@@ -176,8 +223,9 @@ mod tests {
     #[test]
     fn frames_arrive_with_a_short_delay() {
         let mut a = Analyzer::new(SR).unwrap();
-        // The first frame is centred on sample 0 and needs 16 ms (256 samples) of audio.
-        assert!(a.push(&vec![0.1; 255]).is_empty());
+        // The first frame is centred on sample 0 and needs 20 ms (321 samples) of audio
+        // for the 40 ms pitch window.
+        assert!(a.push(&vec![0.1; 320]).is_empty());
         assert_eq!(a.push(&[0.1]).len(), 1);
     }
 
@@ -208,6 +256,18 @@ mod tests {
         // Without a reference the first frames are the loudest so far, hence speech.
         assert!(plain[20].speech);
         assert!(!seeded[20].speech);
+    }
+
+    #[test]
+    fn pitch_follows_the_tone() {
+        let frames = run(160, &signal());
+        let at = |t: f64| frames.iter().find(|f| f.time_s >= t).unwrap().f0_hz;
+        assert!(at(0.1).is_none());
+        let f = at(0.8).expect("voiced in the loud tone");
+        assert!((f - 180.0).abs() < 2.0, "{f}");
+        assert!(at(1.5).is_none());
+        let f = at(2.0).expect("voiced in the quiet tone");
+        assert!((f - 180.0).abs() < 2.0, "{f}");
     }
 
     #[test]

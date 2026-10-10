@@ -28,9 +28,9 @@ pub struct PitchFrame {
 
 /// One pitch candidate for a frame; `f0_hz` is `None` for the unvoiced candidate.
 #[derive(Debug, Clone, Copy)]
-struct Candidate {
-    f0_hz: Option<f64>,
-    strength: f64,
+pub(crate) struct Candidate {
+    pub(crate) f0_hz: Option<f64>,
+    pub(crate) strength: f64,
 }
 
 /// Picks the best candidate sequence (maximum summed strength minus transition costs).
@@ -131,119 +131,171 @@ fn autocorr(x: &[f32], max_lag: usize) -> Vec<f64> {
         .collect()
 }
 
-impl PitchEstimator for AutocorrEstimator {
-    fn estimate(&self, samples: &[f32], sample_rate: u32) -> Result<Vec<PitchFrame>, Error> {
-        if samples.is_empty() {
-            return Err(Error::EmptyInput);
-        }
+/// Candidate search for one frame, shared by the batch tracker and the streaming
+/// [`crate::stream::Analyzer`]: the constants derived from the config and sample rate.
+pub(crate) struct FrameSearch {
+    sr: f64,
+    min_lag: usize,
+    max_lag: usize,
+    win: usize,
+    hann: Vec<f32>,
+    win_ac: Vec<f64>,
+    cfg: AutocorrEstimator,
+}
+
+impl FrameSearch {
+    pub(crate) fn new(cfg: &AutocorrEstimator, sample_rate: u32) -> Result<Self, Error> {
         if sample_rate == 0 {
             return Err(Error::InvalidConfig("sample rate must be positive"));
         }
         let sr = f64::from(sample_rate);
-        if !(self.fmin_hz > 0.0 && self.fmin_hz < self.fmax_hz && self.fmax_hz <= sr / 2.0) {
+        if !(cfg.fmin_hz > 0.0 && cfg.fmin_hz < cfg.fmax_hz && cfg.fmax_hz <= sr / 2.0) {
             return Err(Error::InvalidConfig(
                 "pitch range must satisfy 0 < fmin < fmax <= sample rate / 2",
             ));
         }
-        if self.hop_s.is_nan() || self.hop_s <= 0.0 {
+        if cfg.hop_s.is_nan() || cfg.hop_s <= 0.0 {
             return Err(Error::InvalidConfig("hop must be positive"));
         }
-        let min_lag = ((sr / self.fmax_hz).floor() as usize).max(1);
-        let max_lag = (sr / self.fmin_hz).ceil() as usize;
+        let min_lag = ((sr / cfg.fmax_hz).floor() as usize).max(1);
+        let max_lag = (sr / cfg.fmin_hz).ceil() as usize;
         if max_lag < min_lag + 2 {
             return Err(Error::InvalidConfig(
                 "pitch range is too narrow for this sample rate",
             ));
         }
-        let win = ((3.0 * sr / self.fmin_hz).round() as usize).max(2 * max_lag + 2) | 1;
-        let hop = ((self.hop_s * sr).round() as usize).max(1);
+        if cfg.max_candidates == 0 {
+            return Err(Error::InvalidConfig("max_candidates must be positive"));
+        }
+        let win = ((3.0 * sr / cfg.fmin_hz).round() as usize).max(2 * max_lag + 2) | 1;
         let hann: Vec<f32> = (0..win)
             .map(|i| 0.5 - 0.5 * (2.0 * std::f32::consts::PI * (i as f32 + 0.5) / win as f32).cos())
             .collect();
         let win_ac = autocorr(&hann, max_lag);
-        let peak = samples.iter().fold(0.0_f32, |m, x| m.max(x.abs()));
+        Ok(Self {
+            sr,
+            min_lag,
+            max_lag,
+            win,
+            hann,
+            win_ac,
+            cfg: *cfg,
+        })
+    }
 
-        if self.max_candidates == 0 {
-            return Err(Error::InvalidConfig("max_candidates must be positive"));
+    /// Samples in the analysis window.
+    pub(crate) fn window_len(&self) -> usize {
+        self.win
+    }
+
+    /// Samples of the window before its centre sample.
+    pub(crate) fn half(&self) -> usize {
+        self.win / 2
+    }
+
+    /// Candidates (unvoiced first) for the frame centred on sample `centre`. `get`
+    /// returns the sample at a stream index, or `None` outside the signal (read as
+    /// zero and left out of the mean and peak); `peak` is the loudest absolute sample.
+    pub(crate) fn candidates(
+        &self,
+        centre: usize,
+        peak: f32,
+        get: impl Fn(usize) -> Option<f32>,
+    ) -> Vec<Candidate> {
+        let vt = f64::from(self.cfg.voicing_threshold);
+        let start = centre as isize - self.half() as isize;
+        let mut buf = vec![0.0_f32; self.win];
+        let mut sum = 0.0_f32;
+        let mut n = 0usize;
+        for (i, b) in buf.iter_mut().enumerate() {
+            let j = start + i as isize;
+            if let Some(x) = (j >= 0).then(|| get(j as usize)).flatten() {
+                *b = x;
+                sum += x;
+                n += 1;
+            }
         }
-        let vt = f64::from(self.voicing_threshold);
+        let mean = if n > 0 { sum / n as f32 } else { 0.0 };
+        // Loudness of the frame as the window sees it: the peak of the mean-removed,
+        // windowed samples (zero padding outside the signal stays zero).
+        let mut local_peak = 0.0_f32;
+        for (i, (b, w)) in buf.iter().zip(&self.hann).enumerate() {
+            let j = start + i as isize;
+            if j >= 0 && get(j as usize).is_some() {
+                local_peak = local_peak.max(((*b - mean) * w).abs());
+            }
+        }
+        // The unvoiced candidate gets stronger as the frame gets quieter.
+        let quiet = if peak > 0.0 {
+            f64::from(local_peak / peak) / (f64::from(self.cfg.silence_threshold) / (1.0 + vt))
+        } else {
+            0.0
+        };
+        let mut cands = vec![Candidate {
+            f0_hz: None,
+            strength: vt + (2.0 - quiet).max(0.0),
+        }];
+        if peak > 0.0 && local_peak >= self.cfg.silence_threshold * peak {
+            for (b, w) in buf.iter_mut().zip(&self.hann) {
+                *b = (*b - mean) * w;
+            }
+            let ac = autocorr(&buf, self.max_lag);
+            if ac[0] > 0.0 {
+                let r: Vec<f64> = (0..=self.max_lag)
+                    .map(|l| (ac[l] / ac[0]) / (self.win_ac[l] / self.win_ac[0]))
+                    .collect();
+                let mut peaks: Vec<Candidate> = Vec::new();
+                for l in self.min_lag..self.max_lag {
+                    if r[l] > r[l - 1] && r[l] >= r[l + 1] && r[l] > 0.0 {
+                        let (a, b, c) = (r[l - 1], r[l], r[l + 1]);
+                        let denom = a - 2.0 * b + c;
+                        let shift = if denom.abs() > 1e-12 {
+                            0.5 * (a - c) / denom
+                        } else {
+                            0.0
+                        };
+                        let height = (b - 0.25 * (a - c) * shift).clamp(0.0, 1.0);
+                        let lag = l as f64 + shift;
+                        peaks.push(Candidate {
+                            f0_hz: Some(self.sr / lag),
+                            // Longer lags (lower f0) pay a small octave cost.
+                            strength: height
+                                - f64::from(self.cfg.octave_cost) * (self.cfg.fmin_hz * lag / self.sr).log2(),
+                        });
+                    }
+                }
+                peaks.sort_by(|a, b| b.strength.total_cmp(&a.strength));
+                peaks.truncate(self.cfg.max_candidates);
+                cands.extend(peaks);
+            }
+        }
+        cands
+    }
+
+    /// The raw peak height of a chosen candidate, undoing the octave cost.
+    pub(crate) fn raw_strength(&self, c: &Candidate) -> f32 {
+        c.f0_hz.map_or(0.0, |f| {
+            (c.strength + f64::from(self.cfg.octave_cost) * (self.cfg.fmin_hz / f).log2()).clamp(0.0, 1.0)
+                as f32
+        })
+    }
+}
+
+impl PitchEstimator for AutocorrEstimator {
+    fn estimate(&self, samples: &[f32], sample_rate: u32) -> Result<Vec<PitchFrame>, Error> {
+        if samples.is_empty() {
+            return Err(Error::EmptyInput);
+        }
+        let search = FrameSearch::new(self, sample_rate)?;
+        let sr = f64::from(sample_rate);
+        let hop = ((self.hop_s * sr).round() as usize).max(1);
+        let peak = samples.iter().fold(0.0_f32, |m, x| m.max(x.abs()));
         let mut times = Vec::new();
         let mut frames: Vec<Vec<Candidate>> = Vec::new();
         let mut centre = 0usize;
-        let mut buf = vec![0.0_f32; win];
         while centre < samples.len() {
-            // Window centred on `centre`, zero-padded outside the signal.
-            let start = centre as isize - (win / 2) as isize;
-            let mut sum = 0.0_f32;
-            let mut n = 0usize;
-            for (i, b) in buf.iter_mut().enumerate() {
-                let j = start + i as isize;
-                *b = if j >= 0 && (j as usize) < samples.len() {
-                    samples[j as usize]
-                } else {
-                    0.0
-                };
-                if j >= 0 && (j as usize) < samples.len() {
-                    sum += *b;
-                    n += 1;
-                }
-            }
-            let mean = if n > 0 { sum / n as f32 } else { 0.0 };
-            // Loudness of the frame as the window sees it: the peak of the mean-removed,
-            // windowed samples (zero padding outside the signal stays zero).
-            let mut local_peak = 0.0_f32;
-            for (i, (b, w)) in buf.iter().zip(&hann).enumerate() {
-                let j = start + i as isize;
-                if j >= 0 && (j as usize) < samples.len() {
-                    local_peak = local_peak.max(((*b - mean) * w).abs());
-                }
-            }
-            // The unvoiced candidate gets stronger as the frame gets quieter.
-            let quiet = if peak > 0.0 {
-                f64::from(local_peak / peak) / (f64::from(self.silence_threshold) / (1.0 + vt))
-            } else {
-                0.0
-            };
-            let mut cands = vec![Candidate {
-                f0_hz: None,
-                strength: vt + (2.0 - quiet).max(0.0),
-            }];
-            if peak > 0.0 && local_peak >= self.silence_threshold * peak {
-                for (b, w) in buf.iter_mut().zip(&hann) {
-                    *b = (*b - mean) * w;
-                }
-                let ac = autocorr(&buf, max_lag);
-                if ac[0] > 0.0 {
-                    let r: Vec<f64> = (0..=max_lag)
-                        .map(|l| (ac[l] / ac[0]) / (win_ac[l] / win_ac[0]))
-                        .collect();
-                    let mut peaks: Vec<Candidate> = Vec::new();
-                    for l in min_lag..max_lag {
-                        if r[l] > r[l - 1] && r[l] >= r[l + 1] && r[l] > 0.0 {
-                            let (a, b, c) = (r[l - 1], r[l], r[l + 1]);
-                            let denom = a - 2.0 * b + c;
-                            let shift = if denom.abs() > 1e-12 {
-                                0.5 * (a - c) / denom
-                            } else {
-                                0.0
-                            };
-                            let height = (b - 0.25 * (a - c) * shift).clamp(0.0, 1.0);
-                            let lag = l as f64 + shift;
-                            peaks.push(Candidate {
-                                f0_hz: Some(sr / lag),
-                                // Longer lags (lower f0) pay a small octave cost.
-                                strength: height
-                                    - f64::from(self.octave_cost) * (self.fmin_hz * lag / sr).log2(),
-                            });
-                        }
-                    }
-                    peaks.sort_by(|a, b| b.strength.total_cmp(&a.strength));
-                    peaks.truncate(self.max_candidates);
-                    cands.extend(peaks);
-                }
-            }
+            frames.push(search.candidates(centre, peak, |j| samples.get(j).copied()));
             times.push(centre as f64 / sr);
-            frames.push(cands);
             centre += hop;
         }
         let path = best_path(
@@ -259,11 +311,7 @@ impl PitchEstimator for AutocorrEstimator {
                 PitchFrame {
                     time_s,
                     f0_hz: c.f0_hz.map(|f| f as f32),
-                    strength: c.f0_hz.map_or(0.0, |f| {
-                        // Report the raw peak height, undoing the octave cost.
-                        (c.strength + f64::from(self.octave_cost) * (self.fmin_hz / f).log2()).clamp(0.0, 1.0)
-                            as f32
-                    }),
+                    strength: search.raw_strength(&c),
                 }
             })
             .collect())
