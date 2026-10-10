@@ -67,8 +67,8 @@ pub struct PauseStats {
     pub speech_ratio: f64,
 }
 
-/// Level meter: the squared signal averaged under a Gaussian window, in dB relative to
-/// full scale. Samples beyond either end of the signal count as silence.
+/// Level meter: the mean-removed squared signal averaged under a Gaussian window, in dB
+/// relative to full scale. Samples beyond either end of the signal count as silence.
 pub(crate) struct LevelMeter {
     weights: Vec<f64>,
     total: f64,
@@ -101,16 +101,25 @@ impl LevelMeter {
     /// Level of the window centred on sample `centre` of a signal whose first
     /// sample held in `buf` is sample number `buf_start`.
     pub(crate) fn level(&self, buf: &[f32], buf_start: usize, centre: usize) -> f32 {
-        let acc: f64 = self
-            .weights
-            .iter()
-            .enumerate()
-            .filter_map(|(k, w)| {
-                let idx = (centre + k).checked_sub(self.half)?.checked_sub(buf_start)?;
-                buf.get(idx).map(|&x| w * f64::from(x) * f64::from(x))
-            })
-            .sum();
-        (10.0 * (acc / self.total).max(1e-12).log10()) as f32
+        // Weighted sums over the window: samples, and squares. The mean is removed so a
+        // DC offset or slow drift in the recording does not read as sound.
+        let (mut s1, mut s2) = (0.0_f64, 0.0_f64);
+        for (k, w) in self.weights.iter().enumerate() {
+            let Some(idx) = (centre + k)
+                .checked_sub(self.half)
+                .and_then(|i| i.checked_sub(buf_start))
+            else {
+                continue;
+            };
+            if let Some(&x) = buf.get(idx) {
+                let x = f64::from(x);
+                s1 += w * x;
+                s2 += w * x * x;
+            }
+        }
+        let mean = s1 / self.total;
+        let power = (s2 / self.total - mean * mean).max(0.0);
+        (10.0 * power.max(1e-12).log10()) as f32
     }
 }
 

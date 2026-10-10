@@ -18,7 +18,7 @@ Mark items `[x]` with the PR link when the draft PR is open. Last updated: 2026-
 - [x] `PROVENANCE.md` skeleton — PR claude/provenance-skeleton
 - [x] Synthetic fixture generator (sines, noise, known-answer signals) and `tools/oracle.py` (Parselmouth, offline only) emitting expected JSON — PR claude/tools-fixtures-oracle (generator run and works; oracle.py compiles but NOT run: Parselmouth not installed)
 - [x] Run `tools/oracle.py` on the synthetic clips with Parselmouth (0.4.7, Praat 6.1.38; pip-installs fine in the routine env, ~4 MB), commit the reference JSON, add a Rust test that loads it — PR claude/run-20261008-12-oracle-reference (reference = pure sines/harmonics only; jitter/shimmer/HNR on pure tones are ~0/>75 dB and not meaningful as accuracy targets, real speech clips still needed)
-- [ ] Real fixture set: 30+ CC0/consented clips (source chosen: Common Voice CC0 via a Hugging Face re-upload; 8 clips in so far, PR claude/run-20261009-15-real-speech)
+- [ ] Real fixture set: 30+ CC0/consented clips (source chosen: Common Voice CC0 via a Hugging Face re-upload; 20 clips in so far, PR claude/run-20261009-15-real-speech and claude/run-20261010-06-more-clips; still missing: whisper, child, breathy, other accents and languages)
 ### M1 Basic measures
 - [x] `dsp`: framing + resample to 16 kHz (`rubato`), unit tests — PR claude/run-20261008-14-resample (stacked on the LUFS PR; Unicode-3.0 allowed in deny.toml per omr; level matches Praat's own resample within 0.0003 dB)
 - [x] First measurement with tests: frame RMS dB (voice-core PR #1) + integrated LUFS via `ebur128` — PR claude/run-20261008-13-lufs (stacked on the oracle-reference PR; checked against the BS.1770 known answer, -3.01 LUFS for a full-scale 997 Hz sine; Praat has no LUFS; real speech clips and EBU 3341 files still to add)
@@ -30,7 +30,8 @@ Mark items `[x]` with the PR link when the draft PR is open. Last updated: 2026-
 - [x] First benchmark vs Praat on real speech: 8 Common Voice clips (CC0), median 4.3 ct from Praat, voicing agreement 0.94, 9.4% gross (octave) errors — PR claude/run-20261009-15-real-speech
 - [x] Cross-frame path search (Viterbi, Boersma 1993 costs) in `pitch`: gross errors 9.4% to 1.5% of both-voiced frames on the 8 clips, median 3.5 ct, voicing agreement 0.97; synthetic results unchanged — PR claude/run-20261009-17-pitch-path
 - [ ] Pitch path search on more clips (14 of the 25 remaining gross errors are in one clip, common_voice_en_665631) and on noisy/breathy voices
-- [ ] Noisy and breathy voices: add clips (noisy mic, whisper, child) to the real-speech set
+- [x] Noisy voices: 12 more clips (high noise floor, teens, female, other speakers), all 20 re-checked against Praat: pitch median 2.9 ct, agreement 0.96, gross errors 1.1%; pauses 18 of 20 same segment count; stream 85.7% plain, 94.4% seeded. Level meter now removes the window mean (fixed a DC offset case) — PR claude/run-20261010-06-more-clips
+- [ ] Whisper, child and breathy clips; find why clip 579883 (voicing agreement 0.85, ours lower) and 17714250 (0.90) disagree with Praat; pause miss on clip 17848293 (almost no level contrast)
 ### M1b Live basics
 - [x] Minimal streaming `Analyzer` (level + speech/silence per 10 ms frame, `push`/`finish`, chunk-size independent): levels equal the batch ones, speech flag agrees with Praat's silence detection on 88.5% of frames (95.4% when seeded with a reference level) — PR claude/run-20261010-05-stream
 - [ ] Streaming `Analyzer`: add live pitch and syllable pace; causal minimum-run smoothing for the speech flag

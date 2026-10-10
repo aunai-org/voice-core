@@ -196,7 +196,9 @@ mod tests {
     #[test]
     fn reference_level_makes_a_quiet_start_silent() {
         // Quiet room noise (about -50 dBFS) first, then speech-level tone.
-        let noise = vec![0.003_f32; SR as usize / 2];
+        let noise: Vec<f32> = (0..SR as usize / 2)
+            .map(|i| if i % 2 == 0 { 0.003 } else { -0.003 })
+            .collect();
         let mut x = noise.clone();
         x.extend(signal());
         let plain = run(160, &x);
