@@ -1,4 +1,5 @@
-//! Streaming analysis for live feedback: level, speech/silence and pitch per 10 ms frame.
+//! Streaming analysis for live feedback: level, speech/silence, pitch and syllable nuclei
+//! per 10 ms frame.
 //!
 //! Audio is pushed in chunks of any size; a [`FrameInfo`] is emitted for every frame
 //! whose analysis windows are complete, so a frame arrives about 20 ms after its centre
@@ -17,6 +18,12 @@
 //! The speech flag uses the same lookahead: it changes only once the new value has held
 //! for 0.1 s, so gaps and sounds shorter than that are ignored, as in the batch module.
 //!
+//! Syllable nuclei follow the batch rules of [`crate::pace`] (a voiced peak of the 64 ms
+//! level within 25 dB of the 99th percentile, 2 dB above the dip to the previous nucleus),
+//! with the percentile taken over the frames heard so far. Because a reported nucleus
+//! cannot be taken back, a peak that a higher one would replace more than 100 ms later is
+//! still reported, so the live count runs higher than the batch count.
+//!
 //! Limits: a loud sound early in the stream raises the bar for everything
 //! after it; [`Analyzer::with_reference_level`] fixes this when a typical
 //! level is known. The batch `pauses` module sees the whole recording and does not have
@@ -34,6 +41,10 @@ pub const SPEECH_FLOOR_DBFS: f32 = -70.0;
 const WINDOW_S: f64 = 0.032;
 const HOP_S: f64 = 0.01;
 const THRESHOLD_DB: f32 = 25.0;
+/// Intensity window of the syllable detector, as in [`crate::pace`].
+const PACE_WINDOW_S: f64 = 0.064;
+/// Minimum dip between neighbouring nuclei, in dB (the batch default).
+const MIN_DIP_DB: f32 = 2.0;
 
 /// Frames of lookahead for the pitch path search (100 ms).
 pub const PITCH_LAG_FRAMES: usize = 10;
@@ -53,11 +64,21 @@ pub struct FrameInfo {
     pub speech: bool,
     /// Estimated fundamental frequency in Hz, or `None` when the frame is unvoiced.
     pub f0_hz: Option<f32>,
+    /// Whether this frame is a syllable nucleus (a voiced peak of the 64 ms level that is
+    /// separated from the previous nucleus by a 2 dB dip; see [`crate::pace`]).
+    pub syllable_nucleus: bool,
 }
+
+/// Width of the level histogram bins in dB, and the level of its first bin.
+const HIST_STEP_DB: f32 = 0.1;
+const HIST_FLOOR_DB: f32 = -150.0;
 
 /// A frame waiting for its pitch decision.
 struct Pending {
     info: FrameInfo,
+    /// 64 ms Gaussian level for the syllable detector, `None` when the window is not fully
+    /// inside the stream.
+    pace_level: Option<f32>,
     cands: Vec<Candidate>,
     /// For each candidate, the best previous candidate on its path.
     back: Vec<usize>,
@@ -83,6 +104,16 @@ pub struct Analyzer {
     speech: bool,
     /// Best path score ending in each candidate of the newest pending frame.
     path_score: Vec<f64>,
+    pace_meter: LevelMeter,
+    /// Histogram of the 64 ms levels seen so far, for the 99th percentile.
+    hist: Vec<u32>,
+    hist_n: u32,
+    /// Lowest and highest 64 ms level seen so far.
+    pace_range: (f32, f32),
+    /// Level of the last released frame with a 64 ms level.
+    prev_pace: Option<f32>,
+    /// Level of the last nucleus and the lowest level since (and including) it.
+    nucleus: Option<(f32, f32)>,
     /// Running maximum of the absolute sample value, one entry per `buf` entry.
     peaks: Vec<f32>,
     /// Running maximum before `buf[0]`.
@@ -112,6 +143,12 @@ impl Analyzer {
             pending: VecDeque::new(),
             speech: false,
             path_score: Vec::new(),
+            pace_meter: LevelMeter::new(((PACE_WINDOW_S * sr).round() as usize).max(2)),
+            hist: vec![0; ((0.0 - HIST_FLOOR_DB) / HIST_STEP_DB) as usize + 1],
+            hist_n: 0,
+            pace_range: (f32::INFINITY, f32::NEG_INFINITY),
+            prev_pace: None,
+            nucleus: None,
             peaks: Vec::new(),
             peak_before: 0.0,
         })
@@ -126,7 +163,13 @@ impl Analyzer {
     }
 
     /// One step of the batch Viterbi search: extends every path by the new frame.
-    fn push_pending(&mut self, info: FrameInfo, cands: Vec<Candidate>) {
+    fn push_pending(&mut self, info: FrameInfo, pace_level: Option<f32>, cands: Vec<Candidate>) {
+        if let Some(l) = pace_level {
+            let bin = ((l - HIST_FLOOR_DB) / HIST_STEP_DB).clamp(0.0, (self.hist.len() - 1) as f32);
+            self.hist[bin as usize] += 1;
+            self.hist_n += 1;
+            self.pace_range = (self.pace_range.0.min(l), self.pace_range.1.max(l));
+        }
         let (jump, vu) = (
             f64::from(self.pitch_cfg.octave_jump_cost),
             f64::from(self.pitch_cfg.voiced_unvoiced_cost),
@@ -154,7 +197,12 @@ impl Analyzer {
             score.push(best + cur.strength);
         }
         self.path_score = score;
-        self.pending.push_back(Pending { info, cands, back });
+        self.pending.push_back(Pending {
+            info,
+            pace_level,
+            cands,
+            back,
+        });
     }
 
     /// Candidate index chosen for each pending frame by the best path ending at the newest one.
@@ -193,14 +241,90 @@ impl Analyzer {
         self.speech
     }
 
+    /// 99th percentile of the 64 ms levels seen so far, to the histogram's resolution.
+    fn level_p99(&self) -> f32 {
+        let target = ((self.hist_n - 1) as f64 * 0.99).round() as u32;
+        let mut seen = 0;
+        for (i, &c) in self.hist.iter().enumerate() {
+            seen += c;
+            if seen > target {
+                return HIST_FLOOR_DB + (i as f32 + 0.5) * HIST_STEP_DB;
+            }
+        }
+        0.0
+    }
+
+    /// Whether a later pending frame (within the lookahead) would take this peak's place
+    /// in the batch rules: a higher voiced peak with no 2 dB dip between them.
+    fn replaced_soon(&self, level: f32, path: &[usize]) -> bool {
+        let mut low = level;
+        for (j, &choice) in path.iter().enumerate().take(self.pending.len() - 1).skip(1) {
+            let (Some(prev), Some(l), Some(next)) = (
+                self.pending[j - 1].pace_level,
+                self.pending[j].pace_level,
+                self.pending[j + 1].pace_level,
+            ) else {
+                return false;
+            };
+            low = low.min(l);
+            let voiced = self.pending[j].cands[choice].f0_hz.is_some();
+            if l > prev && l >= next && voiced {
+                if level - low >= MIN_DIP_DB && l - low >= MIN_DIP_DB {
+                    return false;
+                }
+                if l > level {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
+    /// Whether the oldest pending frame is a syllable nucleus, given whether it is voiced
+    /// and the chosen candidates of the pending frames.
+    /// The rules are the batch ones ([`crate::pace`]) applied causally: a peak that is not
+    /// separated from the previous nucleus by a dip cannot take that nucleus back, and a
+    /// peak is held back when a higher one follows within the lookahead without a dip.
+    fn is_nucleus(&mut self, voiced: bool, path: &[usize]) -> bool {
+        let Some(level) = self.pending[0].pace_level else {
+            return false;
+        };
+        let prev = self.prev_pace.replace(level);
+        let next = self.pending.get(1).and_then(|p| p.pace_level);
+        if let Some((_, low)) = self.nucleus.as_mut() {
+            *low = low.min(level);
+        }
+        let is_peak = matches!((prev, next), (Some(a), Some(b)) if level > a && level >= b);
+        let moves = self.pace_range.1 - self.pace_range.0 >= MIN_DIP_DB;
+        if !is_peak || !voiced || !moves || level < self.level_p99() - THRESHOLD_DB {
+            return false;
+        }
+        if let Some((last, low)) = self.nucleus {
+            if last - low < MIN_DIP_DB || level - low < MIN_DIP_DB {
+                if level > last {
+                    self.nucleus = Some((level, level));
+                }
+                return false;
+            }
+        }
+        if self.replaced_soon(level, path) {
+            return false;
+        }
+        self.nucleus = Some((level, level));
+        true
+    }
+
     /// Decides and removes the oldest pending frame.
     fn release(&mut self) -> FrameInfo {
-        let choice = self.best_path()[0];
+        let path = self.best_path();
         let speech = self.smoothed_speech();
+        let f0_hz = self.pending[0].cands[path[0]].f0_hz;
+        let syllable_nucleus = self.is_nucleus(f0_hz.is_some(), &path);
         let p = self.pending.pop_front().expect("pending frame");
         FrameInfo {
             speech,
-            f0_hz: p.cands[choice].f0_hz.map(|f| f as f32),
+            f0_hz: f0_hz.map(|f| f as f32),
+            syllable_nucleus,
             ..p.info
         }
     }
@@ -208,8 +332,10 @@ impl Analyzer {
     fn emit(&mut self, out: &mut Vec<FrameInfo>, flush: bool) {
         loop {
             let centre = self.next_frame * self.hop;
+            let pace_half = self.pace_meter.half();
             let window_end = (centre + self.meter.len() - self.meter.half())
-                .max(centre + self.search.window_len() - self.search.half());
+                .max(centre + self.search.window_len() - self.search.half())
+                .max(centre + self.pace_meter.len() - pace_half);
             if flush {
                 if centre >= self.total {
                     break;
@@ -233,21 +359,29 @@ impl Analyzer {
                     None
                 }
             });
+            // Like the batch detector, only frames whose whole window lies inside the stream.
+            let pace_level = (centre >= pace_half && centre + pace_half <= self.total)
+                .then(|| self.pace_meter.level(&self.buf, self.buf_start, centre));
             let info = FrameInfo {
                 time_s: centre as f64 / f64::from(self.sample_rate),
                 level_dbfs: level,
                 speech: level > SPEECH_FLOOR_DBFS && level >= self.max_level - THRESHOLD_DB,
                 f0_hz: None,
+                syllable_nucleus: false,
             };
-            self.push_pending(info, cands);
+            self.push_pending(info, pace_level, cands);
             while self.pending.len() > PITCH_LAG_FRAMES {
                 out.push(self.release());
             }
             self.next_frame += 1;
         }
         // Drop samples the next window no longer reaches.
-        let keep_from =
-            (self.next_frame * self.hop).saturating_sub(self.meter.half().max(self.search.half()));
+        let keep_from = (self.next_frame * self.hop).saturating_sub(
+            self.meter
+                .half()
+                .max(self.search.half())
+                .max(self.pace_meter.half()),
+        );
         let drop = keep_from.saturating_sub(self.buf_start).min(self.buf.len());
         if drop > 0 {
             self.peak_before = self.peaks[drop - 1];
@@ -277,12 +411,15 @@ impl Analyzer {
         let mut out = Vec::new();
         self.emit(&mut out, true);
         let path = self.best_path();
-        for choice in path {
+        for (i, &choice) in path.iter().enumerate() {
             let speech = self.smoothed_speech();
+            let f0_hz = self.pending[0].cands[choice].f0_hz;
+            let syllable_nucleus = self.is_nucleus(f0_hz.is_some(), &path[i..]);
             let p = self.pending.pop_front().expect("pending frame");
             out.push(FrameInfo {
                 speech,
-                f0_hz: p.cands[choice].f0_hz.map(|f| f as f32),
+                f0_hz: f0_hz.map(|f| f as f32),
+                syllable_nucleus,
                 ..p.info
             });
         }
@@ -345,10 +482,10 @@ mod tests {
     #[test]
     fn frames_arrive_with_a_short_delay() {
         let mut a = Analyzer::new(SR).unwrap();
-        // Frame 0 is centred on sample 0 and needs 20 ms (321 samples) for the 40 ms pitch
+        // Frame 0 is centred on sample 0 and needs 32 ms (512 samples) for the 64 ms syllable
         // window; frame 0 is reported once the 10 later frames are complete (100 ms more).
         let hop = 160;
-        assert!(a.push(&vec![0.1; 320 + PITCH_LAG_FRAMES * hop]).is_empty());
+        assert!(a.push(&vec![0.1; 511 + PITCH_LAG_FRAMES * hop]).is_empty());
         assert_eq!(a.push(&[0.1]).len(), 1);
     }
 
@@ -415,6 +552,22 @@ mod tests {
         assert!(at(1.865), "short gap counted as a pause");
         assert!(at(2.4));
         assert!(!at(3.0));
+    }
+
+    #[test]
+    fn syllable_bursts_are_counted() {
+        // Four voiced bursts per second for 3 s, as raised-cosine envelopes on a 150 Hz tone.
+        let x: Vec<f32> = (0..SR as usize * 3)
+            .map(|i| {
+                let t = i as f32 / SR as f32;
+                let env = 0.5 * (1.0 - (2.0 * std::f32::consts::PI * 4.0 * t).cos());
+                0.5 * env * (2.0 * std::f32::consts::PI * 150.0 * t).sin()
+            })
+            .collect();
+        let n = run(160, &x).iter().filter(|f| f.syllable_nucleus).count();
+        assert!((11..=13).contains(&n), "{n} nuclei for 12 bursts");
+        let none = run(160, &vec![0.0; SR as usize]);
+        assert!(none.iter().all(|f| !f.syllable_nucleus));
     }
 
     #[test]

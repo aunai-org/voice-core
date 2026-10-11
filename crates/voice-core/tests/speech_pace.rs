@@ -6,6 +6,7 @@
 use serde_json::Value;
 use std::path::PathBuf;
 use voice_core::pace::{syllable_nuclei, PaceConfig};
+use voice_core::stream::Analyzer;
 
 const SR: u32 = 16_000;
 /// A nucleus matches a reference nucleus within this many seconds.
@@ -89,4 +90,69 @@ fn syllable_nuclei_against_praat_based_reference() {
     // Regression bounds, set just inside the measured values.
     assert!(hit as f64 / ref_n as f64 > 0.98, "recall");
     assert!(hit as f64 / ours_n as f64 > 0.9, "precision");
+}
+
+#[test]
+fn streaming_nuclei_against_praat_based_reference_and_batch() {
+    let r: Value = serde_json::from_str(include_str!("data/speech_pace_oracle.json")).unwrap();
+    // Totals: streaming count, reference count, matched with reference, batch count, matched with batch.
+    let mut t = [0usize; 5];
+    for (id, c) in r["clips"].as_object().unwrap() {
+        let reference: Vec<f64> = c["praat_times_s"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|v| v.as_f64().unwrap())
+            .collect();
+        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("tests/data/speech")
+            .join(format!("{id}.wav"));
+        let samples = read_wav(&path);
+        let batch = syllable_nuclei(&samples, SR, &PaceConfig::default()).unwrap();
+        let mut a = Analyzer::new(SR).unwrap();
+        let mut frames = Vec::new();
+        // 20 ms chunks, as a microphone callback would deliver them.
+        for chunk in samples.chunks(320) {
+            frames.extend(a.push(chunk));
+        }
+        frames.extend(a.finish());
+        let live: Vec<f64> = frames
+            .iter()
+            .filter(|f| f.syllable_nucleus)
+            .map(|f| f.time_s)
+            .collect();
+        let (mr, mb) = (matched(&live, &reference), matched(&live, &batch));
+        println!(
+            "{id}: streaming {}, batch {}, reference {}, matched reference {mr}, matched batch {mb}",
+            live.len(),
+            batch.len(),
+            reference.len()
+        );
+        for (acc, v) in t
+            .iter_mut()
+            .zip([live.len(), reference.len(), mr, batch.len(), mb])
+        {
+            *acc += v;
+        }
+    }
+    println!(
+        "ALL: streaming {}, batch {}, reference {} | vs reference: recall {:.3}, precision {:.3} | vs batch: recall {:.3}, precision {:.3}",
+        t[0],
+        t[3],
+        t[1],
+        t[2] as f64 / t[1] as f64,
+        t[2] as f64 / t[0] as f64,
+        t[4] as f64 / t[3] as f64,
+        t[4] as f64 / t[0] as f64
+    );
+    // Regression bounds, set just inside the measured values.
+    assert!(t[2] as f64 / t[1] as f64 > 0.9, "recall against the reference");
+    assert!(
+        t[2] as f64 / t[0] as f64 > 0.78,
+        "precision against the reference"
+    );
+    assert!(
+        t[4] as f64 / t[3] as f64 > 0.9,
+        "recall against the batch detector"
+    );
 }
