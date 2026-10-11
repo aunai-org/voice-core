@@ -99,10 +99,10 @@ fn streaming_flags_against_praat_and_batch() {
         f(t[3]),
         f(t[4])
     );
-    // Frame-by-frame decisions with no minimum run lengths cannot match the batch
-    // segmentation exactly; these bounds guard against regressions.
-    assert!(f(t[1]) > 0.85, "plain agreement with Praat {}", f(t[1]));
-    assert!(f(t[3]) > 0.93, "seeded agreement with Praat {}", f(t[3]));
+    // The flag is judged against the loudest frame heard so far, so it cannot match the
+    // batch segmentation exactly; these bounds guard against regressions.
+    assert!(f(t[1]) > 0.86, "plain agreement with Praat {}", f(t[1]));
+    assert!(f(t[3]) > 0.95, "seeded agreement with Praat {}", f(t[3]));
 }
 
 #[test]
