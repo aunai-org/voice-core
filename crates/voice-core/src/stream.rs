@@ -14,10 +14,11 @@
 //! about 120 ms after its centre, and the track can still differ from the batch one
 //! where a decision needs more than 100 ms of context.
 //!
-//! Limits: the decision is made frame by frame with no minimum run lengths, so it
-//! flickers at word edges, short gaps under 0.1 s show as silence and short sounds
-//! count as speech, and a loud sound early in the stream raises the bar for everything
-//! after it; [`Analyzer::with_reference_level`] fixes the last problem when a typical
+//! The speech flag uses the same lookahead: it changes only once the new value has held
+//! for 0.1 s, so gaps and sounds shorter than that are ignored, as in the batch module.
+//!
+//! Limits: a loud sound early in the stream raises the bar for everything
+//! after it; [`Analyzer::with_reference_level`] fixes this when a typical
 //! level is known. The batch `pauses` module sees the whole recording and does not have
 //! these limits; use it for the final numbers.
 
@@ -36,6 +37,10 @@ const THRESHOLD_DB: f32 = 25.0;
 
 /// Frames of lookahead for the pitch path search (100 ms).
 pub const PITCH_LAG_FRAMES: usize = 10;
+
+/// The speech flag only changes after this many frames (0.1 s) of the new value, as in
+/// the batch [`crate::pauses`] defaults. Needs the lookahead above.
+const SPEECH_MIN_RUN_FRAMES: usize = 10;
 
 /// What is known about one 10 ms frame.
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -74,6 +79,8 @@ pub struct Analyzer {
     pitch_cfg: AutocorrEstimator,
     /// Frames whose pitch is not decided yet, oldest first.
     pending: VecDeque<Pending>,
+    /// Speech flag of the last released frame, after the minimum-run rule.
+    speech: bool,
     /// Best path score ending in each candidate of the newest pending frame.
     path_score: Vec<f64>,
     /// Running maximum of the absolute sample value, one entry per `buf` entry.
@@ -103,6 +110,7 @@ impl Analyzer {
             search,
             pitch_cfg,
             pending: VecDeque::new(),
+            speech: false,
             path_score: Vec::new(),
             peaks: Vec::new(),
             peak_before: 0.0,
@@ -166,11 +174,32 @@ impl Analyzer {
         path
     }
 
+    /// Speech flag of the oldest pending frame: it differs from the previous frame's flag
+    /// only when the raw flag keeps the new value for [`SPEECH_MIN_RUN_FRAMES`] frames
+    /// from here (or to the end of the stream, which is then too short and is ignored).
+    fn smoothed_speech(&mut self) -> bool {
+        let raw = self.pending[0].info.speech;
+        if raw != self.speech {
+            let run = self
+                .pending
+                .iter()
+                .take(SPEECH_MIN_RUN_FRAMES)
+                .take_while(|p| p.info.speech == raw)
+                .count();
+            if run >= SPEECH_MIN_RUN_FRAMES {
+                self.speech = raw;
+            }
+        }
+        self.speech
+    }
+
     /// Decides and removes the oldest pending frame.
     fn release(&mut self) -> FrameInfo {
         let choice = self.best_path()[0];
+        let speech = self.smoothed_speech();
         let p = self.pending.pop_front().expect("pending frame");
         FrameInfo {
+            speech,
             f0_hz: p.cands[choice].f0_hz.map(|f| f as f32),
             ..p.info
         }
@@ -248,8 +277,11 @@ impl Analyzer {
         let mut out = Vec::new();
         self.emit(&mut out, true);
         let path = self.best_path();
-        for (p, choice) in self.pending.drain(..).zip(path) {
+        for choice in path {
+            let speech = self.smoothed_speech();
+            let p = self.pending.pop_front().expect("pending frame");
             out.push(FrameInfo {
+                speech,
                 f0_hz: p.cands[choice].f0_hz.map(|f| f as f32),
                 ..p.info
             });
@@ -359,6 +391,30 @@ mod tests {
         assert!(at(1.5).is_none());
         let f = at(2.0).expect("voiced in the quiet tone");
         assert!((f - 180.0).abs() < 2.0, "{f}");
+    }
+
+    #[test]
+    fn short_clicks_and_gaps_do_not_flip_the_flag() {
+        let tone = |secs: f32| -> Vec<f32> {
+            (0..(SR as f32 * secs) as usize)
+                .map(|i| 0.5 * (2.0 * std::f32::consts::PI * 180.0 * i as f32 / SR as f32).sin())
+                .collect()
+        };
+        let gap = |secs: f32| vec![0.0; (SR as f32 * secs) as usize];
+        let mut x = gap(0.5);
+        x.extend(tone(0.04)); // a click, well under 0.1 s
+        x.extend(gap(0.5));
+        x.extend(tone(0.8));
+        x.extend(gap(0.05)); // a gap well under 0.1 s
+        x.extend(tone(0.8));
+        x.extend(gap(0.5));
+        let frames = run(160, &x);
+        let at = |t: f64| frames.iter().find(|f| f.time_s >= t).unwrap().speech;
+        assert!(!at(0.52), "click counted as speech");
+        assert!(at(1.5));
+        assert!(at(1.865), "short gap counted as a pause");
+        assert!(at(2.4));
+        assert!(!at(3.0));
     }
 
     #[test]
