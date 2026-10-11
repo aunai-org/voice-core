@@ -96,7 +96,7 @@ pub fn syllable_nuclei(samples: &[f32], sample_rate: u32, config: &PaceConfig) -
     if hi - lo < config.min_dip_db {
         return Ok(Vec::new());
     }
-    let threshold = percentile(&levels, 0.99) - config.range_db;
+    let threshold = percentile(levels, 0.99) - config.range_db;
     let mut nuclei: Vec<usize> = Vec::new();
     for i in 1..levels.len() - 1 {
         let is_peak = levels[i] > levels[i - 1] && levels[i] >= levels[i + 1];
