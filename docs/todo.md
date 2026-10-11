@@ -38,7 +38,8 @@ Mark items `[x]` with the PR link when the draft PR is open. Last updated: 2026-
 - [x] Streaming `Analyzer`: live pitch per frame (strongest candidate, no path search): voicing agreement with Praat 90.8% (batch 97.9%), median 3.3 ct, 7.0% of both-voiced frames more than 300 ct off (batch 0.9%) — PR claude/run-20261010-12-stream-pitch
 - [x] Live pitch: transition costs from the previous frame (batch octave-jump and voiced/unvoiced costs, no lookahead): voicing agreement with Praat 90.8% to 92.2%, gross errors 7.0% to 6.0%, median 3.2 ct — PR claude/run-20261010-14-stream-pitch-jump
 - [x] Live pitch: fixed-lag Viterbi, 100 ms lookahead (`PITCH_LAG_FRAMES`): voicing agreement with Praat 92.2% to 94.9%, gross errors 6.0% to 1.4%, median 2.9 ct — PR claude/run-20261010-16-fixed-lag
-- [ ] Streaming `Analyzer`: live syllable pace; causal minimum-run smoothing for the speech flag
+- [x] Streaming speech flag: 0.1 s minimum runs using the 100 ms lookahead (same rule as batch `pauses`): agreement with Praat 85.7% to 86.8% plain, 94.4% to 95.8% seeded — voice-core PR claude/run-20261011-09-stream-flag
+- [ ] Streaming `Analyzer`: live syllable pace (needs pace checked on real speech against Praat first: today only synthetic bursts)
 ### M2 Pace and quality
 - [x] Syllable-rate pace (de Jong & Wempe) — PR claude/run-20261009-11-pace (synthetic tone bursts only; counts match truth and a Praat-intensity-based reference; no real speech yet)
 - [x] Quality warnings: too short, clipped, too quiet in `analyze` report — PR claude/run-20261009-12-quality (thresholds are defaults, no Praat equivalent)
