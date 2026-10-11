@@ -87,6 +87,6 @@ fn syllable_nuclei_against_praat_based_reference() {
         100.0 * (ours_n as f64 - ref_n as f64) / ref_n as f64
     );
     // Regression bounds, set just inside the measured values.
-    assert!(hit as f64 / ref_n as f64 > 0.95, "recall");
-    assert!(hit as f64 / ours_n as f64 > 0.78, "precision");
+    assert!(hit as f64 / ref_n as f64 > 0.98, "recall");
+    assert!(hit as f64 / ours_n as f64 > 0.9, "precision");
 }
