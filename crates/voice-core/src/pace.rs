@@ -10,17 +10,18 @@
 //!    sides (two peaks without such a dip merge into the higher one), and
 //! 3. falls on a voiced frame of the pitch track.
 //!
-//! Limits: validated on synthetic syllable-like bursts only; real speech (fast
-//! speech, vowel-less syllables, noisy recordings) has not been tested.
+//! Limits: checked on synthetic syllable-like bursts and, against a Praat-based detector
+//! with the same rules, on twenty real clips; there is no human syllable count, and fast
+//! speech and vowel-less syllables are untested.
 
-use crate::loudness::frame_rms_db;
+use crate::pauses::{smoothed_levels, LevelMeter};
 use crate::pitch::{AutocorrEstimator, PitchEstimator};
 use crate::Error;
 
 /// Settings for syllable-nucleus detection.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct PaceConfig {
-    /// Length of the intensity window in seconds.
+    /// Length of the Gaussian intensity window in seconds.
     pub frame_s: f64,
     /// Time between intensity frames in seconds.
     pub hop_s: f64,
@@ -31,10 +32,10 @@ pub struct PaceConfig {
 }
 
 impl Default for PaceConfig {
-    /// 32 ms window, 10 ms hop, 25 dB range, 2 dB dip.
+    /// 64 ms Gaussian window (Praat's for a 50 Hz minimum pitch), 10 ms hop, 25 dB range, 2 dB dip.
     fn default() -> Self {
         Self {
-            frame_s: 0.032,
+            frame_s: 0.064,
             hop_s: 0.01,
             range_db: 25.0,
             min_dip_db: 2.0,
@@ -62,12 +63,21 @@ pub fn syllable_nuclei(samples: &[f32], sample_rate: u32, config: &PaceConfig) -
     let sr = f64::from(sample_rate);
     let frame_len = ((config.frame_s * sr).round() as usize).max(1);
     let hop = ((config.hop_s * sr).round() as usize).max(1);
-    let levels = frame_rms_db(samples, frame_len, hop)?;
+    // Like Praat's intensity, keep only frames whose whole window lies inside the signal:
+    // the window would otherwise see silence beyond the ends and fake a rise and fall.
+    let half = LevelMeter::new(frame_len.max(2)).half();
+    let all = smoothed_levels(samples, frame_len.max(2), hop);
+    let first = half.div_ceil(hop);
+    let end = ((samples.len().saturating_sub(half)) / hop + 1).min(all.len());
+    if end < first + 3 {
+        return Ok(Vec::new());
+    }
+    let levels = &all[first..end];
     if levels.len() < 3 {
         return Ok(Vec::new());
     }
     let pitch = AutocorrEstimator::default().estimate(samples, sample_rate)?;
-    let time_of = |i: usize| (i * hop + frame_len / 2) as f64 / sr;
+    let time_of = |i: usize| ((first + i) * hop) as f64 / sr;
     let voiced = |t: f64| -> bool {
         let Some(first) = pitch.first() else {
             return false;
@@ -86,7 +96,7 @@ pub fn syllable_nuclei(samples: &[f32], sample_rate: u32, config: &PaceConfig) -
     if hi - lo < config.min_dip_db {
         return Ok(Vec::new());
     }
-    let threshold = percentile(&levels, 0.99) - config.range_db;
+    let threshold = percentile(levels, 0.99) - config.range_db;
     let mut nuclei: Vec<usize> = Vec::new();
     for i in 1..levels.len() - 1 {
         let is_peak = levels[i] > levels[i - 1] && levels[i] >= levels[i + 1];
