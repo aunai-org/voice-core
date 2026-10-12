@@ -23,7 +23,7 @@ It takes plain mono `f32` samples (in [-1, 1]) plus a sample rate and returns nu
 | `pitch` | `AutocorrEstimator` (via the `PitchEstimator` trait), `median_f0`, `voiced_fraction` | Fundamental frequency (f0) track, 10 ms frames, 75 to 600 Hz, autocorrelation method after Boersma 1993; median f0 and voiced fraction summaries |
 | `pace` | `syllable_nuclei`, `syllables_per_second` | Syllable nuclei (intensity peaks that are voiced and separated by a 2 dB dip, after de Jong and Wempe 2009) and syllables per second over the recording; the intensity contour is a 64 ms Gaussian level, as Praat's for 50 Hz |
 | `pauses` | `speech_segments`, `pause_stats` | Speech/silence segmentation: frames within 25 dB of the loudest frame are sounding, sounding runs under 0.1 s are dropped and silent gaps under 0.1 s are filled; pause count, total and longest pause, speech ratio. Leading and trailing silence is not a pause |
-| `stream` | `Analyzer` (`push`, `finish`) | Live feedback: push audio in chunks of any size and get a level (dBFS), a speech/silence flag, a pitch (f0) and a syllable-nucleus flag for every 10 ms frame, about 20 ms after its centre (120 ms for all three, which look 100 ms ahead). Levels equal the batch ones; the speech flag ignores sounds and gaps shorter than 0.1 s but is still judged against the loudest frame heard so far, so it is rougher than `pauses` (see limits below) |
+| `stream` | `Analyzer` (`push`, `finish`) | Live feedback: push audio in chunks of any size and get a level (dBFS), a speech/silence flag, a pitch (f0), a syllable-nucleus flag and a syllable rate (syllables per second over the last 3 s, from the first second on) for every 10 ms frame, about 20 ms after its centre (120 ms for all three, which look 100 ms ahead). Levels equal the batch ones; the speech flag ignores sounds and gaps shorter than 0.1 s but is still judged against the loudest frame heard so far, so it is rougher than `pauses` (see limits below) |
 | `quality` | `check`, `Warning` | Cheap recording checks: too short (under 1 s), clipped (0.1% of samples at full scale), too quiet (RMS under -50 dBFS). Thresholds are practical defaults, not from a standard; "noisy" is not covered yet |
 | crate root | `analyze` returning `VoiceReport` | One call for a whole recording: duration, RMS level (dBFS), integrated loudness (LUFS), median f0, voiced fraction, syllable count, syllables per second, pause count, total and longest pause, and quality warnings; serializable to JSON with serde |
 
@@ -33,7 +33,7 @@ Levels are **relative** (dBFS / LUFS, full scale = 0): phone microphones are not
 
 ## What is planned
 
-Jitter, shimmer and HNR, a noise warning, and a live pace rate in the streaming `Analyzer` (today it reports level, speech/silence, pitch and syllable nuclei). Accuracy targets and how they are checked are in [docs/spec.md](docs/spec.md) section 7; measured numbers will be published here once the benchmark exists.
+Jitter, shimmer and HNR, and a noise warning (the streaming `Analyzer` today reports level, speech/silence, pitch, syllable nuclei and a 3 s syllable rate). Accuracy targets and how they are checked are in [docs/spec.md](docs/spec.md) section 7; measured numbers will be published here once the benchmark exists.
 
 ## Usage
 

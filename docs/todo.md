@@ -41,7 +41,8 @@ Mark items `[x]` with the PR link when the draft PR is open. Last updated: 2026-
 - [x] Streaming speech flag: 0.1 s minimum runs using the 100 ms lookahead (same rule as batch `pauses`): agreement with Praat 85.7% to 86.8% plain, 94.4% to 95.8% seeded — voice-core PR claude/run-20261011-09-stream-flag
 - [x] Pace on 20 real clips vs a Praat-intensity-based detector (same de Jong & Wempe rules): first run recall 97.6%, precision 80.8% (we found 21% more nuclei); intensity now the 64 ms Gaussian level over frames fully inside the signal, as Praat's for 50 Hz: recall 99.2%, precision 92.1%, +7.7% nuclei; synthetic results unchanged — voice-core PR claude/run-20261011-10-pace-real
 - [x] Streaming `Analyzer`: syllable-nucleus flag per frame (batch pace rules, causal, 100 ms lookahead): vs the Praat-based detector recall 92.3%, precision 80.8%, +14% nuclei (batch 99.2%, 92.1%, +7.7%; a live nucleus cannot be taken back when a higher peak follows later) — voice-core PR #33
-- [ ] Streaming pace rate (syllables per second over a sliding window of nuclei); fewer extra live nuclei (longer lag for nuclei only?)
+- [x] Streaming `Analyzer`: syllable rate over a 3 s sliding window of nuclei (`syllable_rate_hz`, from 1 s on): same as the batch rate in the median (0.00 syll/s), 95th percentile 0.33; vs the Praat-based reference median 0.33, 95th percentile 0.67 — voice-core PR claude/run-20261012-05-stream-rate
+- [ ] Fewer extra live nuclei (+14% vs reference; longer lag for nuclei only?)
 ### M2 Pace and quality
 - [x] Syllable-rate pace (de Jong & Wempe) — PR claude/run-20261009-11-pace (synthetic tone bursts only; counts match truth and a Praat-intensity-based reference; no real speech yet)
 - [x] Quality warnings: too short, clipped, too quiet in `analyze` report — PR claude/run-20261009-12-quality (thresholds are defaults, no Praat equivalent)

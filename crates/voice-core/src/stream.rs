@@ -45,6 +45,10 @@ const THRESHOLD_DB: f32 = 25.0;
 const PACE_WINDOW_S: f64 = 0.064;
 /// Minimum dip between neighbouring nuclei, in dB (the batch default).
 const MIN_DIP_DB: f32 = 2.0;
+/// Length of the sliding window of the syllable rate, in seconds.
+pub const RATE_WINDOW_S: f64 = 3.0;
+/// The rate is reported from this much audio on; a shorter window is too noisy.
+const RATE_MIN_S: f64 = 1.0;
 
 /// Frames of lookahead for the pitch path search (100 ms).
 pub const PITCH_LAG_FRAMES: usize = 10;
@@ -67,6 +71,10 @@ pub struct FrameInfo {
     /// Whether this frame is a syllable nucleus (a voiced peak of the 64 ms level that is
     /// separated from the previous nucleus by a 2 dB dip; see [`crate::pace`]).
     pub syllable_nucleus: bool,
+    /// Syllables per second over the last [`RATE_WINDOW_S`] seconds up to this frame
+    /// (nuclei in the window divided by its length, pauses included, as the batch
+    /// [`crate::pace::syllables_per_second`]). `None` in the first second of the stream.
+    pub syllable_rate_hz: Option<f32>,
 }
 
 /// Width of the level histogram bins in dB, and the level of its first bin.
@@ -114,6 +122,8 @@ pub struct Analyzer {
     prev_pace: Option<f32>,
     /// Level of the last nucleus and the lowest level since (and including) it.
     nucleus: Option<(f32, f32)>,
+    /// Times of the nuclei inside the rate window.
+    nucleus_times: VecDeque<f64>,
     /// Running maximum of the absolute sample value, one entry per `buf` entry.
     peaks: Vec<f32>,
     /// Running maximum before `buf[0]`.
@@ -149,6 +159,7 @@ impl Analyzer {
             pace_range: (f32::INFINITY, f32::NEG_INFINITY),
             prev_pace: None,
             nucleus: None,
+            nucleus_times: VecDeque::new(),
             peaks: Vec::new(),
             peak_before: 0.0,
         })
@@ -314,6 +325,22 @@ impl Analyzer {
         true
     }
 
+    /// Syllable rate over the window that ends at `time_s`.
+    fn rate(&mut self, time_s: f64, nucleus: bool) -> Option<f32> {
+        if nucleus {
+            self.nucleus_times.push_back(time_s);
+        }
+        while self
+            .nucleus_times
+            .front()
+            .is_some_and(|&t| t <= time_s - RATE_WINDOW_S)
+        {
+            self.nucleus_times.pop_front();
+        }
+        let span = time_s.min(RATE_WINDOW_S);
+        (span >= RATE_MIN_S).then(|| (self.nucleus_times.len() as f64 / span) as f32)
+    }
+
     /// Decides and removes the oldest pending frame.
     fn release(&mut self) -> FrameInfo {
         let path = self.best_path();
@@ -321,10 +348,12 @@ impl Analyzer {
         let f0_hz = self.pending[0].cands[path[0]].f0_hz;
         let syllable_nucleus = self.is_nucleus(f0_hz.is_some(), &path);
         let p = self.pending.pop_front().expect("pending frame");
+        let syllable_rate_hz = self.rate(p.info.time_s, syllable_nucleus);
         FrameInfo {
             speech,
             f0_hz: f0_hz.map(|f| f as f32),
             syllable_nucleus,
+            syllable_rate_hz,
             ..p.info
         }
     }
@@ -368,6 +397,7 @@ impl Analyzer {
                 speech: level > SPEECH_FLOOR_DBFS && level >= self.max_level - THRESHOLD_DB,
                 f0_hz: None,
                 syllable_nucleus: false,
+                syllable_rate_hz: None,
             };
             self.push_pending(info, pace_level, cands);
             while self.pending.len() > PITCH_LAG_FRAMES {
@@ -416,10 +446,12 @@ impl Analyzer {
             let f0_hz = self.pending[0].cands[choice].f0_hz;
             let syllable_nucleus = self.is_nucleus(f0_hz.is_some(), &path[i..]);
             let p = self.pending.pop_front().expect("pending frame");
+            let syllable_rate_hz = self.rate(p.info.time_s, syllable_nucleus);
             out.push(FrameInfo {
                 speech,
                 f0_hz: f0_hz.map(|f| f as f32),
                 syllable_nucleus,
+                syllable_rate_hz,
                 ..p.info
             });
         }
@@ -568,6 +600,31 @@ mod tests {
         assert!((11..=13).contains(&n), "{n} nuclei for 12 bursts");
         let none = run(160, &vec![0.0; SR as usize]);
         assert!(none.iter().all(|f| !f.syllable_nucleus));
+    }
+
+    #[test]
+    fn syllable_rate_follows_the_burst_rate() {
+        // 4 bursts per second for 6 s, then silence for 4 s.
+        let x: Vec<f32> = (0..SR as usize * 10)
+            .map(|i| {
+                let t = i as f32 / SR as f32;
+                let env = 0.5 * (1.0 - (2.0 * std::f32::consts::PI * 4.0 * t).cos());
+                if t < 6.0 {
+                    0.5 * env * (2.0 * std::f32::consts::PI * 150.0 * t).sin()
+                } else {
+                    0.0
+                }
+            })
+            .collect();
+        let frames = run(160, &x);
+        let at = |s: f64| frames.iter().find(|f| f.time_s >= s).unwrap();
+        assert!(at(0.5).syllable_rate_hz.is_none(), "too early for a rate");
+        for s in [3.0, 5.5] {
+            let r = at(s).syllable_rate_hz.unwrap();
+            assert!((3.4..=4.6).contains(&r), "{r} syllables/s at {s} s");
+        }
+        // Three seconds after the last burst the window is empty.
+        assert_eq!(at(9.5).syllable_rate_hz, Some(0.0));
     }
 
     #[test]
