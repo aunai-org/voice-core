@@ -9,11 +9,11 @@
 //!
 //! Pitch uses the same per-frame candidates and transition costs as the batch
 //! [`crate::pitch`] tracker, but the path search looks ahead only [`PITCH_LAG_FRAMES`]
-//! frames (100 ms): a frame is reported once that many later frames have been heard, by
+//! frames (150 ms): a frame is reported once that many later frames have been heard, by
 //! tracing back from the best path at that point. Frame loudness is judged against the
 //! loudest sample heard up to the end of the frame's window. A frame therefore arrives
-//! about 120 ms after its centre, and the track can still differ from the batch one
-//! where a decision needs more than 100 ms of context.
+//! about 170 ms after its centre, and the track can still differ from the batch one
+//! where a decision needs more than 150 ms of context.
 //!
 //! The speech flag uses the same lookahead: it changes only once the new value has held
 //! for 0.1 s, so gaps and sounds shorter than that are ignored, as in the batch module.
@@ -21,7 +21,7 @@
 //! Syllable nuclei follow the batch rules of [`crate::pace`] (a voiced peak of the 64 ms
 //! level within 25 dB of the 99th percentile, 2 dB above the dip to the previous nucleus),
 //! with the percentile taken over the frames heard so far. Because a reported nucleus
-//! cannot be taken back, a peak that a higher one would replace more than 100 ms later is
+//! cannot be taken back, a peak that a higher one would replace more than 150 ms later is
 //! still reported, so the live count runs higher than the batch count.
 //!
 //! Limits: a loud sound early in the stream raises the bar for everything
@@ -50,8 +50,9 @@ pub const RATE_WINDOW_S: f64 = 3.0;
 /// The rate is reported from this much audio on; a shorter window is too noisy.
 const RATE_MIN_S: f64 = 1.0;
 
-/// Frames of lookahead for the pitch path search (100 ms).
-pub const PITCH_LAG_FRAMES: usize = 10;
+/// Frames of lookahead for the pitch path search, the speech flag and the syllable nuclei
+/// (150 ms).
+pub const PITCH_LAG_FRAMES: usize = 15;
 
 /// The speech flag only changes after this many frames (0.1 s) of the new value, as in
 /// the batch [`crate::pauses`] defaults. Needs the lookahead above.
@@ -515,7 +516,7 @@ mod tests {
     fn frames_arrive_with_a_short_delay() {
         let mut a = Analyzer::new(SR).unwrap();
         // Frame 0 is centred on sample 0 and needs 32 ms (512 samples) for the 64 ms syllable
-        // window; frame 0 is reported once the 10 later frames are complete (100 ms more).
+        // window; frame 0 is reported once the 15 later frames are complete (150 ms more).
         let hop = 160;
         assert!(a.push(&vec![0.1; 511 + PITCH_LAG_FRAMES * hop]).is_empty());
         assert_eq!(a.push(&[0.1]).len(), 1);
