@@ -6,7 +6,7 @@
 use serde_json::Value;
 use std::path::PathBuf;
 use voice_core::pace::{syllable_nuclei, PaceConfig};
-use voice_core::stream::Analyzer;
+use voice_core::stream::{Analyzer, RATE_WINDOW_S};
 
 const SR: u32 = 16_000;
 /// A nucleus matches a reference nucleus within this many seconds.
@@ -155,4 +155,61 @@ fn streaming_nuclei_against_praat_based_reference_and_batch() {
         t[4] as f64 / t[3] as f64 > 0.9,
         "recall against the batch detector"
     );
+}
+
+/// Syllables per second over the last 3 s, from streaming nuclei and from batch nuclei,
+/// compared at the end of each clip and at every 0.5 s in between.
+#[test]
+fn streaming_rate_against_batch_rate() {
+    let r: Value = serde_json::from_str(include_str!("data/speech_pace_oracle.json")).unwrap();
+    let (mut diffs, mut rel) = (Vec::new(), Vec::new());
+    let mut vs_ref = Vec::new();
+    for (id, c) in r["clips"].as_object().unwrap() {
+        let reference: Vec<f64> = c["praat_times_s"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|v| v.as_f64().unwrap())
+            .collect();
+        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("tests/data/speech")
+            .join(format!("{id}.wav"));
+        let samples = read_wav(&path);
+        let batch = syllable_nuclei(&samples, SR, &PaceConfig::default()).unwrap();
+        let mut a = Analyzer::new(SR).unwrap();
+        let mut frames = Vec::new();
+        for chunk in samples.chunks(320) {
+            frames.extend(a.push(chunk));
+        }
+        frames.extend(a.finish());
+        let w = RATE_WINDOW_S;
+        let mut t = w;
+        while t <= frames.last().unwrap().time_s {
+            let live = frames
+                .iter()
+                .find(|f| f.time_s >= t)
+                .and_then(|f| f.syllable_rate_hz)
+                .unwrap() as f64;
+            let b = batch.iter().filter(|&&n| n > t - w && n <= t).count() as f64 / w;
+            let p = reference.iter().filter(|&&n| n > t - w && n <= t).count() as f64 / w;
+            vs_ref.push((live - p).abs());
+            diffs.push((live - b).abs());
+            rel.push(live - b);
+            t += 0.5;
+        }
+    }
+    diffs.sort_by(|a, b| a.total_cmp(b));
+    let median = diffs[diffs.len() / 2];
+    let p95 = diffs[diffs.len() * 95 / 100];
+    let bias = rel.iter().sum::<f64>() / rel.len() as f64;
+    println!(
+        "{} windows: median |streaming - batch| {median:.2} syll/s, 95th percentile {p95:.2}, mean bias {bias:+.2}",
+        diffs.len()
+    );
+    vs_ref.sort_by(|a, b| a.total_cmp(b));
+    let (rm, r95) = (vs_ref[vs_ref.len() / 2], vs_ref[vs_ref.len() * 95 / 100]);
+    println!("vs Praat-based reference: median {rm:.2} syll/s, 95th percentile {r95:.2}");
+    assert!(median < 0.1, "median difference {median}");
+    assert!(p95 < 0.5, "95th percentile {p95}");
+    assert!(rm < 0.5 && r95 < 1.0, "against the reference: {rm}, {r95}");
 }
