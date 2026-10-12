@@ -10,7 +10,7 @@ Running log of what omr and Claude agreed. mimic is its own concept; the older M
 ## Decisions
 1. **Stay on Rust** for the measurement core. Reuse `pyin` (pitch), `ebur128` (loudness), `earshot` (speech/pauses), `rustfft`/`realfft`, `rubato`, `symphonia`/`hound`. Evaluate `pitch-core` as a pitch backend.
 2. **Build ourselves:** jitter, shimmer, HNR, syllable-based speaking pace, the streaming analyzer and the app-facing API.
-3. **Praat is GPL-3 (C/C++).** Not a dependency in any shipped code. `rustmouth`/`praat-sys` are only wrappers and also GPL-3. Praat/Parselmouth is used only as an offline test oracle. Algorithms are reimplemented from papers; no Praat source copied. Get a quick legal check before commercial release.
+3. **Praat is GPL-3 (C/C++).** Not a dependency in any shipped code. `rustmouth`/`praat-sys` are only wrappers and also GPL-3. Praat/Parselmouth is used only as an offline test oracle. Algorithms are implemented from papers. Get a quick legal check before commercial release.
 4. **Quality:** the Rust crates are good enough but not state of the art and unbenchmarked; build a 20-30 clip test set compared against Parselmouth.
 5. **Flutter:** `flutter_rust_bridge`, not UniFFI (no official Dart support). Web via WASM later.
 6. **Streaming:** v1 analyzes the whole recording after each take; design the core around a frame-by-frame analyzer so live feedback can be added later (live pitch/level/pace hints, mimic-vs-target in real time).

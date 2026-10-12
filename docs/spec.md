@@ -11,7 +11,7 @@ Goals
 - Runs fully on-device, no network, no model files, small binary.
 - Compiles for iOS, Android, desktop and `wasm32-unknown-unknown`.
 - One batch call and one streaming API, sharing the same code.
-- MIT/Apache-only dependency tree. No GPL/AGPL code, and no code copied from Praat.
+- MIT/Apache-only dependency tree. No GPL/AGPL code.
 
 Non-goals (v1)
 - Speech-to-text, filler/word detection, language understanding (these belong in mimic or an optional ML layer).
@@ -88,7 +88,7 @@ Batch analysis of 2 minutes of audio under 1 s on a mid-range phone; streaming l
 ## 9. Licensing and provenance
 - MIT. Dependencies MIT/Apache/BSD/Unlicense only; `cargo deny` enforced in CI.
 - Praat, Parselmouth, rustmouth, aubio, Essentia, openSMILE are never dependencies. Praat/Parselmouth appear only in `tools/` as a test oracle, not published.
-- Algorithms implemented from papers and public formulas. No Praat source code is read-copied. Keep a `PROVENANCE.md` listing the paper behind each algorithm.
+- Algorithms implemented from papers and public formulas. Keep a `PROVENANCE.md` listing the paper behind each algorithm.
 
 ## 10. Risks
 - Jitter/shimmer on compressed phone audio are unreliable; surface warnings rather than false precision.
