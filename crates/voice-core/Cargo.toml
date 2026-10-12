@@ -18,4 +18,9 @@ rubato = "1.0.1"
 serde = { version = "1.0.229", features = ["derive"] }
 
 [dev-dependencies]
+criterion = { version = "0.8.2", default-features = false }
 serde_json = "1"
+
+[[bench]]
+name = "analysis"
+harness = false
