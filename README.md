@@ -90,4 +90,4 @@ CI runs these on Linux and Windows for every pull request. macOS runs only on `m
 
 ## License
 
-MIT. Dependencies are limited to MIT, Apache, BSD and similar licenses, enforced by `cargo deny`. Every algorithm is implemented from a published paper or standard and recorded in [PROVENANCE.md](PROVENANCE.md).
+MIT. Dependencies are limited to MIT, Apache, BSD and similar licenses, enforced by `cargo deny`. Every algorithm is implemented from a published paper or standard and recorded in [PROVENANCE.md](PROVENANCE.md). Praat is used only as an offline reference for validation, never as a dependency (see PROVENANCE.md).
