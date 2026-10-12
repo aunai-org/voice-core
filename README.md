@@ -81,7 +81,10 @@ cargo fmt --all -- --check
 cargo clippy --workspace --all-targets -- -D warnings
 cargo test --workspace
 cargo deny check
+cargo bench -p voice-core
 ```
+
+Speed on 10 s of synthetic speech-like audio at 16 kHz (`cargo bench`, one x86-64 cloud core, release build): the full report takes about 129 ms (78 times faster than real time); the streaming `Analyzer` fed 10 ms blocks takes about 64 ms (157 times faster); loudness alone about 1 ms. Numbers on a phone will differ, so rerun the benchmark on the target device.
 
 CI runs these on Linux and Windows for every pull request. macOS runs only on `main`, tags and the nightly schedule, to keep pull requests fast. It also type-checks the crate for `wasm32-unknown-unknown`, `aarch64-linux-android` and `aarch64-apple-ios`.
 
