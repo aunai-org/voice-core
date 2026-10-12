@@ -146,13 +146,13 @@ fn streaming_nuclei_against_praat_based_reference_and_batch() {
         t[4] as f64 / t[0] as f64
     );
     // Regression bounds, set just inside the measured values.
-    assert!(t[2] as f64 / t[1] as f64 > 0.9, "recall against the reference");
+    assert!(t[2] as f64 / t[1] as f64 > 0.94, "recall against the reference");
     assert!(
-        t[2] as f64 / t[0] as f64 > 0.78,
+        t[2] as f64 / t[0] as f64 > 0.82,
         "precision against the reference"
     );
     assert!(
-        t[4] as f64 / t[3] as f64 > 0.9,
+        t[4] as f64 / t[3] as f64 > 0.94,
         "recall against the batch detector"
     );
 }
