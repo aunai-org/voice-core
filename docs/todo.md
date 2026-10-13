@@ -51,7 +51,7 @@ Mark items `[x]` with the PR link when the draft PR is open. Last updated: 2026-
 ### M3 Voice steadiness (gate: M1/M2 match Praat on pitch and loudness)
 - [ ] Jitter, shimmer, HNR; max phonation time; level ladder; hesitation events; `window_stats`; oracle tolerances; limits docs
 ### M4 Streaming and release
-- [ ] Streaming `Analyzer` push/finish with streaming-vs-batch tests, latency numbers
+- [x] Streaming `Analyzer` push/finish with streaming-vs-batch tests and latency numbers (frame delay about 170 ms after PR #37; speed in the benchmark line below; the streaming items above cover the tests)
 - [x] Criterion benchmarks (`cargo bench -p voice-core`; 10 s clip at 16 kHz: full report 129 ms, streaming Analyzer 64 ms, LUFS 1 ms on a cloud x86-64 core; phone numbers still to measure) — voice-core PR claude/run-20261012-10-bench
 - [ ] 0.1.0 prep: README + accuracy table (real data only), PROVENANCE complete
 - [ ] Before the first major release: move `tools/oracle.py`, the fixture generator and the Praat reference numbers into a separate public repo; settle that repo's licence with the GPL legal check (decision in docs/decisions.md, "Oracle split")
