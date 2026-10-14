@@ -3,17 +3,21 @@
 //! Levels are the squared signal averaged under a bell-shaped (Gaussian) window of
 //! `window_s` seconds, so a single click or plosive burst does not read as speech.
 //! A frame is *sounding* when its level is within `threshold_db` of the loudest
-//! frame (default 25 dB), the same relative-threshold
-//! idea as Praat's silence detection, which serves as the offline reference in
-//! `tests/speech_pauses.rs`. Sounding runs shorter than `min_sounding_s` are dropped
+//! frame (default 25 dB) and not below the noise floor (the level of the quietest 5% of
+//! frames), the same relative-threshold idea as Praat's silence detection, which
+//! serves as the offline reference in `tests/speech_pauses.rs`. Sounding runs shorter than `min_sounding_s` are dropped
 //! first (clicks and breaths), then silent runs shorter than `min_silent_s` are
 //! filled in (a stop closure is not a pause).
 //!
 //! Limits: the threshold is relative to the recording's own loudest passages, so a
-//! recording that is pure noise still shows "speech"; a noise-floor check is not
-//! part of this module. Checked on eight clean read-speech clips only.
+//! recording that is pure noise still shows "speech"; judging how noisy a recording
+//! is is not part of this module.
 
 use crate::Error;
+
+/// Spread between the loudest frame and the noise floor below which a recording is
+/// treated as having no speech/silence contrast, in dB.
+const MIN_CONTRAST_DB: f32 = 6.0;
 
 /// Settings for speech/silence segmentation.
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -169,7 +173,18 @@ pub fn speech_segments(
     let hop = ((config.hop_s * sr).round() as usize).max(1);
     let levels = smoothed_levels(samples, frame_len, hop);
     let max_level = levels.iter().copied().fold(f32::NEG_INFINITY, f32::max);
-    let threshold = max_level - config.threshold_db;
+    let mut sorted = levels.clone();
+    sorted.sort_by(f32::total_cmp);
+    let floor = sorted[(sorted.len() - 1) / 20];
+    // The threshold never drops below the noise floor, so a recording whose whole
+    // level range is narrower than `threshold_db` still has silent frames.
+    // A flat level curve (a steady tone, pure noise) has nothing to split, so it stays
+    // all sounding instead of marking its quietest 5% silent.
+    let threshold = if max_level - floor < MIN_CONTRAST_DB {
+        f32::NEG_INFINITY
+    } else {
+        (max_level - config.threshold_db).max(floor)
+    };
     let mut sounding: Vec<bool> = levels.iter().map(|&l| l >= threshold).collect();
 
     let frames_for = |s: f64| (s / config.hop_s).ceil().max(1.0) as usize;
