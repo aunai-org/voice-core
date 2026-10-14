@@ -17,7 +17,8 @@ Add a row when an algorithm lands in the code. A row with status `planned` means
 | Syllable-rate pace | `pace` | de Jong and Wempe (2009) | none | implemented (synthetic bursts only) |
 | Streaming level, speech/silence and pitch per frame | `stream` | Same level and threshold as `pauses`, computed causally: Gaussian-windowed mean square, speech within 25 dB of the loudest frame so far, floor at -70 dBFS; pitch uses the `pitch` candidates (Boersma 1993) choosing per frame with the batch octave-jump and voiced/unvoiced costs from the previous frame only (no lookahead, no path search) | none | implemented (checked on twenty clips: eight clean, twelve with high noise floors) |
 | Recording-quality warnings | `quality` | Practical thresholds (duration, clipped-sample share, RMS level); no published basis | none | implemented |
-| Jitter (local, RAP, PPQ5) | `perturbation` | Boersma (1993) style definitions | none | planned |
+| Jitter (local) | `jitter` | Local jitter definition of Titze (1994), "Workshop on acoustic voice analysis: summary statement"; periods from normalised cross-correlation of one cycle against the next inside voiced stretches; pairs more than a factor of 1.3 apart dropped | none | implemented (synthetic pulse trains plus 20 real clips vs Praat 6.1.38) |
+| Shimmer, HNR, RAP, PPQ5 | `perturbation` | Boersma (1993) style definitions | none | planned |
 | Shimmer (local, APQ3, APQ5) | `perturbation` | Public perturbation-measure definitions | none | planned |
 | HNR | `perturbation` | Autocorrelation method (Boersma 1993) | `realfft` (MIT/Apache) | planned |
 
