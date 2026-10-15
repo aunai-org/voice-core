@@ -10,6 +10,7 @@ pub mod pauses;
 pub mod pitch;
 pub mod quality;
 pub mod report;
+pub mod shimmer;
 pub mod stream;
 
 pub use report::{analyze, VoiceReport};
