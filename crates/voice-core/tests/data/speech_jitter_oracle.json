@@ -1,0 +1,94 @@
+{
+ "_meta": {
+  "parselmouth": "0.4.7",
+  "praat": "6.1.38",
+  "pitch_floor_hz": 75,
+  "pitch_ceiling_hz": 600,
+  "shortest_period_s": 0.0001,
+  "longest_period_s": 0.02,
+  "max_period_factor": 1.3,
+  "note": "jitter_local is a fraction (0.01 = 1%); null when Praat finds too few periods"
+ },
+ "clips": {
+  "common_voice_en_128571": {
+   "pulses": 281,
+   "jitter_local": 0.01541
+  },
+  "common_voice_en_17298604": {
+   "pulses": 327,
+   "jitter_local": 0.023393
+  },
+  "common_voice_en_17714250": {
+   "pulses": 271,
+   "jitter_local": 0.041998
+  },
+  "common_voice_en_17738456": {
+   "pulses": 335,
+   "jitter_local": 0.022612
+  },
+  "common_voice_en_17830294": {
+   "pulses": 539,
+   "jitter_local": 0.019925
+  },
+  "common_voice_en_17848293": {
+   "pulses": 316,
+   "jitter_local": 0.034619
+  },
+  "common_voice_en_17891405": {
+   "pulses": 217,
+   "jitter_local": 0.026718
+  },
+  "common_voice_en_18179121": {
+   "pulses": 199,
+   "jitter_local": 0.029518
+  },
+  "common_voice_en_18188256": {
+   "pulses": 185,
+   "jitter_local": 0.029856
+  },
+  "common_voice_en_18365693": {
+   "pulses": 121,
+   "jitter_local": 0.037963
+  },
+  "common_voice_en_18373309": {
+   "pulses": 312,
+   "jitter_local": 0.029296
+  },
+  "common_voice_en_19388916": {
+   "pulses": 375,
+   "jitter_local": 0.024953
+  },
+  "common_voice_en_34382925": {
+   "pulses": 290,
+   "jitter_local": 0.022622
+  },
+  "common_voice_en_35061606": {
+   "pulses": 407,
+   "jitter_local": 0.032921
+  },
+  "common_voice_en_36734620": {
+   "pulses": 251,
+   "jitter_local": 0.0174
+  },
+  "common_voice_en_37451535": {
+   "pulses": 548,
+   "jitter_local": 0.014663
+  },
+  "common_voice_en_38865706": {
+   "pulses": 423,
+   "jitter_local": 0.02935
+  },
+  "common_voice_en_39751075": {
+   "pulses": 225,
+   "jitter_local": 0.023766
+  },
+  "common_voice_en_579883": {
+   "pulses": 602,
+   "jitter_local": 0.02941
+  },
+  "common_voice_en_665631": {
+   "pulses": 891,
+   "jitter_local": 0.029882
+  }
+ }
+}
