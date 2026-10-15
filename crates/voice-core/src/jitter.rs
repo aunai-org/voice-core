@@ -43,7 +43,7 @@ pub fn local_jitter_with_track(samples: &[f32], sample_rate: u32, track: &[Pitch
     for run in voiced_runs(track) {
         for chain in period_chains(samples, sr, &run) {
             for w in chain.windows(2) {
-                let (a, b) = (w[0], w[1]);
+                let (a, b) = (w[0].period, w[1].period);
                 if a / b > MAX_PERIOD_FACTOR || b / a > MAX_PERIOD_FACTOR {
                     continue;
                 }
@@ -59,8 +59,17 @@ pub fn local_jitter_with_track(samples: &[f32], sample_rate: u32, track: &[Pitch
     })
 }
 
+/// One tracked voice period.
+#[derive(Debug, Clone, Copy)]
+pub(crate) struct Period {
+    /// Length in seconds.
+    pub period: f64,
+    /// Peak-to-peak amplitude of the waveform over the period.
+    pub amplitude: f64,
+}
+
 /// Voiced stretches of the track as (time in s, f0 in Hz) lists.
-fn voiced_runs(track: &[PitchFrame]) -> Vec<Vec<(f64, f64)>> {
+pub(crate) fn voiced_runs(track: &[PitchFrame]) -> Vec<Vec<(f64, f64)>> {
     let mut runs = vec![];
     let mut cur: Vec<(f64, f64)> = vec![];
     for f in track {
@@ -82,12 +91,12 @@ fn voiced_runs(track: &[PitchFrame]) -> Vec<Vec<(f64, f64)>> {
 
 /// Chains of consecutive periods (in seconds) tracked along one voiced stretch; a
 /// weak match ends a chain.
-fn period_chains(samples: &[f32], sr: f64, run: &[(f64, f64)]) -> Vec<Vec<f64>> {
+pub(crate) fn period_chains(samples: &[f32], sr: f64, run: &[(f64, f64)]) -> Vec<Vec<Period>> {
     let start = run[0].0 * sr;
     let end = run[run.len() - 1].0 * sr;
     let mut pos = start.round().max(0.0) as usize;
     let mut chains = vec![];
-    let mut periods: Vec<f64> = vec![];
+    let mut periods: Vec<Period> = vec![];
     while (pos as f64) < end {
         // f0 of the nearest frame sets the window length and the search range
         let t = pos as f64 / sr;
@@ -110,7 +119,13 @@ fn period_chains(samples: &[f32], sr: f64, run: &[(f64, f64)]) -> Vec<Vec<f64>> 
             pos += lag.max(1);
             continue;
         }
-        periods.push((lag as f64 + delta) / sr);
+        let (lo_v, hi_v) = samples[pos..pos + lag]
+            .iter()
+            .fold((f32::MAX, f32::MIN), |(l, h), &v| (l.min(v), h.max(v)));
+        periods.push(Period {
+            period: (lag as f64 + delta) / sr,
+            amplitude: f64::from(hi_v - lo_v),
+        });
         pos += lag;
     }
     chains.push(periods);

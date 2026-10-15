@@ -51,7 +51,8 @@ Mark items `[x]` with the PR link when the draft PR is open. Last updated: 2026-
 - [ ] Accuracy table v1
 ### M3 Voice steadiness (gate: M1/M2 match Praat on pitch and loudness)
 - [x] Local jitter (`jitter` module, cross-correlation period tracking in voiced stretches): 20 real clips vs Praat 6.1.38 local jitter, mean absolute difference 0.23 points, worst clip 0.55, ours 0.17 lower on average; synthetic known-jitter pulse trains recovered within 0.4 points — voice-core PR claude/run-20261014-15-jitter
-- [ ] Shimmer, HNR; max phonation time; level ladder; hesitation events; `window_stats`; oracle tolerances; limits docs
+- [x] Local shimmer (`shimmer` module, peak-to-peak amplitude of the tracked periods): 20 real clips vs Praat 6.1.38 local shimmer, mean absolute difference 2.08 points, mean error -2.04 (ours lower), worst clip 8.10 (17848293, clipped at full scale; the rest within 4.9) — voice-core PR claude/run-20261015-18-shimmer
+- [ ] HNR; max phonation time; level ladder; hesitation events; `window_stats`; oracle tolerances; limits docs
 ### M4 Streaming and release
 - [x] Streaming `Analyzer` push/finish with streaming-vs-batch tests and latency numbers (frame delay about 170 ms after PR #37; speed in the benchmark line below; the streaming items above cover the tests)
 - [x] Criterion benchmarks (`cargo bench -p voice-core`; 10 s clip at 16 kHz: full report 129 ms, streaming Analyzer 64 ms, LUFS 1 ms on a cloud x86-64 core; phone numbers still to measure) — voice-core PR claude/run-20261012-10-bench
