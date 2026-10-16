@@ -36,7 +36,7 @@ Levels are **relative** (dBFS / LUFS, full scale = 0): phone microphones are not
 
 ## What is planned
 
-Jitter, shimmer and HNR are in the batch API but not yet in the report or the streaming `Analyzer`, which today reports level, speech/silence, pitch, syllable nuclei and a 3 s syllable rate. Accuracy targets and how they are checked are in [docs/spec.md](docs/spec.md) section 7; measured numbers will be published here once the benchmark exists.
+Jitter, shimmer and HNR are in the batch report (`jitter_local`, `shimmer_local`, `hnr_db`, each empty when the voiced speech is too short) but not yet in the streaming `Analyzer`, which today reports level, speech/silence, pitch, syllable nuclei and a 3 s syllable rate. Accuracy targets and how they are checked are in [docs/spec.md](docs/spec.md) section 7; measured numbers will be published here once the benchmark exists.
 
 ## Usage
 

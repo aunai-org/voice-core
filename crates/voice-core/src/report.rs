@@ -2,11 +2,14 @@
 
 use serde::{Deserialize, Serialize};
 
+use crate::hnr::mean_hnr_with_track;
+use crate::jitter::local_jitter_with_track;
 use crate::loudness::{integrated_lufs, rms_db};
 use crate::pace::{syllable_nuclei, PaceConfig};
 use crate::pauses::{pause_stats, speech_segments, PauseConfig};
 use crate::pitch::{median_f0, voiced_fraction, AutocorrEstimator, PitchEstimator};
 use crate::quality::{self, Warning};
+use crate::shimmer::local_shimmer_with_track;
 use crate::Error;
 
 /// Summary measurements for one recording.
@@ -38,6 +41,16 @@ pub struct VoiceReport {
     pub pause_total_s: f32,
     /// Longest pause in seconds, 0 when there is none.
     pub longest_pause_s: f32,
+    /// Local jitter as a fraction (0.01 means 1%), `None` when the voiced
+    /// speech is too short for an estimate (under 20 period pairs).
+    #[serde(default)]
+    pub jitter_local: Option<f32>,
+    /// Local shimmer as a fraction (0.05 means 5%), `None` when under 20 period pairs.
+    #[serde(default)]
+    pub shimmer_local: Option<f32>,
+    /// Mean harmonics-to-noise ratio in dB over voiced frames, `None` under 10 voiced frames.
+    #[serde(default)]
+    pub hnr_db: Option<f32>,
     /// Quality warnings for this recording; empty when nothing is wrong.
     pub warnings: Vec<Warning>,
 }
@@ -67,6 +80,9 @@ pub fn analyze(samples: &[f32], sample_rate: u32) -> Result<VoiceReport, Error> 
         pause_count: pauses.count as u32,
         pause_total_s: pauses.total_s as f32,
         longest_pause_s: pauses.longest_s as f32,
+        jitter_local: local_jitter_with_track(samples, sample_rate, &track).map(|j| j.local),
+        shimmer_local: local_shimmer_with_track(samples, sample_rate, &track).map(|s| s.local),
+        hnr_db: mean_hnr_with_track(&track).map(|h| h.mean_db),
         warnings: quality::check(samples, sample_rate)?,
     })
 }
@@ -96,6 +112,26 @@ mod tests {
         assert_eq!(r.pause_count, 0);
         assert_eq!(r.longest_pause_s, 0.0);
         assert!(r.warnings.is_empty());
+        assert!(r.jitter_local.unwrap() < 0.01);
+        assert!(r.shimmer_local.unwrap() < 0.05);
+        assert!(r.hnr_db.unwrap() > 25.0);
+    }
+
+    #[test]
+    fn silence_has_no_steadiness_numbers() {
+        let r = analyze(&vec![0.0; SR as usize], SR).unwrap();
+        assert_eq!((r.jitter_local, r.shimmer_local, r.hnr_db), (None, None, None));
+    }
+
+    #[test]
+    fn old_json_without_steadiness_fields_still_loads() {
+        let r = analyze(&sine(150.0, 1.0), SR).unwrap();
+        let mut v: serde_json::Value = serde_json::to_value(&r).unwrap();
+        for k in ["jitter_local", "shimmer_local", "hnr_db"] {
+            v.as_object_mut().unwrap().remove(k);
+        }
+        let back: VoiceReport = serde_json::from_value(v).unwrap();
+        assert_eq!(back.hnr_db, None);
     }
 
     #[test]
