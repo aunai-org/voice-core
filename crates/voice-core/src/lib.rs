@@ -3,6 +3,7 @@
 //! Pre-alpha. See `docs/spec.md` in the repository for the planned scope.
 
 pub mod dsp;
+pub mod hnr;
 pub mod jitter;
 pub mod loudness;
 pub mod pace;

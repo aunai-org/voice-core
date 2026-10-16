@@ -1,0 +1,73 @@
+{
+ "_meta": {
+  "parselmouth": "0.4.7",
+  "praat": "6.1.38",
+  "time_step_s": 0.01,
+  "min_pitch_hz": 75,
+  "silence_threshold": 0.1,
+  "periods_per_window": 1.0,
+  "note": "hnr_db is the mean over voiced frames; null when Praat finds none"
+ },
+ "clips": {
+  "common_voice_en_128571": {
+   "hnr_db": 10.899
+  },
+  "common_voice_en_17298604": {
+   "hnr_db": 10.824
+  },
+  "common_voice_en_17714250": {
+   "hnr_db": 10.203
+  },
+  "common_voice_en_17738456": {
+   "hnr_db": 10.008
+  },
+  "common_voice_en_17830294": {
+   "hnr_db": 13.279
+  },
+  "common_voice_en_17848293": {
+   "hnr_db": 6.626
+  },
+  "common_voice_en_17891405": {
+   "hnr_db": 4.31
+  },
+  "common_voice_en_18179121": {
+   "hnr_db": 6.656
+  },
+  "common_voice_en_18188256": {
+   "hnr_db": 7.991
+  },
+  "common_voice_en_18365693": {
+   "hnr_db": 9.112
+  },
+  "common_voice_en_18373309": {
+   "hnr_db": 9.719
+  },
+  "common_voice_en_19388916": {
+   "hnr_db": 8.441
+  },
+  "common_voice_en_34382925": {
+   "hnr_db": 16.935
+  },
+  "common_voice_en_35061606": {
+   "hnr_db": 13.059
+  },
+  "common_voice_en_36734620": {
+   "hnr_db": 11.67
+  },
+  "common_voice_en_37451535": {
+   "hnr_db": 13.42
+  },
+  "common_voice_en_38865706": {
+   "hnr_db": 9.587
+  },
+  "common_voice_en_39751075": {
+   "hnr_db": 7.858
+  },
+  "common_voice_en_579883": {
+   "hnr_db": 9.561
+  },
+  "common_voice_en_665631": {
+   "hnr_db": 9.667
+  }
+ }
+}
