@@ -3,6 +3,7 @@
 //! Pre-alpha. See `docs/spec.md` in the repository for the planned scope.
 
 pub mod dsp;
+pub mod hesitations;
 pub mod hnr;
 pub mod jitter;
 pub mod ladder;
@@ -15,6 +16,7 @@ pub mod quality;
 pub mod report;
 pub mod shimmer;
 pub mod stream;
+pub mod window_stats;
 
 pub use report::{analyze, VoiceReport};
 

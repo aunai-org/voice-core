@@ -1,0 +1,1834 @@
+{
+ "_meta": {
+  "parselmouth": "0.4.7",
+  "praat": "6.1.38",
+  "window_s": 0.4,
+  "pitch_floor_hz": 75,
+  "pitch_ceiling_hz": 600,
+  "time_step_s": 0.01,
+  "min_voiced_frames": 3,
+  "note": "per window: level_dbfs (RMS), mean_f0_hz, p10_hz, p90_hz (null with under 3 voiced frames)"
+ },
+ "clips": {
+  "common_voice_en_128571": {
+   "speech_level_dbfs": -27.613,
+   "median_f0_hz": 160.501,
+   "windows": [
+    {
+     "level_dbfs": -55.843,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -55.065,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -27.861,
+     "voiced_frames": 10,
+     "mean_f0_hz": 167.124,
+     "p10_hz": 163.766,
+     "p90_hz": 171.495
+    },
+    {
+     "level_dbfs": -28.569,
+     "voiced_frames": 40,
+     "mean_f0_hz": 174.088,
+     "p10_hz": 156.504,
+     "p90_hz": 181.08
+    },
+    {
+     "level_dbfs": -27.503,
+     "voiced_frames": 40,
+     "mean_f0_hz": 164.795,
+     "p10_hz": 157.54,
+     "p90_hz": 170.748
+    },
+    {
+     "level_dbfs": -26.902,
+     "voiced_frames": 36,
+     "mean_f0_hz": 159.538,
+     "p10_hz": 153.386,
+     "p90_hz": 166.893
+    },
+    {
+     "level_dbfs": -30.421,
+     "voiced_frames": 40,
+     "mean_f0_hz": 142.998,
+     "p10_hz": 139.11,
+     "p90_hz": 151.454
+    },
+    {
+     "level_dbfs": -38.14,
+     "voiced_frames": 11,
+     "mean_f0_hz": 131.361,
+     "p10_hz": 123.979,
+     "p90_hz": 139.744
+    },
+    {
+     "level_dbfs": -56.062,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -56.002,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -56.462,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -55.979,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -55.764,
+     "voiced_frames": 0
+    }
+   ]
+  },
+  "common_voice_en_17298604": {
+   "speech_level_dbfs": -37.841,
+   "median_f0_hz": 112.7,
+   "windows": [
+    {
+     "level_dbfs": -54.979,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -62.897,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -65.765,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -35.801,
+     "voiced_frames": 33,
+     "mean_f0_hz": 131.594,
+     "p10_hz": 113.661,
+     "p90_hz": 153.055
+    },
+    {
+     "level_dbfs": -37.036,
+     "voiced_frames": 36,
+     "mean_f0_hz": 115.634,
+     "p10_hz": 105.867,
+     "p90_hz": 146.16
+    },
+    {
+     "level_dbfs": -38.941,
+     "voiced_frames": 25,
+     "mean_f0_hz": 118.059,
+     "p10_hz": 107.895,
+     "p90_hz": 128.239
+    },
+    {
+     "level_dbfs": -39.891,
+     "voiced_frames": 17,
+     "mean_f0_hz": 119.673,
+     "p10_hz": 111.789,
+     "p90_hz": 138.983
+    },
+    {
+     "level_dbfs": -39.063,
+     "voiced_frames": 21,
+     "mean_f0_hz": 178.437,
+     "p10_hz": 102.176,
+     "p90_hz": 345.114
+    },
+    {
+     "level_dbfs": -37.117,
+     "voiced_frames": 33,
+     "mean_f0_hz": 117.361,
+     "p10_hz": 108.785,
+     "p90_hz": 127.052
+    },
+    {
+     "level_dbfs": -36.309,
+     "voiced_frames": 27,
+     "mean_f0_hz": 124.397,
+     "p10_hz": 98.122,
+     "p90_hz": 139.035
+    },
+    {
+     "level_dbfs": -42.082,
+     "voiced_frames": 40,
+     "mean_f0_hz": 90.433,
+     "p10_hz": 88.669,
+     "p90_hz": 91.989
+    },
+    {
+     "level_dbfs": -41.895,
+     "voiced_frames": 32,
+     "mean_f0_hz": 91.216,
+     "p10_hz": 86.71,
+     "p90_hz": 96.02
+    },
+    {
+     "level_dbfs": -49.781,
+     "voiced_frames": 2
+    },
+    {
+     "level_dbfs": -48.595,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -66.228,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -54.818,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -63.833,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -50.953,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -51.133,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -50.679,
+     "voiced_frames": 0
+    }
+   ]
+  },
+  "common_voice_en_17714250": {
+   "speech_level_dbfs": -28.054,
+   "median_f0_hz": 112.089,
+   "windows": [
+    {
+     "level_dbfs": -51.565,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -28.316,
+     "voiced_frames": 9,
+     "mean_f0_hz": 197.404,
+     "p10_hz": 194.94,
+     "p90_hz": 200.767
+    },
+    {
+     "level_dbfs": -26.526,
+     "voiced_frames": 15,
+     "mean_f0_hz": 128.263,
+     "p10_hz": 114.716,
+     "p90_hz": 144.526
+    },
+    {
+     "level_dbfs": -26.569,
+     "voiced_frames": 24,
+     "mean_f0_hz": 128.276,
+     "p10_hz": 112.856,
+     "p90_hz": 154.475
+    },
+    {
+     "level_dbfs": -28.809,
+     "voiced_frames": 29,
+     "mean_f0_hz": 104.888,
+     "p10_hz": 98.67,
+     "p90_hz": 113.118
+    },
+    {
+     "level_dbfs": -30.976,
+     "voiced_frames": 23,
+     "mean_f0_hz": 115.347,
+     "p10_hz": 102.769,
+     "p90_hz": 126.007
+    },
+    {
+     "level_dbfs": -32.262,
+     "voiced_frames": 24,
+     "mean_f0_hz": 170.313,
+     "p10_hz": 99.041,
+     "p90_hz": 492.401
+    },
+    {
+     "level_dbfs": -33.553,
+     "voiced_frames": 18,
+     "mean_f0_hz": 142.695,
+     "p10_hz": 101.368,
+     "p90_hz": 210.74
+    },
+    {
+     "level_dbfs": -32.488,
+     "voiced_frames": 29,
+     "mean_f0_hz": 103.891,
+     "p10_hz": 98.599,
+     "p90_hz": 115.891
+    },
+    {
+     "level_dbfs": -36.313,
+     "voiced_frames": 9,
+     "mean_f0_hz": 109.452,
+     "p10_hz": 100.667,
+     "p90_hz": 117.699
+    },
+    {
+     "level_dbfs": -38.035,
+     "voiced_frames": 12,
+     "mean_f0_hz": 118.861,
+     "p10_hz": 105.573,
+     "p90_hz": 127.233
+    }
+   ]
+  },
+  "common_voice_en_17738456": {
+   "speech_level_dbfs": -32.661,
+   "median_f0_hz": 126.365,
+   "windows": [
+    {
+     "level_dbfs": -35.338,
+     "voiced_frames": 25,
+     "mean_f0_hz": 128.736,
+     "p10_hz": 114.359,
+     "p90_hz": 153.04
+    },
+    {
+     "level_dbfs": -33.58,
+     "voiced_frames": 16,
+     "mean_f0_hz": 163.687,
+     "p10_hz": 154.122,
+     "p90_hz": 178.462
+    },
+    {
+     "level_dbfs": -37.276,
+     "voiced_frames": 24,
+     "mean_f0_hz": 146.919,
+     "p10_hz": 118.056,
+     "p90_hz": 167.616
+    },
+    {
+     "level_dbfs": -43.322,
+     "voiced_frames": 8,
+     "mean_f0_hz": 122.21,
+     "p10_hz": 118.78,
+     "p90_hz": 127.049
+    },
+    {
+     "level_dbfs": -32.623,
+     "voiced_frames": 33,
+     "mean_f0_hz": 125.124,
+     "p10_hz": 111.135,
+     "p90_hz": 145.65
+    },
+    {
+     "level_dbfs": -35.199,
+     "voiced_frames": 19,
+     "mean_f0_hz": 120.111,
+     "p10_hz": 112.426,
+     "p90_hz": 124.247
+    },
+    {
+     "level_dbfs": -38.559,
+     "voiced_frames": 28,
+     "mean_f0_hz": 143.753,
+     "p10_hz": 127.187,
+     "p90_hz": 158.85
+    },
+    {
+     "level_dbfs": -61.908,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -92.173,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -35.231,
+     "voiced_frames": 9,
+     "mean_f0_hz": 121.542,
+     "p10_hz": 116.929,
+     "p90_hz": 126.554
+    },
+    {
+     "level_dbfs": -36.103,
+     "voiced_frames": 19,
+     "mean_f0_hz": 140.325,
+     "p10_hz": 112.38,
+     "p90_hz": 158.452
+    },
+    {
+     "level_dbfs": -32.076,
+     "voiced_frames": 21,
+     "mean_f0_hz": 110.952,
+     "p10_hz": 100.894,
+     "p90_hz": 116.527
+    },
+    {
+     "level_dbfs": -76.614,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -31.507,
+     "voiced_frames": 21,
+     "mean_f0_hz": 128.961,
+     "p10_hz": 121.733,
+     "p90_hz": 135.605
+    },
+    {
+     "level_dbfs": -32.01,
+     "voiced_frames": 28,
+     "mean_f0_hz": 107.537,
+     "p10_hz": 86.321,
+     "p90_hz": 128.489
+    },
+    {
+     "level_dbfs": -59.091,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -90.993,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -93.269,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -93.244,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -93.263,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -93.276,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -93.26,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -93.247,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -93.261,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -75.506,
+     "voiced_frames": 0
+    }
+   ]
+  },
+  "common_voice_en_17830294": {
+   "speech_level_dbfs": -31.741,
+   "median_f0_hz": 216.367,
+   "windows": [
+    {
+     "level_dbfs": -88.238,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -88.563,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -89.386,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -37.272,
+     "voiced_frames": 9,
+     "mean_f0_hz": 222.281,
+     "p10_hz": 209.791,
+     "p90_hz": 238.13
+    },
+    {
+     "level_dbfs": -26.26,
+     "voiced_frames": 39,
+     "mean_f0_hz": 242.452,
+     "p10_hz": 224.61,
+     "p90_hz": 258.46
+    },
+    {
+     "level_dbfs": -30.852,
+     "voiced_frames": 22,
+     "mean_f0_hz": 254.716,
+     "p10_hz": 218.468,
+     "p90_hz": 278.49
+    },
+    {
+     "level_dbfs": -32.37,
+     "voiced_frames": 32,
+     "mean_f0_hz": 215.244,
+     "p10_hz": 203.363,
+     "p90_hz": 231.488
+    },
+    {
+     "level_dbfs": -33.22,
+     "voiced_frames": 28,
+     "mean_f0_hz": 214.621,
+     "p10_hz": 207.138,
+     "p90_hz": 231.468
+    },
+    {
+     "level_dbfs": -35.235,
+     "voiced_frames": 32,
+     "mean_f0_hz": 201.159,
+     "p10_hz": 111.917,
+     "p90_hz": 231.661
+    },
+    {
+     "level_dbfs": -34.504,
+     "voiced_frames": 20,
+     "mean_f0_hz": 219.604,
+     "p10_hz": 211.329,
+     "p90_hz": 229.399
+    },
+    {
+     "level_dbfs": -34.426,
+     "voiced_frames": 18,
+     "mean_f0_hz": 214.434,
+     "p10_hz": 202.369,
+     "p90_hz": 228.78
+    },
+    {
+     "level_dbfs": -33.206,
+     "voiced_frames": 27,
+     "mean_f0_hz": 211.221,
+     "p10_hz": 200.042,
+     "p90_hz": 224.964
+    },
+    {
+     "level_dbfs": -37.341,
+     "voiced_frames": 19,
+     "mean_f0_hz": 204.179,
+     "p10_hz": 191.536,
+     "p90_hz": 217.31
+    }
+   ]
+  },
+  "common_voice_en_17848293": {
+   "speech_level_dbfs": -3.766,
+   "median_f0_hz": 119.471,
+   "windows": [
+    {
+     "level_dbfs": -5.135,
+     "voiced_frames": 20,
+     "mean_f0_hz": 241.929,
+     "p10_hz": 119.081,
+     "p90_hz": 559.843
+    },
+    {
+     "level_dbfs": -2.649,
+     "voiced_frames": 38,
+     "mean_f0_hz": 143.043,
+     "p10_hz": 136.241,
+     "p90_hz": 150.244
+    },
+    {
+     "level_dbfs": -3.939,
+     "voiced_frames": 27,
+     "mean_f0_hz": 169.856,
+     "p10_hz": 129.031,
+     "p90_hz": 383.58
+    },
+    {
+     "level_dbfs": -2.499,
+     "voiced_frames": 36,
+     "mean_f0_hz": 118.713,
+     "p10_hz": 115.01,
+     "p90_hz": 122.77
+    },
+    {
+     "level_dbfs": -2.707,
+     "voiced_frames": 40,
+     "mean_f0_hz": 114.502,
+     "p10_hz": 111.606,
+     "p90_hz": 117.792
+    },
+    {
+     "level_dbfs": -4.122,
+     "voiced_frames": 31,
+     "mean_f0_hz": 95.674,
+     "p10_hz": 88.6,
+     "p90_hz": 99.068
+    },
+    {
+     "level_dbfs": -6.192,
+     "voiced_frames": 15,
+     "mean_f0_hz": 219.278,
+     "p10_hz": 96.512,
+     "p90_hz": 527.393
+    }
+   ]
+  },
+  "common_voice_en_17891405": {
+   "speech_level_dbfs": -50.516,
+   "median_f0_hz": 123.845,
+   "windows": [
+    {
+     "level_dbfs": -65.915,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -47.334,
+     "voiced_frames": 24,
+     "mean_f0_hz": 131.013,
+     "p10_hz": 121.349,
+     "p90_hz": 146.913
+    },
+    {
+     "level_dbfs": -58.493,
+     "voiced_frames": 2
+    },
+    {
+     "level_dbfs": -48.535,
+     "voiced_frames": 7,
+     "mean_f0_hz": 138.271,
+     "p10_hz": 135.508,
+     "p90_hz": 141.728
+    },
+    {
+     "level_dbfs": -48.779,
+     "voiced_frames": 9,
+     "mean_f0_hz": 112.541,
+     "p10_hz": 77.107,
+     "p90_hz": 125.23
+    },
+    {
+     "level_dbfs": -49.434,
+     "voiced_frames": 27,
+     "mean_f0_hz": 121.549,
+     "p10_hz": 117.951,
+     "p90_hz": 124.69
+    },
+    {
+     "level_dbfs": -53.716,
+     "voiced_frames": 22,
+     "mean_f0_hz": 121.893,
+     "p10_hz": 117.91,
+     "p90_hz": 125.123
+    },
+    {
+     "level_dbfs": -53.795,
+     "voiced_frames": 3,
+     "mean_f0_hz": 119.827,
+     "p10_hz": 116.777,
+     "p90_hz": 122.15
+    },
+    {
+     "level_dbfs": -52.439,
+     "voiced_frames": 12,
+     "mean_f0_hz": 126.295,
+     "p10_hz": 121.953,
+     "p90_hz": 129.243
+    },
+    {
+     "level_dbfs": -54.702,
+     "voiced_frames": 13,
+     "mean_f0_hz": 119.333,
+     "p10_hz": 108.918,
+     "p90_hz": 129.859
+    },
+    {
+     "level_dbfs": -52.782,
+     "voiced_frames": 7,
+     "mean_f0_hz": 105.209,
+     "p10_hz": 85.356,
+     "p90_hz": 130.697
+    },
+    {
+     "level_dbfs": -61.048,
+     "voiced_frames": 13,
+     "mean_f0_hz": 459.064,
+     "p10_hz": 365.472,
+     "p90_hz": 533.398
+    }
+   ]
+  },
+  "common_voice_en_18179121": {
+   "speech_level_dbfs": -40.319,
+   "median_f0_hz": 110.532,
+   "windows": [
+    {
+     "level_dbfs": -80.265,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -88.71,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -36.282,
+     "voiced_frames": 29,
+     "mean_f0_hz": 116.409,
+     "p10_hz": 108.793,
+     "p90_hz": 130.539
+    },
+    {
+     "level_dbfs": -43.608,
+     "voiced_frames": 40,
+     "mean_f0_hz": 113.309,
+     "p10_hz": 108.375,
+     "p90_hz": 118.954
+    },
+    {
+     "level_dbfs": -41.574,
+     "voiced_frames": 20,
+     "mean_f0_hz": 111.224,
+     "p10_hz": 107.37,
+     "p90_hz": 113.876
+    },
+    {
+     "level_dbfs": -40.752,
+     "voiced_frames": 13,
+     "mean_f0_hz": 175.302,
+     "p10_hz": 103.791,
+     "p90_hz": 401.845
+    },
+    {
+     "level_dbfs": -42.657,
+     "voiced_frames": 21,
+     "mean_f0_hz": 111.739,
+     "p10_hz": 106.654,
+     "p90_hz": 119.051
+    },
+    {
+     "level_dbfs": -46.4,
+     "voiced_frames": 34,
+     "mean_f0_hz": 136.217,
+     "p10_hz": 101.589,
+     "p90_hz": 289.084
+    },
+    {
+     "level_dbfs": -57.356,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -87.249,
+     "voiced_frames": 0
+    }
+   ]
+  },
+  "common_voice_en_18188256": {
+   "speech_level_dbfs": -16.198,
+   "median_f0_hz": 107.674,
+   "windows": [
+    {
+     "level_dbfs": -37.944,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -33.267,
+     "voiced_frames": 6,
+     "mean_f0_hz": 135.96,
+     "p10_hz": 131.03,
+     "p90_hz": 142.417
+    },
+    {
+     "level_dbfs": -13.134,
+     "voiced_frames": 35,
+     "mean_f0_hz": 123.505,
+     "p10_hz": 113.784,
+     "p90_hz": 135.326
+    },
+    {
+     "level_dbfs": -17.943,
+     "voiced_frames": 33,
+     "mean_f0_hz": 108.432,
+     "p10_hz": 104.209,
+     "p90_hz": 114.409
+    },
+    {
+     "level_dbfs": -14.332,
+     "voiced_frames": 29,
+     "mean_f0_hz": 116.884,
+     "p10_hz": 94.293,
+     "p90_hz": 141.655
+    },
+    {
+     "level_dbfs": -21.418,
+     "voiced_frames": 32,
+     "mean_f0_hz": 97.0,
+     "p10_hz": 91.725,
+     "p90_hz": 102.855
+    },
+    {
+     "level_dbfs": -25.041,
+     "voiced_frames": 19,
+     "mean_f0_hz": 143.559,
+     "p10_hz": 86.535,
+     "p90_hz": 379.63
+    },
+    {
+     "level_dbfs": -54.297,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -43.885,
+     "voiced_frames": 0
+    }
+   ]
+  },
+  "common_voice_en_18365693": {
+   "speech_level_dbfs": -17.698,
+   "median_f0_hz": 135.594,
+   "windows": [
+    {
+     "level_dbfs": -69.662,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -91.571,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -19.072,
+     "voiced_frames": 22,
+     "mean_f0_hz": 131.725,
+     "p10_hz": 81.03,
+     "p90_hz": 153.728
+    },
+    {
+     "level_dbfs": -18.436,
+     "voiced_frames": 34,
+     "mean_f0_hz": 130.602,
+     "p10_hz": 113.328,
+     "p90_hz": 160.609
+    },
+    {
+     "level_dbfs": -17.329,
+     "voiced_frames": 32,
+     "mean_f0_hz": 128.615,
+     "p10_hz": 83.933,
+     "p90_hz": 159.838
+    },
+    {
+     "level_dbfs": -82.179,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -80.639,
+     "voiced_frames": 0
+    }
+   ]
+  },
+  "common_voice_en_18373309": {
+   "speech_level_dbfs": -18.792,
+   "median_f0_hz": 88.55,
+   "windows": [
+    {
+     "level_dbfs": -65.169,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -18.739,
+     "voiced_frames": 23,
+     "mean_f0_hz": 88.949,
+     "p10_hz": 81.577,
+     "p90_hz": 93.432
+    },
+    {
+     "level_dbfs": -21.558,
+     "voiced_frames": 17,
+     "mean_f0_hz": 81.555,
+     "p10_hz": 75.869,
+     "p90_hz": 85.964
+    },
+    {
+     "level_dbfs": -26.163,
+     "voiced_frames": 6,
+     "mean_f0_hz": 203.634,
+     "p10_hz": 182.489,
+     "p90_hz": 222.472
+    },
+    {
+     "level_dbfs": -20.706,
+     "voiced_frames": 34,
+     "mean_f0_hz": 91.346,
+     "p10_hz": 78.881,
+     "p90_hz": 119.711
+    },
+    {
+     "level_dbfs": -20.026,
+     "voiced_frames": 20,
+     "mean_f0_hz": 132.684,
+     "p10_hz": 113.356,
+     "p90_hz": 171.159
+    },
+    {
+     "level_dbfs": -18.515,
+     "voiced_frames": 40,
+     "mean_f0_hz": 112.926,
+     "p10_hz": 80.357,
+     "p90_hz": 181.044
+    },
+    {
+     "level_dbfs": -32.832,
+     "voiced_frames": 4,
+     "mean_f0_hz": 83.885,
+     "p10_hz": 82.334,
+     "p90_hz": 84.965
+    },
+    {
+     "level_dbfs": -17.476,
+     "voiced_frames": 21,
+     "mean_f0_hz": 89.731,
+     "p10_hz": 86.1,
+     "p90_hz": 94.525
+    },
+    {
+     "level_dbfs": -16.312,
+     "voiced_frames": 33,
+     "mean_f0_hz": 225.87,
+     "p10_hz": 84.56,
+     "p90_hz": 546.729
+    },
+    {
+     "level_dbfs": -20.313,
+     "voiced_frames": 17,
+     "mean_f0_hz": 92.657,
+     "p10_hz": 88.608,
+     "p90_hz": 95.584
+    },
+    {
+     "level_dbfs": -22.455,
+     "voiced_frames": 36,
+     "mean_f0_hz": 80.561,
+     "p10_hz": 76.685,
+     "p90_hz": 87.102
+    },
+    {
+     "level_dbfs": -23.241,
+     "voiced_frames": 13,
+     "mean_f0_hz": 88.256,
+     "p10_hz": 80.615,
+     "p90_hz": 92.546
+    },
+    {
+     "level_dbfs": -52.434,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -66.46,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -50.731,
+     "voiced_frames": 0
+    }
+   ]
+  },
+  "common_voice_en_19388916": {
+   "speech_level_dbfs": -19.168,
+   "median_f0_hz": 99.5,
+   "windows": [
+    {
+     "level_dbfs": -32.909,
+     "voiced_frames": 6,
+     "mean_f0_hz": 125.198,
+     "p10_hz": 105.623,
+     "p90_hz": 147.279
+    },
+    {
+     "level_dbfs": -44.474,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -45.769,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -17.845,
+     "voiced_frames": 19,
+     "mean_f0_hz": 116.038,
+     "p10_hz": 112.684,
+     "p90_hz": 122.149
+    },
+    {
+     "level_dbfs": -14.77,
+     "voiced_frames": 40,
+     "mean_f0_hz": 112.953,
+     "p10_hz": 107.624,
+     "p90_hz": 118.464
+    },
+    {
+     "level_dbfs": -18.35,
+     "voiced_frames": 18,
+     "mean_f0_hz": 102.016,
+     "p10_hz": 85.099,
+     "p90_hz": 114.786
+    },
+    {
+     "level_dbfs": -16.086,
+     "voiced_frames": 40,
+     "mean_f0_hz": 100.766,
+     "p10_hz": 97.441,
+     "p90_hz": 105.074
+    },
+    {
+     "level_dbfs": -27.097,
+     "voiced_frames": 17,
+     "mean_f0_hz": 93.989,
+     "p10_hz": 90.728,
+     "p90_hz": 97.651
+    },
+    {
+     "level_dbfs": -29.995,
+     "voiced_frames": 15,
+     "mean_f0_hz": 99.77,
+     "p10_hz": 94.949,
+     "p90_hz": 108.444
+    },
+    {
+     "level_dbfs": -29.262,
+     "voiced_frames": 12,
+     "mean_f0_hz": 98.346,
+     "p10_hz": 93.366,
+     "p90_hz": 101.053
+    },
+    {
+     "level_dbfs": -25.174,
+     "voiced_frames": 26,
+     "mean_f0_hz": 137.936,
+     "p10_hz": 89.349,
+     "p90_hz": 343.982
+    },
+    {
+     "level_dbfs": -26.747,
+     "voiced_frames": 25,
+     "mean_f0_hz": 88.062,
+     "p10_hz": 84.25,
+     "p90_hz": 94.33
+    },
+    {
+     "level_dbfs": -28.551,
+     "voiced_frames": 11,
+     "mean_f0_hz": 131.81,
+     "p10_hz": 93.623,
+     "p90_hz": 281.117
+    },
+    {
+     "level_dbfs": -22.441,
+     "voiced_frames": 23,
+     "mean_f0_hz": 89.873,
+     "p10_hz": 80.059,
+     "p90_hz": 101.033
+    },
+    {
+     "level_dbfs": -17.117,
+     "voiced_frames": 27,
+     "mean_f0_hz": 147.852,
+     "p10_hz": 98.149,
+     "p90_hz": 342.717
+    },
+    {
+     "level_dbfs": -25.005,
+     "voiced_frames": 16,
+     "mean_f0_hz": 124.198,
+     "p10_hz": 82.641,
+     "p90_hz": 168.268
+    },
+    {
+     "level_dbfs": -27.852,
+     "voiced_frames": 22,
+     "mean_f0_hz": 173.714,
+     "p10_hz": 75.412,
+     "p90_hz": 412.917
+    },
+    {
+     "level_dbfs": -39.322,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -46.905,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -47.931,
+     "voiced_frames": 0
+    }
+   ]
+  },
+  "common_voice_en_34382925": {
+   "speech_level_dbfs": -16.394,
+   "median_f0_hz": 222.09,
+   "windows": [
+    {
+     "level_dbfs": -52.805,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -17.189,
+     "voiced_frames": 31,
+     "mean_f0_hz": 232.9,
+     "p10_hz": 210.692,
+     "p90_hz": 246.435
+    },
+    {
+     "level_dbfs": -16.227,
+     "voiced_frames": 34,
+     "mean_f0_hz": 223.756,
+     "p10_hz": 202.59,
+     "p90_hz": 238.877
+    },
+    {
+     "level_dbfs": -16.111,
+     "voiced_frames": 40,
+     "mean_f0_hz": 225.589,
+     "p10_hz": 210.488,
+     "p90_hz": 241.272
+    },
+    {
+     "level_dbfs": -18.186,
+     "voiced_frames": 25,
+     "mean_f0_hz": 203.76,
+     "p10_hz": 200.432,
+     "p90_hz": 208.518
+    }
+   ]
+  },
+  "common_voice_en_35061606": {
+   "speech_level_dbfs": -25.756,
+   "median_f0_hz": 133.879,
+   "windows": [
+    {
+     "level_dbfs": -29.02,
+     "voiced_frames": 18,
+     "mean_f0_hz": 133.929,
+     "p10_hz": 109.146,
+     "p90_hz": 194.38
+    },
+    {
+     "level_dbfs": -22.582,
+     "voiced_frames": 40,
+     "mean_f0_hz": 134.548,
+     "p10_hz": 120.095,
+     "p90_hz": 147.366
+    },
+    {
+     "level_dbfs": -29.888,
+     "voiced_frames": 22,
+     "mean_f0_hz": 139.544,
+     "p10_hz": 131.876,
+     "p90_hz": 148.204
+    },
+    {
+     "level_dbfs": -27.943,
+     "voiced_frames": 38,
+     "mean_f0_hz": 150.146,
+     "p10_hz": 129.143,
+     "p90_hz": 160.313
+    },
+    {
+     "level_dbfs": -26.992,
+     "voiced_frames": 28,
+     "mean_f0_hz": 145.184,
+     "p10_hz": 127.103,
+     "p90_hz": 157.182
+    },
+    {
+     "level_dbfs": -25.983,
+     "voiced_frames": 23,
+     "mean_f0_hz": 138.162,
+     "p10_hz": 131.72,
+     "p90_hz": 144.617
+    },
+    {
+     "level_dbfs": -23.704,
+     "voiced_frames": 37,
+     "mean_f0_hz": 133.3,
+     "p10_hz": 125.549,
+     "p90_hz": 137.346
+    },
+    {
+     "level_dbfs": -26.137,
+     "voiced_frames": 32,
+     "mean_f0_hz": 132.141,
+     "p10_hz": 126.479,
+     "p90_hz": 135.745
+    },
+    {
+     "level_dbfs": -26.588,
+     "voiced_frames": 29,
+     "mean_f0_hz": 127.423,
+     "p10_hz": 124.221,
+     "p90_hz": 131.369
+    },
+    {
+     "level_dbfs": -29.847,
+     "voiced_frames": 32,
+     "mean_f0_hz": 121.861,
+     "p10_hz": 105.717,
+     "p90_hz": 135.596
+    },
+    {
+     "level_dbfs": -37.481,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -65.983,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -66.723,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -67.257,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -66.121,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -64.623,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -69.591,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -68.459,
+     "voiced_frames": 0
+    }
+   ]
+  },
+  "common_voice_en_36734620": {
+   "speech_level_dbfs": -21.124,
+   "median_f0_hz": 128.553,
+   "windows": [
+    {
+     "level_dbfs": -44.954,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -45.936,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -24.029,
+     "voiced_frames": 17,
+     "mean_f0_hz": 158.152,
+     "p10_hz": 131.422,
+     "p90_hz": 212.693
+    },
+    {
+     "level_dbfs": -17.958,
+     "voiced_frames": 36,
+     "mean_f0_hz": 131.751,
+     "p10_hz": 125.447,
+     "p90_hz": 137.416
+    },
+    {
+     "level_dbfs": -19.682,
+     "voiced_frames": 30,
+     "mean_f0_hz": 145.972,
+     "p10_hz": 140.986,
+     "p90_hz": 154.837
+    },
+    {
+     "level_dbfs": -26.514,
+     "voiced_frames": 19,
+     "mean_f0_hz": 127.726,
+     "p10_hz": 125.536,
+     "p90_hz": 132.203
+    },
+    {
+     "level_dbfs": -25.534,
+     "voiced_frames": 28,
+     "mean_f0_hz": 133.777,
+     "p10_hz": 125.29,
+     "p90_hz": 142.051
+    },
+    {
+     "level_dbfs": -21.473,
+     "voiced_frames": 34,
+     "mean_f0_hz": 119.303,
+     "p10_hz": 115.079,
+     "p90_hz": 123.104
+    },
+    {
+     "level_dbfs": -26.098,
+     "voiced_frames": 9,
+     "mean_f0_hz": 119.424,
+     "p10_hz": 118.1,
+     "p90_hz": 120.49
+    },
+    {
+     "level_dbfs": -30.612,
+     "voiced_frames": 12,
+     "mean_f0_hz": 99.246,
+     "p10_hz": 77.479,
+     "p90_hz": 113.721
+    },
+    {
+     "level_dbfs": -60.221,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -64.119,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -64.358,
+     "voiced_frames": 0
+    }
+   ]
+  },
+  "common_voice_en_37451535": {
+   "speech_level_dbfs": -36.471,
+   "median_f0_hz": 170.046,
+   "windows": [
+    {
+     "level_dbfs": -92.478,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -99.976,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -98.419,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -35.261,
+     "voiced_frames": 27,
+     "mean_f0_hz": 190.566,
+     "p10_hz": 171.769,
+     "p90_hz": 201.01
+    },
+    {
+     "level_dbfs": -32.994,
+     "voiced_frames": 25,
+     "mean_f0_hz": 180.507,
+     "p10_hz": 160.903,
+     "p90_hz": 209.074
+    },
+    {
+     "level_dbfs": -36.778,
+     "voiced_frames": 33,
+     "mean_f0_hz": 190.425,
+     "p10_hz": 167.201,
+     "p90_hz": 208.419
+    },
+    {
+     "level_dbfs": -35.103,
+     "voiced_frames": 26,
+     "mean_f0_hz": 180.491,
+     "p10_hz": 165.955,
+     "p90_hz": 193.397
+    },
+    {
+     "level_dbfs": -37.482,
+     "voiced_frames": 25,
+     "mean_f0_hz": 200.34,
+     "p10_hz": 163.877,
+     "p90_hz": 181.462
+    },
+    {
+     "level_dbfs": -41.078,
+     "voiced_frames": 28,
+     "mean_f0_hz": 154.169,
+     "p10_hz": 149.46,
+     "p90_hz": 158.948
+    },
+    {
+     "level_dbfs": -38.029,
+     "voiced_frames": 37,
+     "mean_f0_hz": 217.634,
+     "p10_hz": 168.809,
+     "p90_hz": 299.453
+    },
+    {
+     "level_dbfs": -42.613,
+     "voiced_frames": 21,
+     "mean_f0_hz": 165.038,
+     "p10_hz": 158.666,
+     "p90_hz": 172.643
+    },
+    {
+     "level_dbfs": -39.191,
+     "voiced_frames": 34,
+     "mean_f0_hz": 167.539,
+     "p10_hz": 161.306,
+     "p90_hz": 171.769
+    },
+    {
+     "level_dbfs": -38.351,
+     "voiced_frames": 40,
+     "mean_f0_hz": 155.68,
+     "p10_hz": 146.866,
+     "p90_hz": 164.341
+    },
+    {
+     "level_dbfs": -50.065,
+     "voiced_frames": 7,
+     "mean_f0_hz": 143.392,
+     "p10_hz": 137.479,
+     "p90_hz": 148.003
+    },
+    {
+     "level_dbfs": -56.282,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -99.58,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -103.069,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -92.172,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -94.096,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -93.393,
+     "voiced_frames": 0
+    }
+   ]
+  },
+  "common_voice_en_38865706": {
+   "speech_level_dbfs": -25.709,
+   "median_f0_hz": 131.407,
+   "windows": [
+    {
+     "level_dbfs": -52.513,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -60.038,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -39.745,
+     "voiced_frames": 5,
+     "mean_f0_hz": 129.006,
+     "p10_hz": 124.622,
+     "p90_hz": 131.827
+    },
+    {
+     "level_dbfs": -24.404,
+     "voiced_frames": 37,
+     "mean_f0_hz": 152.588,
+     "p10_hz": 134.78,
+     "p90_hz": 163.575
+    },
+    {
+     "level_dbfs": -30.754,
+     "voiced_frames": 27,
+     "mean_f0_hz": 131.856,
+     "p10_hz": 125.81,
+     "p90_hz": 137.997
+    },
+    {
+     "level_dbfs": -27.492,
+     "voiced_frames": 35,
+     "mean_f0_hz": 137.84,
+     "p10_hz": 128.577,
+     "p90_hz": 149.913
+    },
+    {
+     "level_dbfs": -40.348,
+     "voiced_frames": 11,
+     "mean_f0_hz": 148.898,
+     "p10_hz": 147.018,
+     "p90_hz": 150.796
+    },
+    {
+     "level_dbfs": -70.293,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -25.568,
+     "voiced_frames": 33,
+     "mean_f0_hz": 131.051,
+     "p10_hz": 117.88,
+     "p90_hz": 143.782
+    },
+    {
+     "level_dbfs": -26.264,
+     "voiced_frames": 30,
+     "mean_f0_hz": 137.435,
+     "p10_hz": 131.72,
+     "p90_hz": 145.557
+    },
+    {
+     "level_dbfs": -24.416,
+     "voiced_frames": 40,
+     "mean_f0_hz": 127.017,
+     "p10_hz": 123.152,
+     "p90_hz": 131.765
+    },
+    {
+     "level_dbfs": -21.975,
+     "voiced_frames": 40,
+     "mean_f0_hz": 137.256,
+     "p10_hz": 127.941,
+     "p90_hz": 146.012
+    },
+    {
+     "level_dbfs": -27.327,
+     "voiced_frames": 24,
+     "mean_f0_hz": 123.88,
+     "p10_hz": 118.835,
+     "p90_hz": 128.497
+    },
+    {
+     "level_dbfs": -33.191,
+     "voiced_frames": 30,
+     "mean_f0_hz": 102.615,
+     "p10_hz": 81.625,
+     "p90_hz": 113.072
+    },
+    {
+     "level_dbfs": -51.878,
+     "voiced_frames": 3,
+     "mean_f0_hz": 84.791,
+     "p10_hz": 84.193,
+     "p90_hz": 85.271
+    },
+    {
+     "level_dbfs": -67.971,
+     "voiced_frames": 0
+    }
+   ]
+  },
+  "common_voice_en_39751075": {
+   "speech_level_dbfs": -23.407,
+   "median_f0_hz": 101.737,
+   "windows": [
+    {
+     "level_dbfs": -62.634,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -56.846,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -18.278,
+     "voiced_frames": 35,
+     "mean_f0_hz": 115.958,
+     "p10_hz": 108.987,
+     "p90_hz": 131.472
+    },
+    {
+     "level_dbfs": -27.242,
+     "voiced_frames": 29,
+     "mean_f0_hz": 116.557,
+     "p10_hz": 101.425,
+     "p90_hz": 129.601
+    },
+    {
+     "level_dbfs": -28.775,
+     "voiced_frames": 19,
+     "mean_f0_hz": 102.139,
+     "p10_hz": 94.257,
+     "p90_hz": 107.591
+    },
+    {
+     "level_dbfs": -25.467,
+     "voiced_frames": 14,
+     "mean_f0_hz": 128.086,
+     "p10_hz": 118.967,
+     "p90_hz": 140.409
+    },
+    {
+     "level_dbfs": -21.93,
+     "voiced_frames": 21,
+     "mean_f0_hz": 96.467,
+     "p10_hz": 92.01,
+     "p90_hz": 105.093
+    },
+    {
+     "level_dbfs": -24.046,
+     "voiced_frames": 12,
+     "mean_f0_hz": 106.301,
+     "p10_hz": 97.213,
+     "p90_hz": 109.383
+    },
+    {
+     "level_dbfs": -26.056,
+     "voiced_frames": 20,
+     "mean_f0_hz": 99.37,
+     "p10_hz": 93.614,
+     "p90_hz": 105.423
+    },
+    {
+     "level_dbfs": -27.852,
+     "voiced_frames": 35,
+     "mean_f0_hz": 97.38,
+     "p10_hz": 95.888,
+     "p90_hz": 99.581
+    },
+    {
+     "level_dbfs": -31.453,
+     "voiced_frames": 11,
+     "mean_f0_hz": 86.397,
+     "p10_hz": 76.718,
+     "p90_hz": 97.731
+    },
+    {
+     "level_dbfs": -30.283,
+     "voiced_frames": 5,
+     "mean_f0_hz": 80.454,
+     "p10_hz": 78.879,
+     "p90_hz": 82.338
+    },
+    {
+     "level_dbfs": -36.914,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -60.944,
+     "voiced_frames": 0
+    },
+    {
+     "level_dbfs": -64.25,
+     "voiced_frames": 0
+    }
+   ]
+  },
+  "common_voice_en_579883": {
+   "speech_level_dbfs": -38.123,
+   "median_f0_hz": 77.932,
+   "windows": [
+    {
+     "level_dbfs": -57.831,
+     "voiced_frames": 32,
+     "mean_f0_hz": 86.045,
+     "p10_hz": 77.556,
+     "p90_hz": 78.185
+    },
+    {
+     "level_dbfs": -57.763,
+     "voiced_frames": 31,
+     "mean_f0_hz": 77.763,
+     "p10_hz": 77.535,
+     "p90_hz": 77.969
+    },
+    {
+     "level_dbfs": -55.294,
+     "voiced_frames": 33,
+     "mean_f0_hz": 81.082,
+     "p10_hz": 77.459,
+     "p90_hz": 78.054
+    },
+    {
+     "level_dbfs": -57.675,
+     "voiced_frames": 39,
+     "mean_f0_hz": 77.747,
+     "p10_hz": 77.429,
+     "p90_hz": 78.081
+    },
+    {
+     "level_dbfs": -58.199,
+     "voiced_frames": 24,
+     "mean_f0_hz": 103.835,
+     "p10_hz": 77.509,
+     "p90_hz": 232.243
+    },
+    {
+     "level_dbfs": -58.173,
+     "voiced_frames": 23,
+     "mean_f0_hz": 100.419,
+     "p10_hz": 77.407,
+     "p90_hz": 78.136
+    },
+    {
+     "level_dbfs": -55.003,
+     "voiced_frames": 30,
+     "mean_f0_hz": 77.712,
+     "p10_hz": 77.466,
+     "p90_hz": 78.009
+    },
+    {
+     "level_dbfs": -38.11,
+     "voiced_frames": 40,
+     "mean_f0_hz": 104.202,
+     "p10_hz": 77.579,
+     "p90_hz": 151.339
+    },
+    {
+     "level_dbfs": -36.509,
+     "voiced_frames": 34,
+     "mean_f0_hz": 141.937,
+     "p10_hz": 131.912,
+     "p90_hz": 157.207
+    },
+    {
+     "level_dbfs": -39.326,
+     "voiced_frames": 27,
+     "mean_f0_hz": 136.082,
+     "p10_hz": 130.537,
+     "p90_hz": 139.928
+    },
+    {
+     "level_dbfs": -38.6,
+     "voiced_frames": 35,
+     "mean_f0_hz": 129.068,
+     "p10_hz": 119.052,
+     "p90_hz": 137.589
+    },
+    {
+     "level_dbfs": -39.565,
+     "voiced_frames": 34,
+     "mean_f0_hz": 116.322,
+     "p10_hz": 77.642,
+     "p90_hz": 129.01
+    },
+    {
+     "level_dbfs": -43.815,
+     "voiced_frames": 38,
+     "mean_f0_hz": 117.81,
+     "p10_hz": 104.553,
+     "p90_hz": 124.506
+    },
+    {
+     "level_dbfs": -39.511,
+     "voiced_frames": 29,
+     "mean_f0_hz": 112.54,
+     "p10_hz": 77.718,
+     "p90_hz": 133.514
+    },
+    {
+     "level_dbfs": -55.822,
+     "voiced_frames": 21,
+     "mean_f0_hz": 99.019,
+     "p10_hz": 77.636,
+     "p90_hz": 138.769
+    },
+    {
+     "level_dbfs": -55.675,
+     "voiced_frames": 22,
+     "mean_f0_hz": 91.744,
+     "p10_hz": 77.421,
+     "p90_hz": 78.141
+    },
+    {
+     "level_dbfs": -56.718,
+     "voiced_frames": 24,
+     "mean_f0_hz": 103.67,
+     "p10_hz": 77.667,
+     "p90_hz": 232.472
+    },
+    {
+     "level_dbfs": -57.562,
+     "voiced_frames": 35,
+     "mean_f0_hz": 77.772,
+     "p10_hz": 77.554,
+     "p90_hz": 78.012
+    },
+    {
+     "level_dbfs": -54.324,
+     "voiced_frames": 24,
+     "mean_f0_hz": 81.736,
+     "p10_hz": 77.381,
+     "p90_hz": 78.07
+    }
+   ]
+  },
+  "common_voice_en_665631": {
+   "speech_level_dbfs": -9.56,
+   "median_f0_hz": 176.14,
+   "windows": [
+    {
+     "level_dbfs": -26.425,
+     "voiced_frames": 37,
+     "mean_f0_hz": 401.136,
+     "p10_hz": 396.523,
+     "p90_hz": 405.257
+    },
+    {
+     "level_dbfs": -23.948,
+     "voiced_frames": 40,
+     "mean_f0_hz": 362.297,
+     "p10_hz": 200.221,
+     "p90_hz": 405.991
+    },
+    {
+     "level_dbfs": -4.077,
+     "voiced_frames": 40,
+     "mean_f0_hz": 176.461,
+     "p10_hz": 171.64,
+     "p90_hz": 182.452
+    },
+    {
+     "level_dbfs": -8.308,
+     "voiced_frames": 39,
+     "mean_f0_hz": 189.739,
+     "p10_hz": 173.574,
+     "p90_hz": 202.965
+    },
+    {
+     "level_dbfs": -9.658,
+     "voiced_frames": 37,
+     "mean_f0_hz": 180.145,
+     "p10_hz": 156.66,
+     "p90_hz": 205.457
+    },
+    {
+     "level_dbfs": -8.01,
+     "voiced_frames": 37,
+     "mean_f0_hz": 162.882,
+     "p10_hz": 98.42,
+     "p90_hz": 176.001
+    },
+    {
+     "level_dbfs": -7.52,
+     "voiced_frames": 38,
+     "mean_f0_hz": 179.885,
+     "p10_hz": 176.042,
+     "p90_hz": 186.263
+    },
+    {
+     "level_dbfs": -23.563,
+     "voiced_frames": 26,
+     "mean_f0_hz": 268.208,
+     "p10_hz": 181.341,
+     "p90_hz": 386.38
+    },
+    {
+     "level_dbfs": -7.912,
+     "voiced_frames": 40,
+     "mean_f0_hz": 140.301,
+     "p10_hz": 124.402,
+     "p90_hz": 163.736
+    },
+    {
+     "level_dbfs": -12.804,
+     "voiced_frames": 31,
+     "mean_f0_hz": 128.209,
+     "p10_hz": 77.687,
+     "p90_hz": 161.398
+    },
+    {
+     "level_dbfs": -24.202,
+     "voiced_frames": 40,
+     "mean_f0_hz": 79.182,
+     "p10_hz": 78.553,
+     "p90_hz": 79.729
+    },
+    {
+     "level_dbfs": -10.547,
+     "voiced_frames": 26,
+     "mean_f0_hz": 135.258,
+     "p10_hz": 120.804,
+     "p90_hz": 149.485
+    }
+   ]
+  }
+ }
+}

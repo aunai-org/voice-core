@@ -1,0 +1,113 @@
+{
+ "_meta": {
+  "parselmouth": "0.4.7",
+  "praat": "6.1.38",
+  "min_pause_s": 0.5,
+  "min_held_s": 0.4,
+  "max_held_sd_semitones": 1.0,
+  "max_held_level_range_db": 8.0,
+  "note": "events as [kind, start_s, end_s], kind 'pause' or 'held'"
+ },
+ "clips": {
+  "common_voice_en_128571": {
+   "events": []
+  },
+  "common_voice_en_17298604": {
+   "events": []
+  },
+  "common_voice_en_17714250": {
+   "events": [
+    [
+     "pause",
+     3.728,
+     4.48
+    ]
+   ]
+  },
+  "common_voice_en_17738456": {
+   "events": [
+    [
+     "pause",
+     2.792,
+     3.888
+    ],
+    [
+     "pause",
+     4.664,
+     5.264
+    ]
+   ]
+  },
+  "common_voice_en_17830294": {
+   "events": []
+  },
+  "common_voice_en_17848293": {
+   "events": [
+    [
+     "held",
+     0.417,
+     0.927
+    ],
+    [
+     "held",
+     1.237,
+     2.017
+    ]
+   ]
+  },
+  "common_voice_en_17891405": {
+   "events": []
+  },
+  "common_voice_en_18179121": {
+   "events": []
+  },
+  "common_voice_en_18188256": {
+   "events": []
+  },
+  "common_voice_en_18365693": {
+   "events": []
+  },
+  "common_voice_en_18373309": {
+   "events": []
+  },
+  "common_voice_en_19388916": {
+   "events": [
+    [
+     "pause",
+     0.384,
+     1.408
+    ]
+   ]
+  },
+  "common_voice_en_34382925": {
+   "events": []
+  },
+  "common_voice_en_35061606": {
+   "events": []
+  },
+  "common_voice_en_36734620": {
+   "events": []
+  },
+  "common_voice_en_37451535": {
+   "events": []
+  },
+  "common_voice_en_38865706": {
+   "events": [
+    [
+     "pause",
+     2.5,
+     3.268
+    ]
+   ]
+  },
+  "common_voice_en_39751075": {
+   "events": []
+  },
+  "common_voice_en_579883": {
+   "events": []
+  },
+  "common_voice_en_665631": {
+   "events": []
+  }
+ }
+}
