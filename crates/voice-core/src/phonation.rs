@@ -49,26 +49,9 @@ pub fn max_phonation_with_track(
         return None;
     }
     let hop = track[1].time_s - track[0].time_s;
-    // Stretches as (first index, last index) of voiced frames.
-    let mut best: Option<(usize, usize)> = None;
-    let mut cur: Option<(usize, usize)> = None;
-    let mut gap = 0usize;
-    for (i, f) in track.iter().enumerate() {
-        if f.f0_hz.is_some() {
-            cur = Some(match cur {
-                Some((s, _)) => (s, i),
-                None => (i, i),
-            });
-            gap = 0;
-        } else if cur.is_some() {
-            gap += 1;
-            if gap > MAX_GAP_FRAMES {
-                best = longer(best, cur);
-                cur = None;
-            }
-        }
-    }
-    best = longer(best, cur);
+    let best = voiced_stretches(track)
+        .into_iter()
+        .fold(None, |b, c| longer(b, Some(c)));
     let (first, last) = best?;
     let hz: Vec<f64> = track[first..=last]
         .iter()
@@ -93,6 +76,30 @@ pub fn max_phonation_with_track(
         f0_sd_semitones: sd as f32,
         rms_dbfs: rms_db(&samples[a..b]),
     })
+}
+
+/// Voiced stretches of a pitch track as `(first, last)` indices of voiced frames, in
+/// time order. Gaps of up to [`MAX_GAP_FRAMES`] unvoiced frames do not end a stretch.
+pub(crate) fn voiced_stretches(track: &[PitchFrame]) -> Vec<(usize, usize)> {
+    let mut out = Vec::new();
+    let mut cur: Option<(usize, usize)> = None;
+    let mut gap = 0usize;
+    for (i, f) in track.iter().enumerate() {
+        if f.f0_hz.is_some() {
+            cur = Some(match cur {
+                Some((s, _)) => (s, i),
+                None => (i, i),
+            });
+            gap = 0;
+        } else if cur.is_some() {
+            gap += 1;
+            if gap > MAX_GAP_FRAMES {
+                out.extend(cur.take());
+            }
+        }
+    }
+    out.extend(cur);
+    out
 }
 
 fn longer(best: Option<(usize, usize)>, cand: Option<(usize, usize)>) -> Option<(usize, usize)> {
