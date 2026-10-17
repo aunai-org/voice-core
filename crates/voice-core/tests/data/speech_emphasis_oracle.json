@@ -1,0 +1,1367 @@
+{
+ "_meta": {
+  "parselmouth": "0.4.7",
+  "praat": "6.1.38",
+  "window_s": 0.4,
+  "reach_s": 0.2,
+  "note": "per clip: typical_level_db / typical_pitch_st = [p25, p50, p75] or null; words: start_s, end_s, relative_level_db, relative_pitch_st (null if no pitch), pause_before_s, pause_after_s"
+ },
+ "clips": {
+  "common_voice_en_128571": {
+   "typical_windows": 4,
+   "typical_level_db": null,
+   "typical_pitch_st": null,
+   "words": [
+    {
+     "start_s": 0.2,
+     "end_s": 0.6,
+     "relative_level_db": -27.9199,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.0,
+     "end_s": 1.4,
+     "relative_level_db": 1.6857,
+     "relative_pitch_st": 1.5583,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.8,
+     "end_s": 2.2,
+     "relative_level_db": 2.1154,
+     "relative_pitch_st": 0.2346,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 2.6,
+     "end_s": 3.0,
+     "relative_level_db": -8.3568,
+     "relative_pitch_st": -2.8075,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 3.4,
+     "end_s": 3.8,
+     "relative_level_db": -28.5008,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 4.2,
+     "end_s": 4.6,
+     "relative_level_db": -28.5405,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 5.0,
+     "end_s": 5.4,
+     "relative_level_db": -26.4509,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    }
+   ]
+  },
+  "common_voice_en_17298604": {
+   "typical_windows": 7,
+   "typical_level_db": [
+    -1.5755,
+    0.7516,
+    1.121
+   ],
+   "typical_pitch_st": [
+    0.6246,
+    1.0393,
+    1.8532
+   ],
+   "words": [
+    {
+     "start_s": 0.2,
+     "end_s": 0.6,
+     "relative_level_db": -18.3981,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.0,
+     "end_s": 1.4,
+     "relative_level_db": -1.8792,
+     "relative_pitch_st": 0.7361,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.8,
+     "end_s": 2.2,
+     "relative_level_db": -0.0847,
+     "relative_pitch_st": 0.118,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 2.6,
+     "end_s": 3.0,
+     "relative_level_db": -0.5202,
+     "relative_pitch_st": 1.6853,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.208
+    },
+    {
+     "start_s": 3.4,
+     "end_s": 3.8,
+     "relative_level_db": 0.3628,
+     "relative_pitch_st": 1.2563,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 4.2,
+     "end_s": 4.6,
+     "relative_level_db": -4.136,
+     "relative_pitch_st": -3.6869,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 5.0,
+     "end_s": 5.4,
+     "relative_level_db": -10.4047,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 5.8,
+     "end_s": 6.2,
+     "relative_level_db": -27.4294,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 6.6,
+     "end_s": 7.0,
+     "relative_level_db": -13.6202,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 7.4,
+     "end_s": 7.8,
+     "relative_level_db": -11.9525,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    }
+   ]
+  },
+  "common_voice_en_17714250": {
+   "typical_windows": 3,
+   "typical_level_db": null,
+   "typical_pitch_st": null,
+   "words": [
+    {
+     "start_s": 0.2,
+     "end_s": 0.6,
+     "relative_level_db": -25.1589,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.0,
+     "end_s": 1.4,
+     "relative_level_db": 2.0829,
+     "relative_pitch_st": 1.532,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.184
+    },
+    {
+     "start_s": 1.8,
+     "end_s": 2.2,
+     "relative_level_db": -1.1416,
+     "relative_pitch_st": -0.5094,
+     "pause_before_s": 0.184,
+     "pause_after_s": 0.4
+    },
+    {
+     "start_s": 2.6,
+     "end_s": 3.0,
+     "relative_level_db": -3.3636,
+     "relative_pitch_st": 3.7975,
+     "pause_before_s": 0.4,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 3.4,
+     "end_s": 3.8,
+     "relative_level_db": -5.681,
+     "relative_pitch_st": -1.3894,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.752
+    },
+    {
+     "start_s": 4.2,
+     "end_s": 4.6,
+     "relative_level_db": -9.5138,
+     "relative_pitch_st": -0.262,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    }
+   ]
+  },
+  "common_voice_en_17738456": {
+   "typical_windows": 4,
+   "typical_level_db": null,
+   "typical_pitch_st": null,
+   "words": [
+    {
+     "start_s": 0.2,
+     "end_s": 0.6,
+     "relative_level_db": -1.7082,
+     "relative_pitch_st": 1.6158,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.0,
+     "end_s": 1.4,
+     "relative_level_db": -17.0058,
+     "relative_pitch_st": 4.7473,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.8,
+     "end_s": 2.2,
+     "relative_level_db": -0.564,
+     "relative_pitch_st": -1.8558,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 2.6,
+     "end_s": 3.0,
+     "relative_level_db": -7.0884,
+     "relative_pitch_st": 2.9683,
+     "pause_before_s": 0.104,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 3.4,
+     "end_s": 3.8,
+     "relative_level_db": -58.9046,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 4.2,
+     "end_s": 4.6,
+     "relative_level_db": 0.6051,
+     "relative_pitch_st": -2.0595,
+     "pause_before_s": 0.208,
+     "pause_after_s": 0.6
+    },
+    {
+     "start_s": 5.0,
+     "end_s": 5.4,
+     "relative_level_db": -1.9922,
+     "relative_pitch_st": -0.2979,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.128
+    },
+    {
+     "start_s": 5.8,
+     "end_s": 6.2,
+     "relative_level_db": -6.7045,
+     "relative_pitch_st": -5.6475,
+     "pause_before_s": 0.128,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 6.6,
+     "end_s": 7.0,
+     "relative_level_db": -60.615,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 7.4,
+     "end_s": 7.8,
+     "relative_level_db": -60.5909,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 8.2,
+     "end_s": 8.6,
+     "relative_level_db": -60.6258,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 9.0,
+     "end_s": 9.4,
+     "relative_level_db": -60.6003,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    }
+   ]
+  },
+  "common_voice_en_17830294": {
+   "typical_windows": 9,
+   "typical_level_db": [
+    -3.3369,
+    -2.099,
+    0.6422
+   ],
+   "typical_pitch_st": [
+    -0.3105,
+    -0.0781,
+    0.2985
+   ],
+   "words": [
+    {
+     "start_s": 0.2,
+     "end_s": 0.6,
+     "relative_level_db": -56.4642,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.0,
+     "end_s": 1.4,
+     "relative_level_db": -57.3399,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.8,
+     "end_s": 2.2,
+     "relative_level_db": 4.5409,
+     "relative_pitch_st": 3.0745,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 2.6,
+     "end_s": 3.0,
+     "relative_level_db": 0.7581,
+     "relative_pitch_st": 0.0662,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 3.4,
+     "end_s": 3.8,
+     "relative_level_db": -2.4642,
+     "relative_pitch_st": 0.2519,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 4.2,
+     "end_s": 4.6,
+     "relative_level_db": -3.7408,
+     "relative_pitch_st": -0.4561,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    }
+   ]
+  },
+  "common_voice_en_17848293": {
+   "typical_windows": 6,
+   "typical_level_db": [
+    -0.3108,
+    0.4427,
+    1.1019
+   ],
+   "typical_pitch_st": [
+    -0.5791,
+    1.5036,
+    5.3483
+   ],
+   "words": [
+    {
+     "start_s": 0.2,
+     "end_s": 0.6,
+     "relative_level_db": 0.8455,
+     "relative_pitch_st": 1.8017,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.0,
+     "end_s": 1.4,
+     "relative_level_db": 0.296,
+     "relative_pitch_st": 5.1106,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.8,
+     "end_s": 2.2,
+     "relative_level_db": 0.7051,
+     "relative_pitch_st": -1.7985,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    }
+   ]
+  },
+  "common_voice_en_17891405": {
+   "typical_windows": 7,
+   "typical_level_db": [
+    -3.8763,
+    0.9711,
+    2.2609
+   ],
+   "typical_pitch_st": [
+    -0.8155,
+    -0.5058,
+    0.3959
+   ],
+   "words": [
+    {
+     "start_s": 0.2,
+     "end_s": 0.6,
+     "relative_level_db": -3.35,
+     "relative_pitch_st": 0.3552,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.0,
+     "end_s": 1.4,
+     "relative_level_db": -5.3049,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.8,
+     "end_s": 2.2,
+     "relative_level_db": 1.5358,
+     "relative_pitch_st": -0.9845,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 2.6,
+     "end_s": 3.0,
+     "relative_level_db": -5.3581,
+     "relative_pitch_st": -1.1163,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 3.4,
+     "end_s": 3.8,
+     "relative_level_db": -3.587,
+     "relative_pitch_st": -0.0665,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.184
+    },
+    {
+     "start_s": 4.2,
+     "end_s": 4.6,
+     "relative_level_db": -2.3165,
+     "relative_pitch_st": 18.4347,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    }
+   ]
+  },
+  "common_voice_en_18179121": {
+   "typical_windows": 5,
+   "typical_level_db": [
+    -3.6001,
+    -2.3375,
+    0.4747
+   ],
+   "typical_pitch_st": [
+    0.1879,
+    0.4804,
+    0.7398
+   ],
+   "words": [
+    {
+     "start_s": 0.2,
+     "end_s": 0.6,
+     "relative_level_db": -47.6123,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.0,
+     "end_s": 1.4,
+     "relative_level_db": 2.9629,
+     "relative_pitch_st": 0.3594,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.8,
+     "end_s": 2.2,
+     "relative_level_db": 1.0468,
+     "relative_pitch_st": -0.047,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.16
+    },
+    {
+     "start_s": 2.6,
+     "end_s": 3.0,
+     "relative_level_db": -3.8015,
+     "relative_pitch_st": -0.6296,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 3.4,
+     "end_s": 3.8,
+     "relative_level_db": -37.852,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    }
+   ]
+  },
+  "common_voice_en_18188256": {
+   "typical_windows": 4,
+   "typical_level_db": null,
+   "typical_pitch_st": null,
+   "words": [
+    {
+     "start_s": 0.2,
+     "end_s": 0.6,
+     "relative_level_db": -45.449,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.0,
+     "end_s": 1.4,
+     "relative_level_db": 2.6671,
+     "relative_pitch_st": 1.9661,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.8,
+     "end_s": 2.2,
+     "relative_level_db": 1.8508,
+     "relative_pitch_st": -1.4213,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 2.6,
+     "end_s": 3.0,
+     "relative_level_db": -28.0405,
+     "relative_pitch_st": 22.1952,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    }
+   ]
+  },
+  "common_voice_en_18365693": {
+   "typical_windows": 2,
+   "typical_level_db": null,
+   "typical_pitch_st": null,
+   "words": [
+    {
+     "start_s": 0.2,
+     "end_s": 0.6,
+     "relative_level_db": -51.9682,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.0,
+     "end_s": 1.4,
+     "relative_level_db": -2.8783,
+     "relative_pitch_st": -1.6193,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.8,
+     "end_s": 2.2,
+     "relative_level_db": -10.4313,
+     "relative_pitch_st": 1.4262,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 2.6,
+     "end_s": 3.0,
+     "relative_level_db": -102.3019,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    }
+   ]
+  },
+  "common_voice_en_18373309": {
+   "typical_windows": 8,
+   "typical_level_db": [
+    -2.0553,
+    -0.3399,
+    0.1555
+   ],
+   "typical_pitch_st": [
+    -0.1855,
+    1.7508,
+    3.584
+   ],
+   "words": [
+    {
+     "start_s": 0.2,
+     "end_s": 0.6,
+     "relative_level_db": -8.6232,
+     "relative_pitch_st": 1.9986,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.0,
+     "end_s": 1.4,
+     "relative_level_db": -3.302,
+     "relative_pitch_st": 8.1183,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.272
+    },
+    {
+     "start_s": 1.8,
+     "end_s": 2.2,
+     "relative_level_db": -2.0066,
+     "relative_pitch_st": 2.978,
+     "pause_before_s": 0.272,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 2.6,
+     "end_s": 3.0,
+     "relative_level_db": -3.0944,
+     "relative_pitch_st": -1.0909,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.464
+    },
+    {
+     "start_s": 3.4,
+     "end_s": 3.8,
+     "relative_level_db": 3.0868,
+     "relative_pitch_st": 5.567,
+     "pause_before_s": 0.464,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 4.2,
+     "end_s": 4.6,
+     "relative_level_db": -0.0141,
+     "relative_pitch_st": -0.206,
+     "pause_before_s": 0.176,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 5.0,
+     "end_s": 5.4,
+     "relative_level_db": -21.1883,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 5.8,
+     "end_s": 6.2,
+     "relative_level_db": -31.9498,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    }
+   ]
+  },
+  "common_voice_en_19388916": {
+   "typical_windows": 5,
+   "typical_level_db": [
+    0.5763,
+    1.4021,
+    2.1903
+   ],
+   "typical_pitch_st": [
+    0.3186,
+    0.7432,
+    2.1937
+   ],
+   "words": [
+    {
+     "start_s": 0.2,
+     "end_s": 0.6,
+     "relative_level_db": -16.6419,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.0,
+     "end_s": 1.4,
+     "relative_level_db": -27.3746,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.8,
+     "end_s": 2.2,
+     "relative_level_db": 1.6533,
+     "relative_pitch_st": 2.4597,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 2.6,
+     "end_s": 3.0,
+     "relative_level_db": 1.6466,
+     "relative_pitch_st": -0.1985,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.16
+    },
+    {
+     "start_s": 3.4,
+     "end_s": 3.8,
+     "relative_level_db": -10.5116,
+     "relative_pitch_st": -0.2033,
+     "pause_before_s": 0.256,
+     "pause_after_s": 0.304
+    },
+    {
+     "start_s": 4.2,
+     "end_s": 4.6,
+     "relative_level_db": -7.5702,
+     "relative_pitch_st": -1.3085,
+     "pause_before_s": 0.168,
+     "pause_after_s": 0.344
+    },
+    {
+     "start_s": 5.0,
+     "end_s": 5.4,
+     "relative_level_db": -3.5726,
+     "relative_pitch_st": 0.7432,
+     "pause_before_s": 0.344,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 5.8,
+     "end_s": 6.2,
+     "relative_level_db": -9.5535,
+     "relative_pitch_st": 13.8217,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.12
+    },
+    {
+     "start_s": 6.6,
+     "end_s": 7.0,
+     "relative_level_db": -9.64,
+     "relative_pitch_st": 11.7791,
+     "pause_before_s": 0.152,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 7.4,
+     "end_s": 7.8,
+     "relative_level_db": -29.0142,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    }
+   ]
+  },
+  "common_voice_en_34382925": {
+   "typical_windows": 2,
+   "typical_level_db": null,
+   "typical_pitch_st": null,
+   "words": [
+    {
+     "start_s": 0.2,
+     "end_s": 0.6,
+     "relative_level_db": -3.9498,
+     "relative_pitch_st": 1.0948,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.0,
+     "end_s": 1.4,
+     "relative_level_db": 0.9495,
+     "relative_pitch_st": 1.032,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.8,
+     "end_s": 2.2,
+     "relative_level_db": -2.6937,
+     "relative_pitch_st": -1.479,
+     "pause_before_s": 0.144,
+     "pause_after_s": 0.0
+    }
+   ]
+  },
+  "common_voice_en_35061606": {
+   "typical_windows": 7,
+   "typical_level_db": [
+    -3.3101,
+    -2.6537,
+    2.443
+   ],
+   "typical_pitch_st": [
+    -0.903,
+    -0.4261,
+    0.2464
+   ],
+   "words": [
+    {
+     "start_s": 0.2,
+     "end_s": 0.6,
+     "relative_level_db": 2.9602,
+     "relative_pitch_st": 0.3752,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.0,
+     "end_s": 1.4,
+     "relative_level_db": -2.252,
+     "relative_pitch_st": 1.0083,
+     "pause_before_s": 0.152,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.8,
+     "end_s": 2.2,
+     "relative_level_db": -4.0785,
+     "relative_pitch_st": -0.1514,
+     "pause_before_s": 0.12,
+     "pause_after_s": 0.12
+    },
+    {
+     "start_s": 2.6,
+     "end_s": 3.0,
+     "relative_level_db": -2.8595,
+     "relative_pitch_st": -0.4261,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 3.4,
+     "end_s": 3.8,
+     "relative_level_db": -3.7607,
+     "relative_pitch_st": -1.2694,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 4.2,
+     "end_s": 4.6,
+     "relative_level_db": -23.3384,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 5.0,
+     "end_s": 5.4,
+     "relative_level_db": -41.6379,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 5.8,
+     "end_s": 6.2,
+     "relative_level_db": -39.7976,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 6.6,
+     "end_s": 7.0,
+     "relative_level_db": -41.5386,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    }
+   ]
+  },
+  "common_voice_en_36734620": {
+   "typical_windows": 4,
+   "typical_level_db": null,
+   "typical_pitch_st": null,
+   "words": [
+    {
+     "start_s": 0.2,
+     "end_s": 0.6,
+     "relative_level_db": -22.3908,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.0,
+     "end_s": 1.4,
+     "relative_level_db": 3.0946,
+     "relative_pitch_st": 0.5683,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.8,
+     "end_s": 2.2,
+     "relative_level_db": -6.1728,
+     "relative_pitch_st": 2.9097,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 2.6,
+     "end_s": 3.0,
+     "relative_level_db": -1.0844,
+     "relative_pitch_st": -0.665,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 3.4,
+     "end_s": 3.8,
+     "relative_level_db": -3.9893,
+     "relative_pitch_st": -1.9858,
+     "pause_before_s": 0.12,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 4.2,
+     "end_s": 4.6,
+     "relative_level_db": -43.1837,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    }
+   ]
+  },
+  "common_voice_en_37451535": {
+   "typical_windows": 8,
+   "typical_level_db": [
+    -2.2818,
+    -1.0172,
+    1.6243
+   ],
+   "typical_pitch_st": [
+    -0.3916,
+    1.0199,
+    1.7831
+   ],
+   "words": [
+    {
+     "start_s": 0.2,
+     "end_s": 0.6,
+     "relative_level_db": -60.555,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.0,
+     "end_s": 1.4,
+     "relative_level_db": -7.7612,
+     "relative_pitch_st": 3.1521,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.8,
+     "end_s": 2.2,
+     "relative_level_db": 0.001,
+     "relative_pitch_st": 3.0745,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 2.6,
+     "end_s": 3.0,
+     "relative_level_db": -2.4345,
+     "relative_pitch_st": 1.3464,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.128
+    },
+    {
+     "start_s": 3.4,
+     "end_s": 3.8,
+     "relative_level_db": -2.153,
+     "relative_pitch_st": -0.2275,
+     "pause_before_s": 0.128,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 4.2,
+     "end_s": 4.6,
+     "relative_level_db": -3.7057,
+     "relative_pitch_st": 0.0808,
+     "pause_before_s": 0.12,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 5.0,
+     "end_s": 5.4,
+     "relative_level_db": -4.2215,
+     "relative_pitch_st": -2.4227,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 5.8,
+     "end_s": 6.2,
+     "relative_level_db": -62.4256,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 6.6,
+     "end_s": 7.0,
+     "relative_level_db": -57.7804,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 7.4,
+     "end_s": 7.8,
+     "relative_level_db": -59.3136,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    }
+   ]
+  },
+  "common_voice_en_38865706": {
+   "typical_windows": 8,
+   "typical_level_db": [
+    -2.0785,
+    0.4523,
+    1.0091
+   ],
+   "typical_pitch_st": [
+    -0.176,
+    0.3404,
+    0.7078
+   ],
+   "words": [
+    {
+     "start_s": 0.2,
+     "end_s": 0.6,
+     "relative_level_db": -29.4558,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.0,
+     "end_s": 1.4,
+     "relative_level_db": -0.5307,
+     "relative_pitch_st": 2.5959,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.8,
+     "end_s": 2.2,
+     "relative_level_db": -4.0093,
+     "relative_pitch_st": -0.0565,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 2.6,
+     "end_s": 3.0,
+     "relative_level_db": -42.7727,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 3.4,
+     "end_s": 3.8,
+     "relative_level_db": 0.6375,
+     "relative_pitch_st": 0.6496,
+     "pause_before_s": 0.768,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 4.2,
+     "end_s": 4.6,
+     "relative_level_db": 0.4074,
+     "relative_pitch_st": -0.1176,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 5.0,
+     "end_s": 5.4,
+     "relative_level_db": -5.6436,
+     "relative_pitch_st": -2.9342,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 5.8,
+     "end_s": 6.2,
+     "relative_level_db": -40.3441,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    }
+   ]
+  },
+  "common_voice_en_39751075": {
+   "typical_windows": 5,
+   "typical_level_db": [
+    -2.5097,
+    -0.8484,
+    0.6376
+   ],
+   "typical_pitch_st": [
+    0.5267,
+    2.0405,
+    2.4733
+   ],
+   "words": [
+    {
+     "start_s": 0.2,
+     "end_s": 0.6,
+     "relative_level_db": -33.2558,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.0,
+     "end_s": 1.4,
+     "relative_level_db": 2.7848,
+     "relative_pitch_st": 3.0511,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.8,
+     "end_s": 2.2,
+     "relative_level_db": -1.113,
+     "relative_pitch_st": 1.5969,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 2.6,
+     "end_s": 3.0,
+     "relative_level_db": -1.3529,
+     "relative_pitch_st": -1.499,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 3.4,
+     "end_s": 3.8,
+     "relative_level_db": -1.0431,
+     "relative_pitch_st": -0.7807,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 4.2,
+     "end_s": 4.6,
+     "relative_level_db": -12.2374,
+     "relative_pitch_st": -4.1166,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 5.0,
+     "end_s": 5.4,
+     "relative_level_db": -38.8104,
+     "relative_pitch_st": null,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    }
+   ]
+  },
+  "common_voice_en_579883": {
+   "typical_windows": 5,
+   "typical_level_db": [
+    -2.1872,
+    -0.0276,
+    0.3607
+   ],
+   "typical_pitch_st": [
+    6.613,
+    8.5114,
+    9.6752
+   ],
+   "words": [
+    {
+     "start_s": 0.2,
+     "end_s": 0.6,
+     "relative_level_db": -20.0322,
+     "relative_pitch_st": 1.5698,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.0,
+     "end_s": 1.4,
+     "relative_level_db": -17.0962,
+     "relative_pitch_st": 0.6265,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.8,
+     "end_s": 2.2,
+     "relative_level_db": -19.9853,
+     "relative_pitch_st": 4.3871,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 2.6,
+     "end_s": 3.0,
+     "relative_level_db": -18.9179,
+     "relative_pitch_st": -0.0394,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 3.4,
+     "end_s": 3.8,
+     "relative_level_db": 0.1145,
+     "relative_pitch_st": 9.7587,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.12
+    },
+    {
+     "start_s": 4.2,
+     "end_s": 4.6,
+     "relative_level_db": -1.9491,
+     "relative_pitch_st": 7.007,
+     "pause_before_s": 0.12,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 5.0,
+     "end_s": 5.4,
+     "relative_level_db": -1.9744,
+     "relative_pitch_st": 6.7988,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 5.8,
+     "end_s": 6.2,
+     "relative_level_db": -18.4699,
+     "relative_pitch_st": 2.812,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 6.6,
+     "end_s": 7.0,
+     "relative_level_db": -19.4278,
+     "relative_pitch_st": 3.9321,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    }
+   ]
+  },
+  "common_voice_en_665631": {
+   "typical_windows": 11,
+   "typical_level_db": [
+    -6.5855,
+    -0.0979,
+    1.6139
+   ],
+   "typical_pitch_st": [
+    -3.1153,
+    0.0316,
+    0.8384
+   ],
+   "words": [
+    {
+     "start_s": 0.2,
+     "end_s": 0.6,
+     "relative_level_db": -16.0519,
+     "relative_pitch_st": 14.2744,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.0,
+     "end_s": 1.4,
+     "relative_level_db": 3.4851,
+     "relative_pitch_st": 0.0312,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 1.8,
+     "end_s": 2.2,
+     "relative_level_db": 2.4497,
+     "relative_pitch_st": -0.8019,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 2.6,
+     "end_s": 3.0,
+     "relative_level_db": -1.0608,
+     "relative_pitch_st": 2.4658,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.24
+    },
+    {
+     "start_s": 3.4,
+     "end_s": 3.8,
+     "relative_level_db": -5.5466,
+     "relative_pitch_st": -4.7707,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    },
+    {
+     "start_s": 4.2,
+     "end_s": 4.6,
+     "relative_level_db": -4.6242,
+     "relative_pitch_st": -9.8513,
+     "pause_before_s": 0.0,
+     "pause_after_s": 0.0
+    }
+   ]
+  }
+ }
+}
