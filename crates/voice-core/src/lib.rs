@@ -5,6 +5,7 @@
 pub mod dsp;
 pub mod hnr;
 pub mod jitter;
+pub mod ladder;
 pub mod loudness;
 pub mod pace;
 pub mod pauses;

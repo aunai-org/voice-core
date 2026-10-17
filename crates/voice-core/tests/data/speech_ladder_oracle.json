@@ -1,0 +1,154 @@
+{
+ "_meta": {
+  "parselmouth": "0.4.7",
+  "praat": "6.1.38",
+  "gains_db": [
+   0.0,
+   10.0,
+   -8.0
+  ],
+  "note": "level_dbfs per third of the clip after the gain; null with under 0.2 s of sounding"
+ },
+ "clips": {
+  "common_voice_en_128571": {
+   "level_dbfs": [
+    -26.929,
+    -18.126,
+    -63.605
+   ]
+  },
+  "common_voice_en_17298604": {
+   "level_dbfs": [
+    -37.647,
+    -28.028,
+    -61.694
+   ]
+  },
+  "common_voice_en_17714250": {
+   "level_dbfs": [
+    -25.005,
+    -19.59,
+    -43.17
+   ]
+  },
+  "common_voice_en_17738456": {
+   "level_dbfs": [
+    -34.644,
+    -20.527,
+    null
+   ]
+  },
+  "common_voice_en_17830294": {
+   "level_dbfs": [
+    -28.73,
+    -20.832,
+    -42.534
+   ]
+  },
+  "common_voice_en_17848293": {
+   "level_dbfs": [
+    -3.678,
+    7.006,
+    -13.049
+   ]
+  },
+  "common_voice_en_17891405": {
+   "level_dbfs": [
+    -48.249,
+    -40.855,
+    -61.417
+   ]
+  },
+  "common_voice_en_18179121": {
+   "level_dbfs": [
+    -36.913,
+    -31.734,
+    -55.248
+   ]
+  },
+  "common_voice_en_18188256": {
+   "level_dbfs": [
+    -13.746,
+    -7.324,
+    -34.593
+   ]
+  },
+  "common_voice_en_18365693": {
+   "level_dbfs": [
+    null,
+    -8.013,
+    null
+   ]
+  },
+  "common_voice_en_18373309": {
+   "level_dbfs": [
+    -20.191,
+    -7.301,
+    -31.149
+   ]
+  },
+  "common_voice_en_19388916": {
+   "level_dbfs": [
+    -17.208,
+    -12.213,
+    -28.513
+   ]
+  },
+  "common_voice_en_34382925": {
+   "level_dbfs": [
+    -16.883,
+    -6.017,
+    -25.015
+   ]
+  },
+  "common_voice_en_35061606": {
+   "level_dbfs": [
+    -24.916,
+    -16.865,
+    -75.043
+   ]
+  },
+  "common_voice_en_36734620": {
+   "level_dbfs": [
+    -18.647,
+    -13.216,
+    null
+   ]
+  },
+  "common_voice_en_37451535": {
+   "level_dbfs": [
+    -34.315,
+    -28.84,
+    -62.064
+   ]
+  },
+  "common_voice_en_38865706": {
+   "level_dbfs": [
+    -27.032,
+    -15.495,
+    -32.944
+   ]
+  },
+  "common_voice_en_39751075": {
+   "level_dbfs": [
+    -22.09,
+    -13.899,
+    -37.827
+   ]
+  },
+  "common_voice_en_579883": {
+   "level_dbfs": [
+    -56.932,
+    -28.036,
+    -47.332
+   ]
+  },
+  "common_voice_en_665631": {
+   "level_dbfs": [
+    -8.47,
+    1.145,
+    -20.109
+   ]
+  }
+ }
+}
