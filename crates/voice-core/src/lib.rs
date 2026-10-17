@@ -8,6 +8,7 @@ pub mod jitter;
 pub mod loudness;
 pub mod pace;
 pub mod pauses;
+pub mod phonation;
 pub mod pitch;
 pub mod quality;
 pub mod report;
